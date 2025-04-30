@@ -1,0 +1,22 @@
+{
+  "name": "stores",
+  "version": "1.0.0",
+  "description": "Supermarket-software",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "author": "Arvys",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^35.0.2"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.9.1",
+    "dotenv": "^16.4.7",
+    "electron-store": "^10.0.1",
+    "html2canvas": "^1.4.1",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

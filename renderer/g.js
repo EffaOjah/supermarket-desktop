@@ -1,0 +1,26 @@
+[
+    {
+        customerId: "1",
+        customerName: "John Doe",
+        product_id: 2,
+        product_name: "King's Oil",
+        quantity: 1,
+        retail_price: 2600,
+        stock_quantity_retail: 18,
+        stock_quantity_wholesale: 20,
+        supplier_id: 1,
+        wholesale_price: 25000,
+    },
+    {
+        ustomerId: "1",
+        customerName: "John Doe",
+        product_id: 1,
+        product_name: "Peak Milk",
+        quantity: 1,
+        retail_price: 1000,
+        stock_quantity_retail: 7,
+        stock_quantity_wholesale: 10,
+        supplier_id: 1,
+        wholesale_price: 10000,
+    },
+];

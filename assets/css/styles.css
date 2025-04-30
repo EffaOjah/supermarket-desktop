@@ -1,0 +1,30 @@
+p, span, li, a, label, .invalid-feedback, .valid-feedback, button.btn{
+    font-size: 13px;
+}
+
+h1, h2, h3, h4, h5, h6, .navbar-brand {
+    font-size: 17px;
+}
+
+nav {
+    position: fixed !important;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 50px;
+}
+
+div.nav {
+    padding: 0% 5%;
+}
+
+#navbarNav {
+    display: flex;
+    justify-content: end;
+}
+
+.was-validated {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}
