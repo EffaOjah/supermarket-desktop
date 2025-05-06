@@ -10,7 +10,8 @@
   "author": "Arvys",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^35.0.2"
+    "electron": "^35.0.2",
+    "electron-rebuild": "^3.2.9"
   },
   "dependencies": {
     "better-sqlite3": "^11.9.1",

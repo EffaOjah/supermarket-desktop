@@ -240,5 +240,45 @@ const getSaleItemsByProductId = (saleId) => {
     }
 }
 
+// Check if stock already exist
+const checkTheStock = (productName) => {
+    try {
+        const checkStock = db.prepare('SELECT * FROM products WHERE product_name = ?');
+        const stock = checkStock.all(productName);
 
-module.exports = { allProducts, products, getUsers, getCustomers, insertNewSale, insertNewSaleItem, updateWholesaleStockQuantity, updateRetailStockQuantity, checkUser, getSuppliers, addSupplier, addCustomer, getSales, getSaleItems, supplierProducts, productDetails, productSales, getSaleItemsByProductId };
+        return stock;
+    } catch (error) {
+        console.error(error);
+        return error;
+    }
+}
+
+// Insert products gotten from the web api
+const stockBranch = (productName, wholesalePrice, retailPrice, stockQuantityWholesale, stockQuantityRetail, supplierId, category) => {
+    try {
+        const insertProductQuery = db.prepare('INSERT INTO products (product_name, wholesale_price, retail_price, stock_quantity_wholesale, stock_quantity_retail, supplier_id, category) VALUES (?, ?, ?, ?, ?, ?, ?)');
+
+        const insertProduct = insertProductQuery.run(productName, wholesalePrice, retailPrice, stockQuantityWholesale, stockQuantityRetail, supplierId, category);
+
+        return insertProduct;
+    } catch (error) {
+        console.error(error);
+        return error;
+    }
+}
+
+// Update products quantity gotten from the web api
+const updatestockQuantity = (productId, stockQuantityWholesale, stockQuantityRetail) => {
+    try {
+        const updateProductQuery = db.prepare('UPDATE products SET stock_quantity_wholesale = ?, stock_quantity_retail = ? WHERE product_id = ?');
+
+        const updateProduct = updateProductQuery.run(stockQuantityWholesale, stockQuantityRetail, productId);
+
+        return updateProduct;
+    } catch (error) {
+        console.error(error);
+        return error;
+    }
+}
+
+module.exports = { allProducts, products, getUsers, getCustomers, insertNewSale, insertNewSaleItem, updateWholesaleStockQuantity, updateRetailStockQuantity, checkUser, getSuppliers, addSupplier, addCustomer, getSales, getSaleItems, supplierProducts, productDetails, productSales, getSaleItemsByProductId, checkTheStock, stockBranch, updatestockQuantity };
