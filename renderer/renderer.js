@@ -88,7 +88,7 @@ function tryFetchPendingStocking() {
                     console.log('Product already exist');
 
                     console.log('stock details: ', checkStock[0].product_id, stock.stock_quantity_wholesale, stock.stock_quantity_retail, typeof stock.stock_quantity_wholesale);
-                    
+
                     // Update the product database
                     const updateProduct = await window.sqlite.storeManager?.updatestockQuantity(checkStock[0].product_id, stock.stock_quantity_wholesale, stock.stock_quantity_retail);
 
@@ -108,3 +108,35 @@ function tryFetchPendingStocking() {
 }
 
 retryInterval = setInterval(tryFetchPendingStocking, 10000);
+
+
+
+setTimeout(() => {
+    const sales = window.sqlite.storeManager?.getSalesForSyncing();
+    const sales2 = window.sqlite.storeManager?.getSalesForSyncing2();
+    console.log(sales);
+    
+    const data = {
+        sales: sales,
+        saleItems: sales2
+    }
+    // Send a fetch request to the webApi
+    fetch('https://web.marybillconglomerate.com.ng/storeApi/sync-sales-from-branches?branchId=1', {
+    // fetch('localhost:3000/storeApi/sync-sales-from-branches?branchId=1', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+        .then(response => {
+            if (!response.ok) return response.json();
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+}, 5000);

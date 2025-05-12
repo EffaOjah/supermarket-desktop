@@ -175,6 +175,32 @@ const getSales = () => {
     }
 }
 
+// Get all sales
+const getSalesForSyncing = () => {
+    try {
+        const getSalesQuery = db.prepare('SELECT name, contact, total_amount, payment_method, sales_date FROM Sales INNER JOIN Customers ON Sales.customer_id = Customers.customer_id WHERE Sales.synced = 0');
+        const sales = getSalesQuery.all();
+
+        return sales;
+    } catch (error) {
+        console.error(error);
+        return error;
+    }
+}
+
+// Get all sales
+const getSalesForSyncing2 = () => {
+    try {
+        const getSalesQuery = db.prepare('SELECT * FROM Sales_items INNER JOIN Sales ON Sales_items.sale_id = Sales.sale_id INNER JOIN Products ON Sales_items.product_id = Products.product_id INNER JOIN Customers ON Sales.customer_id = Customers.customer_id WHERE Sales.synced = 0');
+        const sales = getSalesQuery.all();
+
+        return sales;
+    } catch (error) {
+        console.error(error);
+        return error;
+    }
+}
+
 // Get sale using sale_id
 const getSaleItems = (saleId) => {
     try {
@@ -281,4 +307,4 @@ const updatestockQuantity = (productId, stockQuantityWholesale, stockQuantityRet
     }
 }
 
-module.exports = { allProducts, products, getUsers, getCustomers, insertNewSale, insertNewSaleItem, updateWholesaleStockQuantity, updateRetailStockQuantity, checkUser, getSuppliers, addSupplier, addCustomer, getSales, getSaleItems, supplierProducts, productDetails, productSales, getSaleItemsByProductId, checkTheStock, stockBranch, updatestockQuantity };
+module.exports = { allProducts, products, getUsers, getCustomers, insertNewSale, insertNewSaleItem, updateWholesaleStockQuantity, updateRetailStockQuantity, checkUser, getSuppliers, addSupplier, addCustomer, getSales, getSalesForSyncing, getSalesForSyncing2, getSaleItems, supplierProducts, productDetails, productSales, getSaleItemsByProductId, checkTheStock, stockBranch, updatestockQuantity };

@@ -392,7 +392,8 @@ function printInvoice() {
   
   }
 
-
+  document.getElementById('printBtn').addEventListener('click', downloadInvoiceImage);
+  
   // Handle product syncing
 let retryInterval = null;
 
