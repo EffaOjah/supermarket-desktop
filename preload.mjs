@@ -1,11 +1,15 @@
-const { contextBridge, ipcRenderer } = require('electron');
-const html2canvas = require('html2canvas');
+import { contextBridge, ipcRenderer } from 'electron';
+import html2canvas from 'html2canvas';
 
-const storeManager = require('./DB/storeManager.js');
-const databaseErrorHandler = require('./functions/DBErrorHandler.js');
+// import storeManager from './DB/storeManager.js';
+import databaseErrorHandler from './functions/DBErrorHandler.js';
+
+// contextBridge.exposeInMainWorld('sqlite', {
+//     storeManager: () => ipcRenderer.invoke('storeManager'),
+// });
 
 contextBridge.exposeInMainWorld('sqlite', {
-    storeManager
+    storeManager: (method, ...args) => ipcRenderer.invoke('storeManager', method, ...args)
 });
 
 contextBridge.exposeInMainWorld('versions', {
@@ -17,6 +21,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     warningDialog: (title, message) => ipcRenderer.invoke('show-warning-dialog', title, message),
     errorDialog: (title, message) => ipcRenderer.invoke('show-error-dialog', title, message),
     printImage: (dataUrl) => ipcRenderer.send('print-image', dataUrl),
+    getAppDataPath: () => ipcRenderer.invoke('get-app-data-path'),
 });
 
 contextBridge.exposeInMainWorld('functions', {

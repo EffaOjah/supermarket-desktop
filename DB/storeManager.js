@@ -1,4 +1,4 @@
-const { db } = require('./dbConfig.js');
+import { db } from './dbConfig.js';
 
 // Require custom date module
 // const date = require('../modules/dateModule.js');
@@ -307,4 +307,6 @@ const updatestockQuantity = (productId, stockQuantityWholesale, stockQuantityRet
     }
 }
 
-module.exports = { allProducts, products, getUsers, getCustomers, insertNewSale, insertNewSaleItem, updateWholesaleStockQuantity, updateRetailStockQuantity, checkUser, getSuppliers, addSupplier, addCustomer, getSales, getSalesForSyncing, getSalesForSyncing2, getSaleItems, supplierProducts, productDetails, productSales, getSaleItemsByProductId, checkTheStock, stockBranch, updatestockQuantity };
+const storeManager = { allProducts, products, getUsers, getCustomers, insertNewSale, insertNewSaleItem, updateWholesaleStockQuantity, updateRetailStockQuantity, checkUser, getSuppliers, addSupplier, addCustomer, getSales, getSalesForSyncing, getSalesForSyncing2, getSaleItems, supplierProducts, productDetails, productSales, getSaleItemsByProductId, checkTheStock, stockBranch, updatestockQuantity };
+
+export default storeManager;

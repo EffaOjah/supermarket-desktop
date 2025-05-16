@@ -6,3 +6,4 @@ node_modules/
 
 store.db-shm
 store.db-wal
+out/

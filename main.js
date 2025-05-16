@@ -1,53 +1,35 @@
-const { app, BrowserWindow, Menu, dialog, ipcMain } = require('electron');
-const path = require('path');
+// main.js (or index.js if preferred)
 
-const Store = require('electron-store').default;
+import { app, BrowserWindow, Menu, dialog, ipcMain } from 'electron';
+import path from 'path';
+import Store from 'electron-store';
+// import storeManager from './DB/storeManager.js';
+import myJwt from './jwt/jwt.js';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import Database from 'better-sqlite3';
 
+// Helper to get __dirname in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Writable path
+const userDataPath = app.getPath('userData');
+const dbPath = path.join(userDataPath, 'store.db');
+
+// Path to packaged default DB (should be in extraResources, not in .asar)
+const defaultDbPath = path.join(process.resourcesPath, 'assets', 'store.db');
+
+if (!fs.existsSync(dbPath)) {
+  fs.copyFileSync(defaultDbPath, dbPath);
+}
+
+const db = new Database(dbPath);
+db.pragma('journal_mode = WAL');
+
+// Instantiate store
 const store = new Store();
 
-// Require the database module
-const storeManager = require('./DB/storeManager.js');
-
-// Require the jwt module
-const jwt = require('./jwt/jwt.js');
-
-const menuTemplate = [
-    {
-        label: 'File',
-        submenu: [
-            { 
-                label: 'View sales',
-                click: () => {
-                    const salesWindow = new BrowserWindow({
-                        width: 800,
-                        height: 600,
-                        webPreferences: {
-                            nodeIntegration: true,
-                            preload: path.join(__dirname, 'preload.js'),
-                        }
-                    });
-
-                    salesWindow.webContents.openDevTools();
-                    
-                    salesWindow.loadFile('./pages/sales.html')
-                }
-            },
-            {
-                type:'separator'
-            },
-            {
-                label: 'Quit',
-                accelerator: 'CmdOrCtrl+Q',
-                click: () => app.quit()
-            }
-        ],
-    },
-];
-
-const menu = Menu.buildFromTemplate(menuTemplate);
-// Menu.setApplicationMenu(null);
-
-// Function to create a window
 const createWindow = () => {
     const win = new BrowserWindow({
         width: 800,
@@ -55,19 +37,15 @@ const createWindow = () => {
         webPreferences: {
             contextIsolation: true,
             nodeIntegration: true,
-            preload: path.join(__dirname, 'preload.js'),
-            webSecurity: false,
+            preload: path.join(__dirname, 'preload.mjs'),
+            webSecurity: true,
         }
     });
 
     win.maximize();
-    
-    // Load the file
     win.loadFile('./pages/signin.html');
 
-    // Handle page redirecting
     ipcMain.on('redirect', (event, page) => {
-        // Check if user is logged in
         const token = store.get('authToken');
 
         if (!token) {
@@ -75,21 +53,19 @@ const createWindow = () => {
             return win.loadFile('./pages/signin.html');
         }
 
-        // Verify the token
-        const verifyToken = jwt.verifyToken(token);
+        const verifyToken = myJwt.verifyToken(token);
         if (!verifyToken) {
             console.log('Invalid token');
-            return win.loadFile('./pages/signin.html')
+            return win.loadFile('./pages/signin.html');
         }
+
         win.loadFile(page);
     });
-}
+};
 
-// Create the window when the app is ready
 app.whenReady().then(() => {
     createWindow();
 
-    // Create the window, if there's  no running window(For MAC OS)
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow();
@@ -98,7 +74,6 @@ app.whenReady().then(() => {
 });
 
 ipcMain.handle('show-warning-dialog', (event, title, message) => {
-    // dialog.showErrorBox(title, message);
     dialog.showMessageBox({
         type: "warning",
         title: title,
@@ -108,7 +83,6 @@ ipcMain.handle('show-warning-dialog', (event, title, message) => {
 });
 
 ipcMain.handle('show-error-dialog', (event, title, message) => {
-    // dialog.showErrorBox(title, message);
     dialog.showMessageBox({
         type: "error",
         title: title,
@@ -117,7 +91,6 @@ ipcMain.handle('show-error-dialog', (event, title, message) => {
     });
 });
 
-// Handle login
 ipcMain.handle('login', async (event, username, password, role) => {
     try {
         const checkUser = await storeManager.checkUser(username, password, role);
@@ -125,24 +98,19 @@ ipcMain.handle('login', async (event, username, password, role) => {
 
         if (checkUser.length < 1) {
             console.log('Invalid Login Details');
-            
             return { success: false, message: 'Invalid Login Details' };
         }
 
-        // Generate the jwt
-        const generateToken = jwt.generateToken(checkUser[0].user_id, checkUser[0].role);
+        const generateToken = myJwt.generateToken(checkUser[0].user_id, checkUser[0].role);
         console.log(generateToken);
-        
-        // Store the token in the Electron store
-        store.set('authToken', generateToken);
 
-        return { success: true, message: 'Login successful' }
+        store.set('authToken', generateToken);
+        return { success: true, message: 'Login successful' };
     } catch (error) {
-        return error;        
+        return { success: false, message: error.message || "Login failed" };
     }
 });
 
-// Verify user
 ipcMain.handle('verify-user', async () => {
     const token = store.get('authToken');
 
@@ -151,15 +119,12 @@ ipcMain.handle('verify-user', async () => {
         return { success: false, message: "Not authenticated" };
     }
 
-    // Verify the token
-    const verifyToken = jwt.verifyToken(token);
-    let decoded = verifyToken;
-    console.log('Decoded: ', decoded);
+    const verifyToken = myJwt.verifyToken(token);
+    console.log('Decoded: ', verifyToken);
 
-    return { success: true, decoded };
+    return { success: true, decoded: verifyToken };
 });
 
-// Logout
 ipcMain.handle("logout", () => {
     store.delete("authToken");
     return { success: true, message: "Logged out" };
@@ -167,7 +132,7 @@ ipcMain.handle("logout", () => {
 
 ipcMain.on('print-image', (event, dataUrl) => {
     const printWindow = new BrowserWindow({ show: false });
-  
+
     printWindow.loadURL(`data:text/html,
       <html>
         <body style="margin:0">
@@ -179,19 +144,397 @@ ipcMain.on('print-image', (event, dataUrl) => {
           </script>
         </body>
       </html>`);
-  
-    // Optional: close window after short delay
+
     printWindow.webContents.on('did-finish-load', () => {
-      setTimeout(() => {
-        printWindow.close();
-      }, 1000); // adjust if needed
+        setTimeout(() => {
+            printWindow.close();
+        }, 1000);
     });
-  });
+});
 
-
-// Quit the app if all windows were closed(For non MAC OS)
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') {
         app.quit();
     }
 });
+
+
+// Database operations
+
+const storeManager = {
+    getUsers: (role) => {
+        try {
+            const getUsersQuery = db.prepare(`SELECT * FROM Users WHERE role = ?`);
+            const users = getUsersQuery.all(role);
+
+            return users;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    getCustomers: () => {
+        try {
+            const getCustomersQuery = db.prepare(`SELECT * FROM Customers`);
+            const customers = getCustomersQuery.all();
+
+            return customers;
+        } catch (error) {
+            console.error(error);
+            return error.message;
+        }
+    },
+    insertNewSale: (customerId, totalAmount, paymentMethod) => {
+        const padZero = (num) => num.toString().padStart(2, '0');
+        const date = new Date();
+
+        let customTimestamp = `${date.getFullYear()}-${padZero(date.getMonth())}-${padZero(date.getDay())}`;
+
+        try {
+            const insertSaleQuery = db.prepare('INSERT INTO Sales (customer_id, sales_date, total_amount, payment_method) VALUES (?, ?, ?, ?)');
+            const result = insertSaleQuery.run(customerId, customTimestamp, totalAmount, paymentMethod);
+
+            return result;
+        } catch (error) {
+            return error;
+        }
+    },
+    insertNewSaleItem: (saleId, productId, quantity, unitPrice, saleType, subTotal) => {
+        try {
+            const insertSaleItemQuery = db.prepare('INSERT INTO Sales_items (sale_id, product_id, quantity, unit_price, sale_type, subtotal) VALUES (?, ?, ?, ?, ?, ?)');
+            const result = insertSaleItemQuery.run(saleId, productId, quantity, unitPrice, saleType, subTotal);
+
+            return result;
+        } catch (error) {
+            return error;
+        }
+    },
+    updateWholesaleStockQuantity: (purchasedQuantity, productId) => {
+        try {
+            const updateQuery = db.prepare(`UPDATE Products SET stock_quantity_wholesale = stock_quantity_wholesale - ? WHERE product_id = ?`);
+            const result = updateQuery.run(purchasedQuantity, productId);
+
+            return result;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    updateRetailStockQuantity: (purchasedQuantity, productId) => {
+        try {
+            const updateQuery = db.prepare(`UPDATE Products SET stock_quantity_retail = stock_quantity_retail - ? WHERE product_id = ?`);
+            const result = updateQuery.run(purchasedQuantity, productId);
+
+            return result;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    checkUser: (username, password, role) => {
+        try {
+            const checkQuery = db.prepare(`SELECT * FROM Users WHERE username = ? AND password = ? AND role = ?`);
+            const result = checkQuery.all(username, password, role);
+
+            return result;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    allProducts: async () => {
+        try {
+            const getProductQuery = db.prepare(`SELECT * from products`);
+            const products = getProductQuery.all();
+
+            return products;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    products: async () => {
+        try {
+            const getProductQuery = db.prepare(`SELECT * from products GROUP BY category`);
+            const products = getProductQuery.all();
+
+            return products;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    getSuppliers: () => {
+        try {
+            const getSuppliersQuery = db.prepare(`SELECT * FROM Suppliers`);
+            const result = getSuppliersQuery.all();
+
+            return result;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    addSupplier: (name, address, contact, email) => {
+        try {
+            const addSupplierQuery = db.prepare(`INSERT INTO Suppliers (name, address, contact, email) VALUES (?, ?, ?, ?)`);
+            const result = addSupplierQuery.run(name, address, contact, email);
+
+            return result;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    addCustomer: (name, address, contact) => {
+        try {
+            const addCustomerQuery = db.prepare(`INSERT INTO Customers (name, address, contact) VALUES (?, ?, ?)`);
+            const result = addCustomerQuery.run(name, address, contact);
+
+            return result;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    getSales: () => {
+        try {
+            const getSalesQuery = db.prepare('SELECT * FROM Sales INNER JOIN Customers ON Sales.customer_id = Customers.customer_id');
+            const sales = getSalesQuery.all();
+
+            return sales;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    getSalesForSyncing: () => {
+        try {
+            const getSalesQuery = db.prepare('SELECT name, contact, total_amount, payment_method, sales_date FROM Sales INNER JOIN Customers ON Sales.customer_id = Customers.customer_id WHERE Sales.synced = 0');
+            const sales = getSalesQuery.all();
+
+            return sales;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    getSalesForSyncing2: () => {
+        try {
+            const getSalesQuery = db.prepare('SELECT * FROM Sales_items INNER JOIN Sales ON Sales_items.sale_id = Sales.sale_id INNER JOIN Products ON Sales_items.product_id = Products.product_id INNER JOIN Customers ON Sales.customer_id = Customers.customer_id WHERE Sales.synced = 0');
+            const sales = getSalesQuery.all();
+
+            return sales;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    getSaleItems: (saleId) => {
+        try {
+            const getSalesQuery = db.prepare('SELECT * FROM Sales_items INNER JOIN Sales ON Sales_items.sale_id = Sales.sale_id INNER JOIN Products ON Sales_items.product_id = Products.product_id WHERE Sales_items.sale_id = ?');
+            const sales = getSalesQuery.all(saleId);
+
+            return sales;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    supplierProducts: async (supplierId) => {
+        try {
+            const getProductQuery = db.prepare(`SELECT product_name from products WHERE supplier_id = ?`);
+            const products = getProductQuery.all(supplierId);
+
+            return products;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    productDetails: async (productId) => {
+        try {
+            const getProductDetailQuery = db.prepare(`SELECT * from products WHERE product_id = ?`);
+            const productDetail = getProductDetailQuery.all(productId);
+
+            return productDetail;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    productSales: async (productId) => {
+        try {
+            const getProductDetailQuery = db.prepare(`SELECT * from Sales_items INNER JOIN Sales ON Sales_items.sale_id = Sales.sale_id INNER JOIN products ON Sales_items.product_id = Products.product_id WHERE Sales_items.product_id = ?`);
+            const productDetail = getProductDetailQuery.all(productId);
+
+            return productDetail;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    getSaleItemsByProductId: (saleId) => {
+        try {
+            const getSalesQuery = db.prepare('SELECT * FROM Sales_items INNER JOIN Sales ON Sales_items.sale_id = Sales.sale_id INNER JOIN Products ON Sales_items.product_id = Products.product_id WHERE Sales_items.sale_id = ?');
+            const sales = getSalesQuery.all(saleId);
+
+            return sales;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    checkTheStock: (productName) => {
+        try {
+            const checkStock = db.prepare('SELECT * FROM products WHERE product_name = ?');
+            const stock = checkStock.all(productName);
+
+            return stock;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    stockBranch: (productName, wholesalePrice, retailPrice, stockQuantityWholesale, stockQuantityRetail, supplierId, category) => {
+        try {
+            const insertProductQuery = db.prepare('INSERT INTO products (product_name, wholesale_price, retail_price, stock_quantity_wholesale, stock_quantity_retail, supplier_id, category) VALUES (?, ?, ?, ?, ?, ?, ?)');
+
+            const insertProduct = insertProductQuery.run(productName, wholesalePrice, retailPrice, stockQuantityWholesale, stockQuantityRetail, supplierId, category);
+
+            return insertProduct;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    updatestockQuantity: (productId, stockQuantityWholesale, stockQuantityRetail) => {
+        try {
+            const updateProductQuery = db.prepare('UPDATE products SET stock_quantity_wholesale = ?, stock_quantity_retail = ? WHERE product_id = ?');
+
+            const updateProduct = updateProductQuery.run(stockQuantityWholesale, stockQuantityRetail, productId);
+
+            return updateProduct;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    }
+
+}
+
+
+ipcMain.handle('storeManager', async (event, method, ...args) => {
+    if (typeof storeManager[method] === 'function') {
+        try {
+            return await storeManager[method](...args);
+        } catch (error) {
+            console.error(`Error in storeManager.${method}:`, error);
+            throw error;
+        }
+    } else {
+        throw new Error(`Method ${method} not found in storeManager`);
+    }
+});
+
+
+
+
+
+
+
+// ipcMain.handle('storeManager', (event) => {
+//     return storeManager;
+// });
+
+// ipcMain.handle('get-users', (event, role) => {
+//     return storeManager.getUsers(role);
+// });
+
+// ipcMain.handle('get-customers', (event) => {
+//     return storeManager.getCustomers();
+// });
+
+// ipcMain.handle('insert-new-sale', (event, customerId, totalAmount, paymentMethod) => {
+//     return storeManager.insertNewSale(customerId, totalAmount, paymentMethod);
+// });
+
+// ipcMain.handle('insert-new-sale-item', (event, saleId, productId, quantity, unitPrice, saleType, subTotal) => {
+//     return storeManager.insertNewSaleItem(saleId, productId, quantity, unitPrice, saleType, subTotal);
+// });
+
+// ipcMain.handle('update-wholesale-stock-quantity', (event, purchasedQuantity, productId) => {
+//     return storeManager.updateWholesaleStockQuantity(purchasedQuantity, productId);
+// });
+
+// ipcMain.handle('update-retail-stock-quantity', (event, purchasedQuantity, productId) => {
+//     return storeManager.updateRetailStockQuantity(purchasedQuantity, productId);
+// });
+
+// ipcMain.handle('check-user', (event, username, password, role) => {
+//     return storeManager.checkUser(username, password, role);
+// });
+
+// ipcMain.handle('all-products', (event) => {
+//     return storeManager.allProducts();
+// });
+
+// ipcMain.handle('products', (event) => {
+//     return storeManager.products();
+// });
+
+// ipcMain.handle('get-suppliers', (event) => {
+//     return storeManager.getSuppliers();
+// });
+
+// ipcMain.handle('add-supplier', (event, name, address, contact, email) => {
+//     return storeManager.addSupplier(name, address, contact, email);
+// });
+
+// ipcMain.handle('add-customer', (event, name, address, contact) => {
+//     return storeManager.addCustomer(name, address, contact);
+// });
+
+// ipcMain.handle('get-sales', (event) => {
+//     return storeManager.getSales();
+// });
+
+// ipcMain.handle('get-sales-for-syncing', (event) => {
+//     return storeManager.getSalesForSyncing();
+// });
+
+// ipcMain.handle('get-sales-for-syncing2', (event) => {
+//     return storeManager.getSalesForSyncing2();
+// });
+
+// ipcMain.handle('get-sale-items', (event, saleId) => {
+//     return storeManager.getSaleItems(saleId);
+// });
+
+// ipcMain.handle('supplier-products', (event, supplierId) => {
+//     return storeManager.supplierProducts(supplierId);
+// });
+
+// ipcMain.handle('product-details', (event, productId) => {
+//     return storeManager.productDetails(productId);
+// });
+
+// ipcMain.handle('product-sales', (event, productId) => {
+//     return storeManager.productSales(productId);
+// });
+
+// ipcMain.handle('get-sale-items-by-productId', (event, saleId) => {
+//     return storeManager.getSaleItemsByProductId(saleId);
+// });
+
+// ipcMain.handle('check-the-stock', (event, productName) => {
+//     return storeManager.checkTheStock(productName);
+// });
+
+// ipcMain.handle('stock-branch', (event, productName, wholesalePrice, retailPrice, stockQuantityWholesale, stockQuantityRetail, supplierId, category) => {
+//     return storeManager.stockBranch(productName, wholesalePrice, retailPrice, stockQuantityWholesale, stockQuantityRetail, supplierId, category);
+// });
+
+// ipcMain.handle('update-stock-quantity', (event, productId, stockQuantityWholesale, stockQuantityRetail) => {
+//     return storeManager.updatestockQuantity(productId, stockQuantityWholesale, stockQuantityRetail);
+// });

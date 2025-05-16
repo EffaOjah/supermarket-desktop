@@ -11,15 +11,11 @@ function handleDatabaseError(errCode) {
         case 'SQLITE_BUSY':
             return "Database is currently busy. Please try again later.";
         case 'SQLITE_READONLY':
-            return "Cannot modify a read-only database.";
+            return "Database is in read-only mode. You cannot modify data.";
         case 'SQLITE_FULL':
             return "Database storage is full. Please free up space.";
         case 'SQLITE_CANTOPEN':
-            return "Database file could not be accessed.";
-        case 'SQLITE_CANTOPEN':
             return "Database could not be accessed. Please check the file path.";
-        case 'SQLITE_READONLY':
-            return "Database is in read-only mode. You cannot modify data.";
         case 'SQLITE_NOTADB':
             return "Invalid database file. It might be corrupted.";
         case 'SQLITE_ERROR':
@@ -29,4 +25,4 @@ function handleDatabaseError(errCode) {
     }
 }
 
-module.exports = handleDatabaseError;
+export default handleDatabaseError;

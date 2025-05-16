@@ -14,8 +14,9 @@ const addCartBtn = document.getElementById('addCartBtn');
 const processSaleBtn = document.getElementById('processSaleBtn');
 
 document.addEventListener('DOMContentLoaded', async () => {
-    productList = await window.sqlite.storeManager?.allProducts();
-    customers = await window.sqlite.storeManager?.getCustomers();
+    productList = await window.sqlite.storeManager('allProducts');
+    customers = await window.sqlite.storeManager('getCustomers');
+
 
     console.log(productList, customers);
 
@@ -167,7 +168,8 @@ async function processSale() {
     let confirm = window.confirm('Are you sure you wanna process this sale?');
     if (confirm == true) {
         // Insert into the sales table
-        const newSale = await window.sqlite.storeManager?.insertNewSale(cart[0].customerId, document.getElementById("totalPrice").innerText, 'cash');
+        // const newSale = await window.sqlite.storeManager?.insertNewSale(cart[0].customerId, document.getElementById("totalPrice").innerText, 'cash');
+        const newSale = await window.sqlite.storeManager('insertNewSale', cart[0].customerId, document.getElementById("totalPrice").innerText, 'cash')
 
         // Check if there was an error while executing the query
         if (window.functions.handleDBError(newSale.code)) {
@@ -180,7 +182,9 @@ async function processSale() {
         cart.forEach(async item => {
             // Add new sale item based on the purchaseType
             if (item.purchaseType == 'Wholesale') {
-                const newSaleItem = await window.sqlite.storeManager?.insertNewSaleItem(newSale.lastInsertRowid, item.product_id, item.quantity, item.wholesale_price, item.purchaseType, item.wholesale_price * item.quantity);
+                // const newSaleItem = await window.sqlite.storeManager?.insertNewSaleItem(newSale.lastInsertRowid, item.product_id, item.quantity, item.wholesale_price, item.purchaseType, item.wholesale_price * item.quantity);
+
+                const newSaleItem = await window.sqlite.storeManager('insertNewSaleItem', newSale.lastInsertRowid, item.product_id, item.quantity, item.wholesale_price, item.purchaseType, item.wholesale_price * item.quantity)
 
                 if (window.functions.handleDBError(newSaleItem.code)) {
                     console.log('Error while executing db query: ', newSaleItem.code, newSaleItem.message);
@@ -190,9 +194,12 @@ async function processSale() {
                 }
 
                 // Update the stock quantity of the purchased products
-                window.sqlite.storeManager?.updateWholesaleStockQuantity(item.quantity, item.product_id);
+                // window.sqlite.storeManager?.updateWholesaleStockQuantity(item.quantity, item.product_id);
+                window.sqlite.storeManager('updateWholesaleStockQuantity', item.quantity, item.product_id)
             } else {
-                const newSaleItem = await window.sqlite.storeManager?.insertNewSaleItem(newSale.lastInsertRowid, item.product_id, item.quantity, item.retail_price, item.purchaseType, item.retail_price * item.quantity);
+                // const newSaleItem = await window.sqlite.storeManager?.insertNewSaleItem(newSale.lastInsertRowid, item.product_id, item.quantity, item.retail_price, item.purchaseType, item.retail_price * item.quantity);
+
+                const newSaleItem = await window.sqlite.storeManager('insertNewSaleItem', newSale.lastInsertRowid, item.product_id, item.quantity, item.retail_price, item.purchaseType, item.retail_price * item.quantity);
 
                 if (window.functions.handleDBError(newSaleItem.code)) {
                     console.log('Error while executing db query: ', newSaleItem.code, newSaleItem.message);
@@ -202,7 +209,8 @@ async function processSale() {
                 }
 
                 // Update the stock quantity of the purchased products
-                window.sqlite.storeManager?.updateRetailStockQuantity(item.quantity, item.product_id);
+                // window.sqlite.storeManager?.updateRetailStockQuantity(item.quantity, item.product_id);
+                window.sqlite.storeManager('updateRetailStockQuantity', item.quantity, item.product_id);
             }
 
             
@@ -245,8 +253,8 @@ function closeSale() {
 }
 // Extra function to load products/customers
 async function load_customers_products() {
-    productList = await window.sqlite.storeManager?.allProducts();
-    customers = await window.sqlite.storeManager?.getCustomers();
+    productList = await window.sqlite.storeManager('allProducts');
+    customers = await window.sqlite.storeManager('getCustomers');
 
     console.log(productList, customers);
 }
@@ -298,7 +306,8 @@ async function viewSaleInvoice(saleId) {
   
     invoiceHolder.innerHTML = '';
   
-    let saleDetails = await window.sqlite.storeManager?.getSaleItems(saleId);
+    // let saleDetails = await window.sqlite.storeManager?.getSaleItems(saleId);
+    let saleDetails = await window.sqlite.storeManager('getSaleItems', saleId);
     console.log(saleDetails);
   
     const newDiv = document.createElement('div');
@@ -429,7 +438,8 @@ function tryFetchPendingStocking() {
                 console.log(stock.product_name);
 
                 // Check if the stock sent already exists in the database
-                const checkStock = await window.sqlite.storeManager?.checkTheStock(stock.product_name);
+                // const checkStock = await window.sqlite.storeManager?.checkTheStock(stock.product_name);
+                const checkStock = await window.sqlite.storeManager('checkTheStock', stock.product_name);
                 console.log(checkStock);
 
                 if (checkStock.length > 0) {
@@ -438,13 +448,16 @@ function tryFetchPendingStocking() {
                     console.log('stock details: ', checkStock[0].product_id, stock.stock_quantity_wholesale, stock.stock_quantity_retail, typeof stock.stock_quantity_wholesale);
                     
                     // Update the product database
-                    const updateProduct = await window.sqlite.storeManager?.updatestockQuantity(checkStock[0].product_id, stock.stock_quantity_wholesale, stock.stock_quantity_retail);
+                    // const updateProduct = await window.sqlite.storeManager?.updatestockQuantity(checkStock[0].product_id, stock.stock_quantity_wholesale, stock.stock_quantity_retail);
+
+                    const updateProduct = await window.sqlite.storeManager('updatestockQuantity', checkStock[0].product_id, stock.stock_quantity_wholesale, stock.stock_quantity_retail);
 
                     console.log(updateProduct);
 
                 } else {
                     // Insert the product into the database
-                    const insertProducts = await window.sqlite.storeManager?.stockBranch(stock.product_name, stock.wholesale_price, stock.retail_price, stock.stock_quantity_wholesale, stock.stock_quantity_retail, stock.supplier_id, stock.category);
+                    // const insertProducts = await window.sqlite.storeManager?.stockBranch(stock.product_name, stock.wholesale_price, stock.retail_price, stock.stock_quantity_wholesale, stock.stock_quantity_retail, stock.supplier_id, stock.category);
+                    const insertProducts = await window.sqlite.storeManager('stockBranch', stock.product_name, stock.wholesale_price, stock.retail_price, stock.stock_quantity_wholesale, stock.stock_quantity_retail, stock.supplier_id, stock.category);
 
                     console.log(insertProducts);
                 }

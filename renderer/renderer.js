@@ -81,7 +81,8 @@ function tryFetchPendingStocking() {
                 console.log(stock.product_name);
 
                 // Check if the stock sent already exists in the database
-                const checkStock = await window.sqlite.storeManager?.checkTheStock(stock.product_name);
+                // const checkStock = await window.sqlite.storeManager?.checkTheStock(stock.product_name);
+                const checkStock = await window.sqlite.storeManager('checkTheStock', stock.product_name);
                 console.log(checkStock);
 
                 if (checkStock.length > 0) {
@@ -90,13 +91,15 @@ function tryFetchPendingStocking() {
                     console.log('stock details: ', checkStock[0].product_id, stock.stock_quantity_wholesale, stock.stock_quantity_retail, typeof stock.stock_quantity_wholesale);
 
                     // Update the product database
-                    const updateProduct = await window.sqlite.storeManager?.updatestockQuantity(checkStock[0].product_id, stock.stock_quantity_wholesale, stock.stock_quantity_retail);
+                    // const updateProduct = await window.sqlite.storeManager?.updatestockQuantity(checkStock[0].product_id, stock.stock_quantity_wholesale, stock.stock_quantity_retail);
+                    const updateProduct = await window.sqlite.storeManager('updatestockQuantity', checkStock[0].product_id, stock.stock_quantity_wholesale, stock.stock_quantity_retail);
 
                     console.log(updateProduct);
 
                 } else {
                     // Insert the product into the database
-                    const insertProducts = await window.sqlite.storeManager?.stockBranch(stock.product_name, stock.wholesale_price, stock.retail_price, stock.stock_quantity_wholesale, stock.stock_quantity_retail, stock.supplier_id, stock.category);
+                    // const insertProducts = await window.sqlite.storeManager?.stockBranch(stock.product_name, stock.wholesale_price, stock.retail_price, stock.stock_quantity_wholesale, stock.stock_quantity_retail, stock.supplier_id, stock.category);
+                    const insertProducts = await window.sqlite.storeManager('stockBranch', stock.product_name, stock.wholesale_price, stock.retail_price, stock.stock_quantity_wholesale, stock.stock_quantity_retail, stock.supplier_id, stock.category);
 
                     console.log(insertProducts);
                 }
@@ -111,15 +114,19 @@ retryInterval = setInterval(tryFetchPendingStocking, 10000);
 
 
 
-setTimeout(() => {
-    const sales = window.sqlite.storeManager?.getSalesForSyncing();
-    const sales2 = window.sqlite.storeManager?.getSalesForSyncing2();
-    console.log(sales);
+setTimeout(async () => {
+    // const sales = window.sqlite.storeManager?.getSalesForSyncing();
+    const sales = await window.sqlite.storeManager('getSalesForSyncing');
+    const sales2 = await window.sqlite.storeManager('getSalesForSyncing2');
+    // const sales2 = window.sqlite.storeManager?.getSalesForSyncing2();
     
     const data = {
         sales: sales,
         saleItems: sales2
     }
+
+    console.log(data);
+    
     // Send a fetch request to the webApi
     fetch('https://web.marybillconglomerate.com.ng/storeApi/sync-sales-from-branches?branchId=1', {
     // fetch('localhost:3000/storeApi/sync-sales-from-branches?branchId=1', {
