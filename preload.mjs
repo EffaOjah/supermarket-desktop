@@ -2,7 +2,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 import html2canvas from 'html2canvas';
 
 // import storeManager from './DB/storeManager.js';
-import databaseErrorHandler from './functions/DBErrorHandler.js';
+import handleDatabaseError from './functions/DBErrorHandler.js';
 
 // contextBridge.exposeInMainWorld('sqlite', {
 //     storeManager: () => ipcRenderer.invoke('storeManager'),
@@ -25,7 +25,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
 });
 
 contextBridge.exposeInMainWorld('functions', {
-    handleDBError: databaseErrorHandler
+    handleDBError: handleDatabaseError,
+    testFunction: () => ipcRenderer.invoke('test')
 });
 
 contextBridge.exposeInMainWorld('electronStore', {

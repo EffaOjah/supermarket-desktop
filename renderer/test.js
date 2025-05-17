@@ -1,5 +1,5 @@
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const customers = await window.sqlite.storeManager.getCustomers();
-    console.log(customers);
+    const test = await window.functions.testFunction();
+    console.log(test);
 })

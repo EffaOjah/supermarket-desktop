@@ -19,6 +19,8 @@ signinForm.addEventListener('submit', (e) => {
         }
 
         window.electronStore.getProtectedData().then((result) => {
+            console.log(result);
+            
             // redirect the user based on the user's role
             if (result.decoded.role == 'salesRep') {
                 // Redirect the user

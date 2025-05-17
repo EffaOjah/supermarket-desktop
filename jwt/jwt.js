@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const secretKey = process.env.SECRET;
+const secretKey = 'mysecret';
 
 function generateToken(userId, role) {
     if (!secretKey) {

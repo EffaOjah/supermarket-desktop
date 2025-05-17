@@ -16,21 +16,38 @@ const __dirname = path.dirname(__filename);
 // Writable path
 const userDataPath = app.getPath('userData');
 const dbPath = path.join(userDataPath, 'store.db');
+const defaultDbPath = path.join(process.resourcesPath, 'store.db'); // Comes from `extraResource`
 
-// Path to packaged default DB (should be in extraResources, not in .asar)
-const defaultDbPath = path.join(process.resourcesPath, 'assets', 'store.db');
-
+// Only copy on first run
 if (!fs.existsSync(dbPath)) {
   fs.copyFileSync(defaultDbPath, dbPath);
 }
 
+// Open the DB from the user data directory
 const db = new Database(dbPath);
 db.pragma('journal_mode = WAL');
 
 // Instantiate store
-const store = new Store();
+// const store = new Store();
+
+// Get the system's app data path (safe for writes)
+const storePath = path.join(userDataPath, 'config');
+
+// Create store with custom path
+const store = new Store({
+  cwd: storePath, // <- where the config.json will be saved
+});
 
 const createWindow = () => {
+
+    console.log('Path:', store.path);
+console.log('Before:', store.get('authToken'));
+
+store.set('authToken', '123405');
+
+console.log('After:', store.get('authToken'));
+
+
     const win = new BrowserWindow({
         width: 800,
         height: 600,
@@ -102,7 +119,7 @@ ipcMain.handle('login', async (event, username, password, role) => {
         }
 
         const generateToken = myJwt.generateToken(checkUser[0].user_id, checkUser[0].role);
-        console.log(generateToken);
+        console.log('generateToken: ', generateToken);
 
         store.set('authToken', generateToken);
         return { success: true, message: 'Login successful' };
@@ -122,7 +139,7 @@ ipcMain.handle('verify-user', async () => {
     const verifyToken = myJwt.verifyToken(token);
     console.log('Decoded: ', verifyToken);
 
-    return { success: true, decoded: verifyToken };
+    return { success: true, decoded: verifyToken};
 });
 
 ipcMain.handle("logout", () => {
@@ -437,9 +454,9 @@ ipcMain.handle('storeManager', async (event, method, ...args) => {
     }
 });
 
-
-
-
+ipcMain.handle('test', async (event) => {
+    return store.path;
+});
 
 
 

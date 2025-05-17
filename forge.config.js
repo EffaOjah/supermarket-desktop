@@ -3,8 +3,9 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 
 module.exports = {
   packagerConfig: {
-    asar: true,
-  },
+  asar: true,
+  extraResource: ['resources/store.db'], // 👈 this makes it accessible via process.resourcesPath
+},
   rebuildConfig: {},
   makers: [
     {
