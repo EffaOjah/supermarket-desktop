@@ -80,7 +80,7 @@ function tryFetchPendingStocking() {
             }
 
             data.pendingStock.forEach(async stock => {
-                console.log(stock.product_name);
+                console.log(stock.product_name, stock.product_id);
 
                 // Check if the stock sent already exists in the database
                 // const checkStock = await window.sqlite.storeManager?.checkTheStock(stock.product_name);
@@ -101,7 +101,7 @@ function tryFetchPendingStocking() {
                 } else {
                     // Insert the product into the database
                     // const insertProducts = await window.sqlite.storeManager?.stockBranch(stock.product_name, stock.wholesale_price, stock.retail_price, stock.stock_quantity_wholesale, stock.stock_quantity_retail, stock.supplier_id, stock.category);
-                    const insertProducts = await window.sqlite.storeManager('stockBranch', stock.product_name, stock.wholesale_price, stock.retail_price, stock.stock_quantity_wholesale, stock.stock_quantity_retail, stock.supplier_id, stock.category);
+                    const insertProducts = await window.sqlite.storeManager('stockBranch', stock.product_id, stock.product_name, stock.wholesale_price, stock.retail_price, stock.stock_quantity_wholesale, stock.stock_quantity_retail, stock.supplier_id, stock.category);
 
                     console.log(insertProducts);
                 }

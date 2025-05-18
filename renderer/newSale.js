@@ -50,7 +50,7 @@ function attachSelectCheck() {
 
 function addToCart() {
     const customer = document.getElementById("role").value;
-    const productId = parseInt(document.getElementById("productSelect").value);
+    const productId = document.getElementById("productSelect").value;
     const quantity = parseInt(document.getElementById("quantity").value);
     const purchaseType = document.getElementById("purchaseType").value;
 
@@ -308,7 +308,7 @@ async function viewSaleInvoice(saleId) {
   
     // let saleDetails = await window.sqlite.storeManager?.getSaleItems(saleId);
     let saleDetails = await window.sqlite.storeManager('getSaleItems', saleId);
-    console.log(saleDetails);
+    console.log('saleDetails: ', saleDetails);
   
     const newDiv = document.createElement('div');
     newDiv.innerHTML = `

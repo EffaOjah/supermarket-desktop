@@ -8,6 +8,7 @@ import myJwt from './jwt/jwt.js';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import Database from 'better-sqlite3';
+import { v4 as uuidv4 } from 'uuid';
 
 // Helper to get __dirname in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -207,19 +208,20 @@ const storeManager = {
 
         let customTimestamp = `${date.getFullYear()}-${padZero(date.getMonth())}-${padZero(date.getDay())}`;
 
+        const id = uuidv4();
         try {
-            const insertSaleQuery = db.prepare('INSERT INTO Sales (customer_id, sales_date, total_amount, payment_method) VALUES (?, ?, ?, ?)');
-            const result = insertSaleQuery.run(customerId, customTimestamp, totalAmount, paymentMethod);
+            const insertSaleQuery = db.prepare('INSERT INTO Sales (sale_id, customer_id, sales_date, total_amount, payment_method) VALUES (?, ?, ?, ?, ?)');
+            const result = insertSaleQuery.run(id, customerId, customTimestamp, totalAmount, paymentMethod);
 
-            return result;
+            return { lastInsertRowid: id };
         } catch (error) {
             return error;
         }
     },
     insertNewSaleItem: (saleId, productId, quantity, unitPrice, saleType, subTotal) => {
         try {
-            const insertSaleItemQuery = db.prepare('INSERT INTO Sales_items (sale_id, product_id, quantity, unit_price, sale_type, subtotal) VALUES (?, ?, ?, ?, ?, ?)');
-            const result = insertSaleItemQuery.run(saleId, productId, quantity, unitPrice, saleType, subTotal);
+            const insertSaleItemQuery = db.prepare('INSERT INTO Sales_items (sale_item_id, sale_id, product_id, quantity, unit_price, sale_type, subtotal) VALUES (?, ?, ?, ?, ?, ?, ?)');
+            const result = insertSaleItemQuery.run(uuidv4(), saleId, productId, quantity, unitPrice, saleType, subTotal);
 
             return result;
         } catch (error) {
@@ -294,8 +296,8 @@ const storeManager = {
     },
     addSupplier: (name, address, contact, email) => {
         try {
-            const addSupplierQuery = db.prepare(`INSERT INTO Suppliers (name, address, contact, email) VALUES (?, ?, ?, ?)`);
-            const result = addSupplierQuery.run(name, address, contact, email);
+            const addSupplierQuery = db.prepare(`INSERT INTO Suppliers (supplier_id, name, address, contact, email) VALUES (?, ?, ?, ?, ?)`);
+            const result = addSupplierQuery.run(uuidv4(), name, address, contact, email);
 
             return result;
         } catch (error) {
@@ -305,8 +307,8 @@ const storeManager = {
     },
     addCustomer: (name, address, contact) => {
         try {
-            const addCustomerQuery = db.prepare(`INSERT INTO Customers (name, address, contact) VALUES (?, ?, ?)`);
-            const result = addCustomerQuery.run(name, address, contact);
+            const addCustomerQuery = db.prepare(`INSERT INTO Customers (customer_id, name, address, contact) VALUES (?, ?, ?, ?)`);
+            const result = addCustomerQuery.run(uuidv4(), name, address, contact);
 
             return result;
         } catch (error) {
@@ -413,11 +415,11 @@ const storeManager = {
             return error;
         }
     },
-    stockBranch: (productName, wholesalePrice, retailPrice, stockQuantityWholesale, stockQuantityRetail, supplierId, category) => {
+    stockBranch: (productId, productName, wholesalePrice, retailPrice, stockQuantityWholesale, stockQuantityRetail, supplierId, category) => {
         try {
-            const insertProductQuery = db.prepare('INSERT INTO products (product_name, wholesale_price, retail_price, stock_quantity_wholesale, stock_quantity_retail, supplier_id, category) VALUES (?, ?, ?, ?, ?, ?, ?)');
+            const insertProductQuery = db.prepare('INSERT INTO products (product_id, product_name, wholesale_price, retail_price, stock_quantity_wholesale, stock_quantity_retail, supplier_id, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
 
-            const insertProduct = insertProductQuery.run(productName, wholesalePrice, retailPrice, stockQuantityWholesale, stockQuantityRetail, supplierId, category);
+            const insertProduct = insertProductQuery.run(productId, productName, wholesalePrice, retailPrice, stockQuantityWholesale, stockQuantityRetail, supplierId, category);
 
             return insertProduct;
         } catch (error) {
