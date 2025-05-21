@@ -1,5 +1,5 @@
 {
-  "name": "MARYBILL-CONGLOMERATE-SOFTWARE",
+  "name": "marybill-conglomerate-software",
   "version": "1.0.0",
   "description": "Supermarket-software",
   "main": "main.js",
@@ -9,6 +9,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make"
   },
+  "type": "module",
   "author": "Arvys",
   "license": "ISC",
   "devDependencies": {

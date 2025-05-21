@@ -1,4 +1,4 @@
-// main.js (or index.js if preferred)
+// main.js
 
 import { app, BrowserWindow, Menu, dialog, ipcMain } from 'electron';
 import path from 'path';
@@ -329,7 +329,7 @@ const storeManager = {
     },
     getSalesForSyncing: () => {
         try {
-            const getSalesQuery = db.prepare('SELECT name, contact, total_amount, payment_method, sales_date FROM Sales INNER JOIN Customers ON Sales.customer_id = Customers.customer_id WHERE Sales.synced = 0');
+            const getSalesQuery = db.prepare('SELECT sale_id, name, contact, total_amount, payment_method, sales_date FROM Sales INNER JOIN Customers ON Sales.customer_id = Customers.customer_id WHERE Sales.synced = 0');
             const sales = getSalesQuery.all();
 
             return sales;
@@ -434,6 +434,18 @@ const storeManager = {
             const updateProduct = updateProductQuery.run(stockQuantityWholesale, stockQuantityRetail, productId);
 
             return updateProduct;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    updateSyncedColumn: () => {
+        try {
+            const updateColumnQuery = db.prepare('UPDATE Sales SET synced = ? WHERE synced = ?');
+
+            const updateSyncedColumn = updateColumnQuery.run(1, 0);
+
+            return updateSyncedColumn;
         } catch (error) {
             console.error(error);
             return error;
