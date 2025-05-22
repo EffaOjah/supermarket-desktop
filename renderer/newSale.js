@@ -38,7 +38,7 @@ function loadSelections() {
     customers.map(cus => {
         let newOption = document.createElement('option');
         newOption.innerHTML = cus.name;
-        newOption.value = `${cus.customer_id}-${cus.name}`;
+        newOption.value = `${cus.customer_id}:${cus.name}`;
 
         roleSelect.appendChild(newOption);
     }).join('');
@@ -54,7 +54,7 @@ function addToCart() {
     const quantity = parseInt(document.getElementById("quantity").value);
     const purchaseType = document.getElementById("purchaseType").value;
 
-    let split = customer.split('-');
+    let split = customer.split(':');
     let customerId = split[0];
     let customerName = split[1];
 
@@ -112,7 +112,7 @@ function updateCart() {
                 <td>₦${item.wholesale_price}</td>
                 <td>${item.quantity}</td>
                 <td>₦${total}</td>
-                <td><a class="btn btn-sm btn-primary remove-button" id="${index}-${item.product_id}-${item.purchaseType}">Delete</a></td>
+                <td><a class="btn btn-sm btn-primary remove-button" id="${index}:${item.product_id}:${item.purchaseType}">Delete</a></td>
             </tr>`;
             cartBody.innerHTML += row;
         } else {
@@ -128,7 +128,7 @@ function updateCart() {
                 <td>₦${item.retail_price}</td>
                 <td>${item.quantity}</td>
                 <td>₦${total}</td>
-                <td><a class="btn btn-sm btn-primary remove-button" id="${index}-${item.product_id}-${item.purchaseType}">Delete</a></td>
+                <td><a class="btn btn-sm btn-primary remove-button" id="${index}:${item.product_id}:${item.purchaseType}">Delete</a></td>
             </tr>`;
             cartBody.innerHTML += row;
         }
@@ -292,7 +292,7 @@ cartBody.addEventListener('click', (event) => {
     if (event.target.classList.contains('remove-button')) {
         let targetDetails = event.target.id;
 
-        let split = targetDetails.split('-');
+        let split = targetDetails.split(':');
 
         event.target.addEventListener('click', removeFromCart(split[0], split[1], split[2]));
     }

@@ -2,14 +2,14 @@
   "name": "marybill-conglomerate-software",
   "version": "1.0.0",
   "description": "Supermarket-software",
-  "main": "main.js",
+  "type": "module",
+  "main": "main.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make"
   },
-  "type": "module",
   "author": "Arvys",
   "license": "ISC",
   "devDependencies": {
@@ -32,5 +32,8 @@
     "html2canvas": "^1.4.1",
     "jsonwebtoken": "^9.0.2",
     "uuid": "^11.1.0"
-  }
+  },
+  "config": {
+  "forge": "./forge.config.mjs"
+}
 }

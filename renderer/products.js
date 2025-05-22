@@ -169,7 +169,7 @@ async function loadProductSales(productId) {
                         <td>${product.sale_type}</td>
                         <td>₦${product.unit_price}</td>
                         <td>₦${product.unit_price * product.quantity}</td>
-                        <td><a id="${product.product_id}-${product.sale_id}" class="btn btn-sm btn-light view-invoice-btn" data-bs-toggle="modal"
+                        <td><a id="${product.product_id}:${product.sale_id}" class="btn btn-sm btn-light view-invoice-btn" data-bs-toggle="modal"
                       data-bs-target="#invoiceModal">View invoice</a></td>
                       </tr>
                   `).join('')}
@@ -192,7 +192,7 @@ productsHolder.addEventListener('click', (event) => {
 detailsHolder.addEventListener('click', (event) => {
   if (event.target.classList.contains('view-invoice-btn')) {
     const id = event.target.id;
-    let split = id.split('-');
+    let split = id.split(':');
 
     viewSaleInvoice(split[1]);
   }
