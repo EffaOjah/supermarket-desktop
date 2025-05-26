@@ -22,6 +22,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     errorDialog: (title, message) => ipcRenderer.invoke('show-error-dialog', title, message),
     printImage: (dataUrl) => ipcRenderer.send('print-image', dataUrl),
     getAppDataPath: () => ipcRenderer.invoke('get-app-data-path'),
+    activateSoftware: (activationKey, branchName) => ipcRenderer.invoke('activate-software', activationKey, branchName)
 });
 
 contextBridge.exposeInMainWorld('functions', {

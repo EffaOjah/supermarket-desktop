@@ -299,3 +299,6 @@ input:disabled, select:disabled {
     background-color: #007b8e !important;
     color: white;
 }
+#errorMessage {
+    color: rgb(228, 31, 31) !important;
+}

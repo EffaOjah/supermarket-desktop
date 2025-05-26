@@ -61,7 +61,24 @@ console.log('After:', store.get('authToken'));
     });
 
     win.maximize();
-    win.loadFile('./pages/signin.html');
+
+    /* Check if software have been activated,
+    before loading first page */
+
+    fs.readFile(path.join(__dirname, './resources/file.json'), (err, data) => {
+        if (err) {
+            throw err;
+        } else {
+            data = JSON.parse(data);
+            console.log(data.branchId);
+
+            if (data.branchId == null) {
+                win.loadFile('./pages/activation-page.html');   
+            } else{
+                win.loadFile('./pages/signin.html');
+            }
+        }
+    })
 
     ipcMain.on('redirect', (event, page) => {
         const token = store.get('authToken');
@@ -88,6 +105,26 @@ app.whenReady().then(() => {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow();
         }
+    });
+});
+
+ipcMain.handle('activate-software', (event, activationKey, branchName) => {
+    let data = {
+        branchId: activationKey,
+        branchName: branchName
+    }
+
+    data = JSON.stringify(data);
+
+    fs.writeFile(path.join(__dirname, './resources/file.json'), data, (err) => {
+        if (err) {
+            let error = { error: 'Error activating software' };
+            return error;
+        }
+        console.log('Successfully activated software');
+        let message = { message: 'Successfully activated software' };
+
+        return message; 
     });
 });
 

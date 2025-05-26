@@ -51,7 +51,8 @@ import { FuseV1Options, FuseVersion } from '@electron/fuses';
 export default {
   packagerConfig: {
     asar: true,
-    extraResource: ['resources/store.db'], // 👈 this makes it accessible via process.resourcesPath
+    extraResource: ['resources/store.db'],
+    icon: 'resources/app_icon', // 👈 Added this line
   },
   rebuildConfig: {},
   makers: [
