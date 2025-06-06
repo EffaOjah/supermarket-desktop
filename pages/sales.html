@@ -10,7 +10,8 @@
   style-src 'self' 'unsafe-inline';
   script-src 'self' 'unsafe-inline' 'unsafe-eval';"> -->
 
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; connect-src 'self' https://web.marybillconglomerate.com.ng;">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; connect-src 'self' https://web.marybillconglomerate.com.ng;">
   <!-- <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
   script-src 'self' https://cdn.jsdelivr.net https://code.jquery.com 'unsafe-inline' 'unsafe-eval';
@@ -67,11 +68,11 @@
         <div class="sidebar pe-4 pb-3">
           <nav class="navbar bg-secondary navbar-dark">
             <span class="navbar-brand mx-4 mb-3">
-              <h4 class="text-primary">Mary Bill <br> Conglomerate Ltd</h4>
+              <h4 id="branchName" class="text-primary">Mary Bill <br> Conglomerate Ltd</h4>
             </span>
             <div class="d-flex align-items-center ms-4 mb-4">
               <div class="position-relative">
-                <img class="rounded-circle chUser1" src="../assets/img/user-icon.png" alt="" >
+                <img class="rounded-circle chUser1" src="../assets/img/user-icon.png" alt="">
                 <div
                   class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
                 </div>
@@ -90,7 +91,7 @@
               <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Customers</span>
               <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Suppliers</span>
               <span class="nav-item nav-link sign-out-nav"><i class="fa fa-chart-bar me-2"></i>Sign Out</span>
-              </div>
+            </div>
           </nav>
       </nav>
     </div>
@@ -220,8 +221,8 @@
             </div>
           </div> -->
 
-          </div>
-        <!-- <div class="col-sm-12 col-md-12 col-xl-12">
+      </div>
+      <!-- <div class="col-sm-12 col-md-12 col-xl-12">
           <div class="h-100 bg-secondary rounded p-4">
             <div class="mb-2">
               <h6 class="mb-4">Tuesday</h6>
@@ -270,48 +271,52 @@
           </div>
         </div> -->
 
-        <!-- start modal invoice -->
-        <!-- Modal -->
-        <div class="modal fade bg-secondary" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content modal-dialog-scrollable">
-              <div class="modal-header">
-                <h5 class="modal-title" id="invoiceModalLabel">Invoice</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <div id="printableInvoice" class="invoice-box">
-                  <!-- Header -->
-                  <div class="row invoice-header align-items-center">
-                    <div class="col-6">
-                      <!-- <img src="https://img.icons8.com/fluency/48/invoice.png" alt="Invoice Icon" /> -->
+      <!-- start modal invoice -->
+      <!-- Modal -->
+      <div class="modal fade bg-secondary" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content modal-dialog-scrollable">
+            <div class="modal-header">
+              <h5 class="modal-title" id="invoiceModalLabel">Invoice</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div id="printableInvoice" class="invoice-box">
+                <!-- Header -->
+                <div class="row invoice-header align-items-center">
+                  <div class="col-6">
+                    <div class="d-block">
+                      <img src="../resources/app-icon.jpg" alt="Invoice Icon" />
+                      <br>
                       <span class="invoice-title ms-2">Invoice</span>
                     </div>
-                    <div class="col-6 text-end">
-                      <strong>Mary Bill Conglomerate Ltd supermarket</strong><br>
-                      Calabar Branch<br>
-                      Nigeria
-                    </div>
                   </div>
-
-                  <!-- Bill To -->
-                  <div class="row mb-3">
-                    <div class="col-6">
-                      <strong>BILL TO:</strong><br>
-                      Mary Bill Conglomerate Ltd supermarket<br>
-                      Calabar Branch<br>
-                      Nigeria
-                    </div>
-                    <div class="col-6 text-end">
-                      <strong>INVOICE NO:</strong> 000001<br>
-                      <strong>DATE:</strong> 12/31/20<br>
-                      <strong>DUE DATE:</strong> 12/31/20
-                    </div>
+                  <div class="col-6 text-end">
+                    <strong>Mary Bill Conglomerate Ltd supermarket</strong><br>
+                    Calabar Branch<br>
+                    Nigeria
                   </div>
+                </div>
 
-                  <!-- Items Table -->
-                  <div id="invoiceHolder" class="table-responsive mb-4">
-                    <!-- <table id="saleDetailTable" class="table table-bordered invoice-details">
+                <!-- Bill To -->
+                <div class="row mb-3">
+                  <div class="col-6">
+                    <strong>BILL TO:</strong><br>
+                    Mary Bill Conglomerate Ltd supermarket<br>
+                    Calabar Branch<br>
+                    Nigeria
+                  </div>
+                  <div class="col-6 text-end">
+                    <strong>INVOICE NO:</strong> 000001<br>
+                    <strong>DATE:</strong> 12/31/20<br>
+                    <strong>DUE DATE:</strong> 12/31/20
+                  </div>
+                </div>
+
+                <!-- Items Table -->
+                <div id="invoiceHolder" class="table-responsive mb-4">
+                  <!-- <table id="saleDetailTable" class="table table-bordered invoice-details">
                       <thead>
                         <tr>
                           <th>ITEMS</th>
@@ -323,10 +328,10 @@
                       </thead>
                       
                     </table> -->
-                  </div>
+                </div>
 
-                  <!-- Notes and Total -->
-                  <!-- <div class="row mb-4">
+                <!-- Notes and Total -->
+                <!-- <div class="row mb-4">
                     <div class="col-6">
                       <strong>NOTES:</strong><br>
                       Add your notes here
@@ -336,51 +341,54 @@
                     </div>
                   </div> -->
 
-                  <!-- Footer -->
-                  <!-- <div class="invoice-footer">
+                <!-- Footer -->
+                <!-- <div class="invoice-footer">
                     Powered by Invoice Gen | www.invoicegen.com<br>
                     To learn more, visit our website or email support@invoicegen.com
                   </div> -->
 
-                  <button id="printBtn" class="btn invoice-print-btn form-control">Print invoice</button>
-                </div>
+                <button id="printBtn" class="btn invoice-print-btn form-control">Print invoice</button>
               </div>
             </div>
           </div>
         </div>
-
-        <!-- end modal invoice -->
-
-        <!-- Footer Start -->
-        <div class="container-fluid p-0 mt-5">
-          <div class="bg-secondary rounded-top p-4 container-fluid">
-            <div class="row container-fluid">
-              <div class="col-12 col-sm-6 text-center text-sm-start">
-                &copy; <a href="#">Mary Bill Conglomerate Ltd
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Footer End -->
       </div>
-      <!-- Content End -->
 
+      <!-- end modal invoice -->
 
-      <!-- Back to Top -->
-      <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+      <!-- Footer Start -->
+      <div class="container-fluid p-0 mt-5">
+        <div class="bg-secondary rounded-top p-4 container-fluid">
+          <div class="row container-fluid">
+            <div class="col-12 col-sm-6 text-center text-sm-start">
+              &copy; <a href="#">Mary Bill Conglomerate Ltd
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Footer End -->
     </div>
+    <!-- Content End -->
 
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
-    <!-- JavaScript Libraries -->
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <!-- JavaScript Libraries -->
   <script src="../assets/jquery/dist/jquery-3.7.1.min.js"></script>
   <script src="../assets/bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
 
   <!-- Renderer -->
-   <script src="../renderer/sales.js"></script>
-  
-   <!-- Template Javascript -->
+  <script src="../renderer/sales.js"></script>
+
+  <!-- Template Javascript -->
   <script src="../assets/js/main.js"></script>
+
+  <!-- Script for requests -->
+  <script src="../assets/js/requests.js"></script>
 </body>
 
 </html>

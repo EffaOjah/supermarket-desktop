@@ -1,36 +1,36 @@
 var productList;
 
-const productsHolder = document.getElementById('productsHolder');
-const detailsHolder = document.getElementById('detailsHolder');
+const productsHolder = document.getElementById("productsHolder");
+const detailsHolder = document.getElementById("detailsHolder");
 
-document.addEventListener('DOMContentLoaded', async () => {
-  productList = await window.sqlite.storeManager('allProducts');
+document.addEventListener("DOMContentLoaded", async () => {
+  productList = await window.sqlite.storeManager("allProducts");
 
-  console.log('Products: ', productList);
+  console.log("Products: ", productList);
   loadProducts();
 });
 
 // Function to load products
 function loadProducts() {
-  // Group the products by category
+  // Group the products by supplier
   const grouped = productList.reduce((acc, product) => {
-    const { category } = product;
-    if (!acc[category]) {
-      acc[category] = [];
+    const { name } = product;
+    if (!acc[name]) {
+      acc[name] = [];
     }
-    acc[category].push(product);
+    acc[name].push(product);
     return acc;
   }, {});
 
   console.log(grouped);
 
-  for (const category in grouped) {
-    const products = grouped[category];
+  for (const name in grouped) {
+    const products = grouped[name];
 
-    const newDiv = document.createElement('div');
+    const newDiv = document.createElement("div");
     newDiv.innerHTML = `
       <div class="bg-secondary rounded h-100 p-4">
-        <h6 class="mb-4">${category}</h6>
+        <h6 class="mb-4">${name}</h6>
         <div class="table-responsive">
           <table class="table text-start align-middle table-bordered table-hover mb-0">
             <thead>
@@ -47,7 +47,9 @@ function loadProducts() {
               </tr>
             </thead>
             <tbody>
-              ${products.map((product, index) => `
+              ${products
+                .map(
+                  (product, index) => `
                 <tr>
                   <td><input class="form-check-input" type="checkbox"></td>
                   <td>${index + 1}</td>
@@ -57,10 +59,14 @@ function loadProducts() {
                   <td>${product.stock_quantity_wholesale}</td>
                   <td>₦${product.retail_price}</td>
                   <td>${product.stock_quantity_retail}</td>
-                  <td><a id="${product.product_id}" class="btn btn-sm btn-light view-sales-btn" data-bs-toggle="modal"
+                  <td><a id="${
+                    product.product_id
+                  }" class="btn btn-sm btn-light view-sales-btn" data-bs-toggle="modal"
                       data-bs-target="#allsales">All sales</a></td>
                 </tr>
-              `).join('')}
+              `
+                )
+                .join("")}
             </tbody>
           </table>
         </div>
@@ -68,7 +74,6 @@ function loadProducts() {
 
     productsHolder.appendChild(newDiv);
   }
-
 
   // productList.forEach(product => {
   //     console.log(product);
@@ -139,16 +144,19 @@ function loadProducts() {
 }
 
 async function loadProductSales(productId) {
-  const productSales = await window.sqlite.storeManager('productSales', productId);
-  console.log('Product Sales; ', productSales);
-  
+  const productSales = await window.sqlite.storeManager(
+    "productSales",
+    productId
+  );
+  console.log("Product Sales; ", productSales);
+
   if (productSales.length < 1) {
-    console.log('No sales has been recorded!');
+    console.log("No sales has been recorded!");
     detailsHolder.innerHTML = `<p>No Sales has been recorded!</p>`;
   } else {
     detailsHolder.innerHTML = `
       <div class="table-responsive mb-4">
-                  <table class="table table-bordered">
+                  <table id="productsTable" class="table table-bordered">
                     <thead class="table-dark">
                       <tr>
                         <th>S/N</th>
@@ -161,7 +169,9 @@ async function loadProductSales(productId) {
                       </tr>
                     </thead>
                     <tbody>
-                    ${productSales.map((product, index) => `
+                    ${productSales
+                      .map(
+                        (product, index) => `
                       <tr>
                         <td>${index + 1}</td>
                         <td>${new Date(product.sales_date).toDateString()}</td>
@@ -169,30 +179,33 @@ async function loadProductSales(productId) {
                         <td>${product.sale_type}</td>
                         <td>₦${product.unit_price}</td>
                         <td>₦${product.unit_price * product.quantity}</td>
-                        <td><a id="${product.product_id}:${product.sale_id}" class="btn btn-sm btn-light view-invoice-btn" data-bs-toggle="modal"
+                        <td><a id="${product.product_id}:${
+                          product.sale_id
+                        }" class="btn btn-sm btn-light view-invoice-btn" data-bs-toggle="modal"
                       data-bs-target="#invoiceModal">View invoice</a></td>
                       </tr>
-                  `).join('')}
+                  `
+                      )
+                      .join("")}
                     </tbody>
                   </table>
                 </div>
-    `
+    `;
   }
 }
 
 /* Event Delegation */
 // Attach a single event listener to the parent
-productsHolder.addEventListener('click', (event) => {
-  if (event.target.classList.contains('view-sales-btn')) {
-    loadProductSales(event.target.id)
-    
+productsHolder.addEventListener("click", (event) => {
+  if (event.target.classList.contains("view-sales-btn")) {
+    loadProductSales(event.target.id);
   }
 });
 
-detailsHolder.addEventListener('click', (event) => {
-  if (event.target.classList.contains('view-invoice-btn')) {
+detailsHolder.addEventListener("click", (event) => {
+  if (event.target.classList.contains("view-invoice-btn")) {
     const id = event.target.id;
-    let split = id.split(':');
+    let split = id.split(":");
 
     viewSaleInvoice(split[1]);
   }
@@ -200,14 +213,17 @@ detailsHolder.addEventListener('click', (event) => {
 
 // Function to show invoice
 async function viewSaleInvoice(saleId) {
-  const invoiceHolder = document.getElementById('invoiceHolder');
+  const invoiceHolder = document.getElementById("invoiceHolder");
 
-  invoiceHolder.innerHTML = '';
+  invoiceHolder.innerHTML = "";
 
-  let saleDetails = await window.sqlite.storeManager('getSaleItemsByProductId', saleId);
+  let saleDetails = await window.sqlite.storeManager(
+    "getSaleItemsByProductId",
+    saleId
+  );
   console.log(saleDetails);
 
-  const newDiv = document.createElement('div');
+  const newDiv = document.createElement("div");
   newDiv.innerHTML = `
         <table id="saleDetailTable" class="table table-bordered invoice-details">
                       <thead>
@@ -220,7 +236,9 @@ async function viewSaleInvoice(saleId) {
                         </tr>
                       </thead>
                       <tbody>
-                        ${saleDetails.map(sale => `
+                        ${saleDetails
+                          .map(
+                            (sale) => `
                           <tr>
                           <td>${sale.product_name}</td>
                           <td>${sale.sale_type}</td>
@@ -229,74 +247,75 @@ async function viewSaleInvoice(saleId) {
                           <td>${sale.quantity * sale.unit_price}</td>
                           </tr>
         
-                          `).join('')}
+                          `
+                          )
+                          .join("")}
                       </tbody>
           </table>
-          <p class="fs-6 text-end">Total: ${saleDetails[0].total_amount}</p>`
+          <p class="fs-6 text-end">Total: ${saleDetails[0].total_amount}</p>`;
 
   invoiceHolder.appendChild(newDiv);
 }
 
+  // function searchTable() {
+  //   // Get the value from the input field
+  //   var input = document.getElementById("searchInput").value.toUpperCase();
+  //   var tableHolder = document.getElementById("productsHolder");
 
-// Handle product syncing
-let retryInterval = null;
+  //   var table1 = tableHolder.firstElementChild.nextElementSibling.firstElementChild.firstElementChild.nextElementSibling.firstElementChild;
 
-function tryFetchPendingStocking() {
-    if (!navigator.onLine) {
-        console.log("Offline — will retry...");
-        return;
-    }
+  //   var table2 = tableHolder.firstElementChild.nextElementSibling.nextElementSibling.firstElementChild.firstElementChild.nextElementSibling.firstElementChild;
 
-    // Send a fetch request to the webApi
-    fetch('https://web.marybillconglomerate.com.ng/storeApi/pendingStocking?branchId=1', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-        .then(response => {
-            if (!response.ok) throw new Error("Server error");
-            return response.json();
-        })
-        .then(data => {
-            console.log(data);
+  //   console.log(table1, table2);
+    
 
-            // Stop retries after success
-            clearInterval(retryInterval);
+    
+  //   var tr = table1.getElementsByTagName("tr");
+  //   console.log(tr);
+    
 
-            if (!data.pendingStock) {
-                console.log('There are no pending stocks');
-                return;
-            }
+  //   // Loop through all table rows, and hide those who don't match the search query
+  //   for (var i = 1; i < tr.length; i++) {
+  //     tr[i].style.display = "none"; // Initially hide all rows
 
-            data.pendingStock.forEach(async stock => {
-                console.log(stock.product_name);
+  //     var td = tr[i].getElementsByTagName("td");
+  //     console.log(td);
+      
+  //     for (var j = 0; j < td.length; j++) {
+  //       if (td[j]) {
+  //         if (td[j].innerHTML.toUpperCase().indexOf(input) > -1) {
+  //           tr[i].style.display = "";
+  //           break; // Stop showing row once a match is found
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
 
-                // Check if the stock sent already exists in the database
-                const checkStock = await window.sqlite.storeManager('checkTheStock', stock.product_name);
-                console.log(checkStock);
+  // document.getElementById("searchInput").addEventListener("input", searchTable);
 
-                if (checkStock.length > 0) {
-                    console.log('Product already exist');
+  // document.addEventListener("DOMContentLoaded", function () {
+  //   const input = document.getElementById("searchInput");
+  //   var tableHolder = document.getElementById("productsHolder");
 
-                    console.log('stock details: ', checkStock[0].product_id, stock.stock_quantity_wholesale, stock.stock_quantity_retail, typeof stock.stock_quantity_wholesale);
-                    
-                    // Update the product database
-                    const updateProduct = await window.sqlite.storeManager('updatestockQuantity', checkStock[0].product_id, stock.stock_quantity_wholesale, stock.stock_quantity_retail);
+  //   var table = tableHolder.firstElementChild.nextElementSibling.firstElementChild.firstElementChild.nextElementSibling.firstElementChild;
+    
+  //   input.addEventListener("input", function () {
+  //     const filter = input.value.toUpperCase();
+  //     const rows = table.getElementsByTagName("tr");
 
-                    console.log(updateProduct);
+  //     for (let i = 1; i < rows.length; i++) { // Skip table header
+  //       const tds = rows[i].getElementsByTagName("td");
+  //       let rowContainsFilter = false;
 
-                } else {
-                    // Insert the product into the database
-                    const insertProducts = await window.sqlite.storeManager('stockBranch', stock.product_name, stock.wholesale_price, stock.retail_price, stock.stock_quantity_wholesale, stock.stock_quantity_retail, stock.supplier_id, stock.category);
+  //       for (let j = 0; j < tds.length; j++) {
+  //         if (tds[j].textContent.toUpperCase().includes(filter)) {
+  //           rowContainsFilter = true;
+  //           break;
+  //         }
+  //       }
 
-                    console.log(insertProducts);
-                }
-            });
-        })
-        .catch(error => {
-            console.error("Error:", error);
-        });
-}
-
-retryInterval = setInterval(tryFetchPendingStocking, 10000);
+  //       rows[i].style.display = rowContainsFilter ? "" : "none";
+  //     }
+  //   });
+  // });

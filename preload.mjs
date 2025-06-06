@@ -22,7 +22,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
     errorDialog: (title, message) => ipcRenderer.invoke('show-error-dialog', title, message),
     printImage: (dataUrl) => ipcRenderer.send('print-image', dataUrl),
     getAppDataPath: () => ipcRenderer.invoke('get-app-data-path'),
-    activateSoftware: (activationKey, branchName) => ipcRenderer.invoke('activate-software', activationKey, branchName)
+    activateSoftware: (activationKey, branchName) => ipcRenderer.invoke('activate-software', activationKey, branchName),
+    getSoftwareDetails: () => ipcRenderer.invoke('get-software-details'),
+    syncProducts: (lastSyncedDate) => ipcRenderer.invoke('sync-products', lastSyncedDate),
+    stockProducts: () => ipcRenderer.invoke('stock-products'),
+    syncSales: (data) => ipcRenderer.invoke('sync-sales', data)
 });
 
 contextBridge.exposeInMainWorld('functions', {

@@ -43,6 +43,13 @@
    
 // })(jQuery);
 
+document.addEventListener('DOMContentLoaded', async () => {
+    const branchDetails = await window.electronAPI.getSoftwareDetails();
+    console.log('branchDetails :', branchDetails);
+
+    document.getElementById('branchName').innerHTML = branchDetails.branchName;
+})
+
 var navs = document.getElementsByClassName('navs');
 
 for (let i = 0; i < navs.length; i++) {

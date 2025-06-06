@@ -51,14 +51,16 @@ import { FuseV1Options, FuseVersion } from '@electron/fuses';
 export default {
   packagerConfig: {
     asar: true,
-    extraResource: ['resources/store.db'],
+    extraResource: ['resources/store.db', 'resources/file.json'],
     icon: 'resources/app_icon', // 👈 Added this line
   },
   rebuildConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+        setupIcon: 'resources/app_icon.ico'
+      },
     },
     {
       name: '@electron-forge/maker-zip',

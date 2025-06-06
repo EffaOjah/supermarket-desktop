@@ -21,7 +21,14 @@ const defaultDbPath = path.join(process.resourcesPath, 'store.db'); // Comes fro
 
 // Only copy on first run
 if (!fs.existsSync(dbPath)) {
-  fs.copyFileSync(defaultDbPath, dbPath);
+    fs.copyFileSync(defaultDbPath, dbPath);
+}
+
+const branchFilePath = path.join(userDataPath, 'file.json');
+const defaultBranchFilePath = path.join(process.resourcesPath, 'file.json');
+
+if (!fs.existsSync(branchFilePath)) {
+    fs.copyFileSync(defaultBranchFilePath, branchFilePath);
 }
 
 // Open the DB from the user data directory
@@ -36,17 +43,20 @@ const storePath = path.join(userDataPath, 'config');
 
 // Create store with custom path
 const store = new Store({
-  cwd: storePath, // <- where the config.json will be saved
+    cwd: storePath, // <- where the config.json will be saved
 });
+
+
+Menu.setApplicationMenu(null);
 
 const createWindow = () => {
 
     console.log('Path:', store.path);
-console.log('Before:', store.get('authToken'));
+    console.log('Before:', store.get('authToken'));
 
-store.set('authToken', '123405');
+    store.set('authToken', '123405');
 
-console.log('After:', store.get('authToken'));
+    console.log('After:', store.get('authToken'));
 
 
     const win = new BrowserWindow({
@@ -65,7 +75,7 @@ console.log('After:', store.get('authToken'));
     /* Check if software have been activated,
     before loading first page */
 
-    fs.readFile(path.join(__dirname, './resources/file.json'), (err, data) => {
+    fs.readFile(path.join(userDataPath, 'file.json'), (err, data) => {
         if (err) {
             throw err;
         } else {
@@ -73,8 +83,8 @@ console.log('After:', store.get('authToken'));
             console.log(data.branchId);
 
             if (data.branchId == null) {
-                win.loadFile('./pages/activation-page.html');   
-            } else{
+                win.loadFile('./pages/activation-page.html');
+            } else {
                 win.loadFile('./pages/signin.html');
             }
         }
@@ -116,7 +126,7 @@ ipcMain.handle('activate-software', (event, activationKey, branchName) => {
 
     data = JSON.stringify(data);
 
-    fs.writeFile(path.join(__dirname, './resources/file.json'), data, (err) => {
+    fs.writeFile(path.join(userDataPath, 'file.json'), data, (err) => {
         if (err) {
             let error = { error: 'Error activating software' };
             return error;
@@ -124,9 +134,77 @@ ipcMain.handle('activate-software', (event, activationKey, branchName) => {
         console.log('Successfully activated software');
         let message = { message: 'Successfully activated software' };
 
-        return message; 
+        return message;
     });
 });
+
+ipcMain.handle('get-software-details', async () => {
+    return new Promise((resolve, reject) => {
+        fs.readFile(path.join(userDataPath, 'file.json'), 'utf-8', (err, data) => {
+            if (err) {
+                console.error('Error reading file:', err);
+                reject(err);
+            } else {
+                try {
+                    const parsed = JSON.parse(data);
+                    console.log(parsed);
+                    resolve(parsed);
+                } catch (parseError) {
+                    reject(parseError);
+                }
+            }
+        });
+    });
+});
+
+ipcMain.handle('sync-products', async (lastSynced) => {
+    try {
+        const response = await fetch(`https://web.marybillconglomerate.com.ng/storeApi/get-products?lastSynced=${lastSynced}`);
+        return await response.json();
+
+    } catch (error) {
+        console.error('Fetch error:', error);
+        return null;
+    }
+});
+
+ipcMain.handle('stock-products', async () => {
+    try {
+        const result = await new Promise((resolve, reject) => {
+            fs.readFile(path.join(userDataPath, 'file.json'), 'utf-8', (err, data) => {
+                if (err) reject(err);
+                else resolve(JSON.parse(data));
+            });
+        });
+
+        const response = await fetch(`https://web.marybillconglomerate.com.ng/storeApi/pendingStocking?branchId=${result.branchId}`);
+        return await response.json();
+    } catch (error) {
+        console.error('Fetch error:', error);
+        return null;
+    }
+});
+
+ipcMain.handle('sync-sales', async (event, data) => {
+    try {
+        const fileContent = await fs.promises.readFile(path.join(userDataPath, 'file.json'), 'utf-8');
+        const { branchId } = JSON.parse(fileContent);
+
+        const response = await fetch(`https://web.marybillconglomerate.com.ng/storeApi/sync-sales-from-branches?branchId=${branchId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+
+        return await response.json();
+    } catch (error) {
+        console.error('Sync sales fetch error:', error);
+        return { error: true, message: error.message };
+    }
+});
+
 
 ipcMain.handle('show-warning-dialog', (event, title, message) => {
     dialog.showMessageBox({
@@ -177,7 +255,7 @@ ipcMain.handle('verify-user', async () => {
     const verifyToken = myJwt.verifyToken(token);
     console.log('Decoded: ', verifyToken);
 
-    return { success: true, decoded: verifyToken};
+    return { success: true, decoded: verifyToken };
 });
 
 ipcMain.handle("logout", () => {
@@ -215,7 +293,6 @@ app.on('window-all-closed', () => {
 
 
 // Database operations
-
 const storeManager = {
     getUsers: (role) => {
         try {
@@ -300,7 +377,7 @@ const storeManager = {
     },
     allProducts: async () => {
         try {
-            const getProductQuery = db.prepare(`SELECT * from products`);
+            const getProductQuery = db.prepare(`SELECT * from products INNER JOIN suppliers ON products.supplier_id = suppliers.supplier_id`);
             const products = getProductQuery.all();
 
             return products;
@@ -464,11 +541,47 @@ const storeManager = {
             return error;
         }
     },
+    addProduct: (productId, productName, wholesalePrice, retailPrice, supplierId, category) => {
+        try {
+            const insertProductQuery = db.prepare('INSERT INTO products (product_id, product_name, wholesale_price, retail_price, stock_quantity_wholesale, stock_quantity_retail, supplier_id, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+
+            const insertProduct = insertProductQuery.run(productId, productName, wholesalePrice, retailPrice, stockQuantityWholesale, stockQuantityRetail, supplierId, category);
+
+            return insertProduct;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    updateLastSyncedDate: (date) => {
+        try {
+            const updateQuery = db.prepare('UPDATE Settings SET lastSyncedDate = ?');
+
+            const updateColumn = updateQuery.run(date);
+
+            return updateColumn;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
     updatestockQuantity: (productId, stockQuantityWholesale, stockQuantityRetail) => {
         try {
             const updateProductQuery = db.prepare('UPDATE products SET stock_quantity_wholesale = ?, stock_quantity_retail = ? WHERE product_id = ?');
 
             const updateProduct = updateProductQuery.run(stockQuantityWholesale, stockQuantityRetail, productId);
+
+            return updateProduct;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    updateProduct: (productId, productName, wholesalePrice, retailPrice, category) => {
+        try {
+            const updateProductQuery = db.prepare('UPDATE products SET product_name = ?, wholesale_price = ?, retail_price = ?, category =?  WHERE product_id = ?');
+
+            const updateProduct = updateProductQuery.run(productName, wholesalePrice, retailPrice, category, productId);
 
             return updateProduct;
         } catch (error) {
@@ -483,6 +596,18 @@ const storeManager = {
             const updateSyncedColumn = updateColumnQuery.run(1, 0);
 
             return updateSyncedColumn;
+        } catch (error) {
+            console.error(error);
+            return error;
+        }
+    },
+    getLastSynced: () => {
+        try {
+            const getQuery = db.prepare('SELECT * FROM Settings');
+
+            const getlastSynced = getQuery.all();
+
+            return getlastSynced;
         } catch (error) {
             console.error(error);
             return error;

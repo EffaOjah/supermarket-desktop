@@ -36,7 +36,7 @@
     <div class="sidebar pe-4 pb-3">
       <nav class="navbar bg-secondary navbar-dark">
         <span class="navbar-brand mx-4 mb-3">
-          <h5 class="text-primary">Mary Bill <br> Conglomerate Ltd</h5>
+          <h5 id="branchName" class="text-primary">Mary Bill <br> Conglomerate Ltd</h5>
         </span>
         <div class="d-flex align-items-center ms-4 mb-4">
           <div class="position-relative">
@@ -76,7 +76,7 @@
           <i class="fa fa-bars"></i>
         </a>
         <form class="d-none d-md-flex ms-4">
-          <input class="form-control bg-dark border-0" type="search" placeholder="Search">
+          <input id="searchInput" class="form-control bg-dark border-0" type="search" placeholder="Search">
         </form>
         <div class="navbar-nav align-items-center ms-auto">
           <div class="nav-item dropdown">
@@ -472,8 +472,11 @@
                   <!-- Header -->
                   <div class="row invoice-header align-items-center">
                     <div class="col-6">
-                      <!-- <img src="https://img.icons8.com/fluency/48/invoice.png" alt="Invoice Icon" /> -->
+                      <div class="d-block">
+                      <img src="../resources/app-icon.jpg" alt="Invoice Icon" />
+                      <br>
                       <span class="invoice-title ms-2">Invoice</span>
+                    </div>
                     </div>
                     <div class="col-6 text-end">
                       <strong>Mary Bill Conglomerate Ltd supermarket</strong><br>
@@ -567,6 +570,9 @@
 
     <!-- Template Javascript -->
   <script src="../assets/js/main.js"></script>
+
+  <!-- Script for requests -->
+  <script src="../assets/js/requests.js"></script>
 </body>
 
 </html>
