@@ -18,10 +18,8 @@ function loadSuppliers() {
                           <td>${!supplier.address ? 'N/A' : supplier.address}</td>
                           <td>${!supplier.contact ? 'N/A' : supplier.contact}</td>
                           <td>${!supplier.email ? 'N/A' : supplier.email}</td>
-                          <td><a id="${index + 1}" class="btn btn-sm w-100 btn-primary bg-btn view-products-btn" href="#" data-bs-toggle="modal"
+                          <td><a id="${index + 1}" class="btn btn-sm w-50 w-100 btn-primary bg-btn view-products-btn" href="#" data-bs-toggle="modal"
                               data-bs-target="#productsSuppliedModal">View products</a></td>
-                          <td><a class="btn btn-sm w-50 w-100 btn-primary bg-btn" href="#" data-bs-toggle="modal"
-                              data-bs-target="#companyModal">About</a></td>
                         </tr>
         `).join('')}
     `

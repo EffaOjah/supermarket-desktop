@@ -25,6 +25,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     activateSoftware: (activationKey, branchName) => ipcRenderer.invoke('activate-software', activationKey, branchName),
     getSoftwareDetails: () => ipcRenderer.invoke('get-software-details'),
     syncProducts: (lastSyncedDate) => ipcRenderer.invoke('sync-products', lastSyncedDate),
+    getAllProducts: () => ipcRenderer.invoke('get-all-products'),
     stockProducts: () => ipcRenderer.invoke('stock-products'),
     syncSales: (data) => ipcRenderer.invoke('sync-sales', data)
 });

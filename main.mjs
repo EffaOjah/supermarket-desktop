@@ -47,7 +47,7 @@ const store = new Store({
 });
 
 
-Menu.setApplicationMenu(null);
+// Menu.setApplicationMenu(null);
 
 const createWindow = () => {
 
@@ -160,6 +160,17 @@ ipcMain.handle('get-software-details', async () => {
 ipcMain.handle('sync-products', async (lastSynced) => {
     try {
         const response = await fetch(`https://web.marybillconglomerate.com.ng/storeApi/get-products?lastSynced=${lastSynced}`);
+        return await response.json();
+
+    } catch (error) {
+        console.error('Fetch error:', error);
+        return null;
+    }
+});
+
+ipcMain.handle('get-all-products', async () => {
+    try {
+        const response = await fetch(`https://web.marybillconglomerate.com.ng/storeApi/get-all-products`);
         return await response.json();
 
     } catch (error) {
@@ -518,10 +529,10 @@ const storeManager = {
             return error;
         }
     },
-    checkTheStock: (productName) => {
+    checkTheStock: (productId) => {
         try {
-            const checkStock = db.prepare('SELECT * FROM products WHERE product_name = ?');
-            const stock = checkStock.all(productName);
+            const checkStock = db.prepare('SELECT * FROM products WHERE product_id = ?');
+            const stock = checkStock.all(productId);
 
             return stock;
         } catch (error) {
@@ -545,7 +556,7 @@ const storeManager = {
         try {
             const insertProductQuery = db.prepare('INSERT INTO products (product_id, product_name, wholesale_price, retail_price, stock_quantity_wholesale, stock_quantity_retail, supplier_id, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
 
-            const insertProduct = insertProductQuery.run(productId, productName, wholesalePrice, retailPrice, stockQuantityWholesale, stockQuantityRetail, supplierId, category);
+            const insertProduct = insertProductQuery.run(productId, productName, wholesalePrice, retailPrice, 0, 0, supplierId, category);
 
             return insertProduct;
         } catch (error) {
