@@ -302,3 +302,9 @@ input:disabled, select:disabled {
 #errorMessage {
     color: rgb(228, 31, 31) !important;
 }
+.card-btn {
+    background-color: #191C24 !important;
+}
+.card-btn:hover {
+    background-color: #6C7293 !important;   
+}

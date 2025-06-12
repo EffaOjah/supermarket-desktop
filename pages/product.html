@@ -52,7 +52,7 @@
 
         <div class="navbar-nav w-100">
           <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>New Sale</span>
-          <span class="nav-link nav-item active navs"><i class="fa fa-table me-2"></i>Products</span>
+          <span class="nav-link nav-item active navs"><i class="fa fa-table me-2"></i>Product</span>
           <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Stocking</span>
           <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Sales</span>
           <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Customers</span>
@@ -157,21 +157,9 @@
       </nav>
       <!-- Navbar End -->
 
-      <!-- Select Supplier Section -->
-       <div class="row bg-secondary justify-content-center rounded p-4 m-3 gap-3 select-supplier-div">
-        <h5>Select Product Supplier</h5>
-        <div class="col-md-3 card">
-          <div class="card-body">
-            <h3 class="text-secondary text-center">Onni</h3>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-secondary card-btn form-control" id="viewProductsBtn" data-name="RECKITT">View products</button>
-          </div>
-        </div>
-       </div>
 
       <!-- Product record start -->
-      <div class="product-record-div container-fluid pt-4 px-4 d-none">
+      <div class="container-fluid pt-4 px-4">
         <div id="productsHolder" class="row g-4">
           <h5 class="mb-4">Product Record</h5>
           
@@ -358,8 +346,36 @@
 
                   <!-- Items Table -->
                   <div id="invoiceHolder" class="table-responsive mb-4">
-                    <!-- Table details will go here -->
+                    <!-- <table id="saleDetailTable" class="table table-bordered invoice-details">
+                      <thead>
+                        <tr>
+                          <th>ITEMS</th>
+                          <th>PURCHASE TYPE</th>
+                          <th>QUANTITY</th>
+                          <th>PRICE</th>
+                          <th>SUB TOTAL</th>
+                        </tr>
+                      </thead>
+                      
+                    </table> -->
                   </div>
+
+                  <!-- Notes and Total -->
+                  <!-- <div class="row mb-4">
+                    <div class="col-6">
+                      <strong>NOTES:</strong><br>
+                      Add your notes here
+                    </div>
+                    <div class="col-6 text-end">
+                      <h5 class="text-danger"><strong>TOTAL: ₦0000.00</strong></h5>
+                    </div>
+                  </div> -->
+
+                  <!-- Footer -->
+                  <!-- <div class="invoice-footer">
+                    Powered by Invoice Gen | www.invoicegen.com<br>
+                    To learn more, visit our website or email support@invoicegen.com
+                  </div> -->
 
                   <button id="printBtn" class="btn invoice-print-btn form-control">Print invoice</button>
                 </div>

@@ -47,7 +47,7 @@ const store = new Store({
 });
 
 
-// Menu.setApplicationMenu(null);
+Menu.setApplicationMenu(null);
 
 const createWindow = () => {
 

@@ -1,150 +1,49 @@
 var productList;
+var suppliersList;
 
 const productsHolder = document.getElementById("productsHolder");
 const detailsHolder = document.getElementById("detailsHolder");
 
 document.addEventListener("DOMContentLoaded", async () => {
   productList = await window.sqlite.storeManager("allProducts");
+  suppliersList = await window.sqlite.storeManager("getSuppliers");
 
   console.log("Products: ", productList);
-  loadProducts();
+
+  loadSuppliers();
 });
 
-// Function to load products
-// function loadProducts() {
-//   // Group the products by supplier
-//   const grouped = productList.reduce((acc, product) => {
-//     const { name } = product;
-//     if (!acc[name]) {
-//       acc[name] = [];
-//     }
-//     acc[name].push(product);
-//     return acc;
-//   }, {});
+function loadSuppliers() {
+  document.querySelector(
+    ".select-supplier-div"
+  ).innerHTML = `${suppliersList.map(
+    (supplier) => `
+    <div class="col-md-3 card">
+          <div class="card-body">
+            <h3 class="text-secondary text-center">${supplier.name}</h3>
+          </div>
+          <div class="card-footer">
+            <button class="btn btn-secondary card-btn form-control" id="viewProductsBtn" data-name="${supplier.name}">View products</button>
+          </div>
+        </div>
+    `
+  )}
+  `;
+}
 
-//   console.log(grouped);
+function loadProducts(supplierName) {
+  productList = productList.filter((product) => product.name === supplierName);
+  console.log(productList);
 
-//   for (const name in grouped) {
-//     const products = grouped[name];
-
-//     const newDiv = document.createElement("div");
-//     newDiv.innerHTML = `
-//       <div class="bg-secondary rounded h-100 p-4">
-//         <h6 class="mb-4">${name}</h6>
-//         <div class="table-responsive">
-//           <table class="table text-start align-middle table-bordered table-hover mb-0">
-//             <thead>
-//               <tr class="text-white">
-//                 <th scope="col"><input class="form-check-input" type="checkbox"></th>
-//                 <th scope="col">S/N</th>
-//                 <th scope="col">Product name</th>
-//                 <th scope="col">Category</th>
-//                 <th scope="col">Wholesale price</th>
-//                 <th scope="col">Wholesale Quantity</th>
-//                 <th scope="col">Retail price</th>
-//                 <th scope="col">Retail Quantity</th>
-//                 <th scope="col">Action</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               ${products
-//                 .map(
-//                   (product, index) => `
-//                 <tr>
-//                   <td><input class="form-check-input" type="checkbox"></td>
-//                   <td>${index + 1}</td>
-//                   <td>${product.product_name}</td>
-//                   <td>${product.category}</td>
-//                   <td>₦${product.wholesale_price}</td>
-//                   <td>${product.stock_quantity_wholesale}</td>
-//                   <td>₦${product.retail_price}</td>
-//                   <td>${product.stock_quantity_retail}</td>
-//                   <td><a id="${
-//                     product.product_id
-//                   }" class="btn btn-sm btn-light view-sales-btn" data-bs-toggle="modal"
-//                       data-bs-target="#allsales">All sales</a></td>
-//                 </tr>
-//               `
-//                 )
-//                 .join("")}
-//             </tbody>
-//           </table>
-//         </div>
-//       </div>`;
-
-//     productsHolder.appendChild(newDiv);
-//   }
-
-//   // productList.forEach(product => {
-//   //     console.log(product);
-
-//   // });
-//   // for (let i = 0; i < productList.length; i++) {
-//   //     if (productList[i].category == 'Peak Evaporated Milk') {
-//   //         console.log(`${productList[i].category}: ${productList[i]}`);
-
-//   //         const tr = document.createElement('tr');
-//   //         tr.innerHTML = `<td><input class="form-check-input" type="checkbox"></td>
-//   //                   <td>Peak Evm Reg Can</td>
-//   //                   <td>24x150g</td>
-//   //                   <td>150</td>
-//   //                   <td>₦40,000</td>
-//   //                   <td>₦300,000</td>
-//   //                   <td><a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal"
-//   //                       data-bs-target="#myModal">Detail</a></td>
-//   //                   <td><a href="#" class="btn btn-sm btn-light" data-bs-toggle="modal"
-//   //                       data-bs-target="#allsales">All sales</a></td>`
-
-//   //                       tbody.appendChild(tr);
-//   //     }
-//   // }
-
-//   // grouped.map(product => {
-//   //   if (product.category == product.category) {
-//   //     const newDiv = document.createElement('newDiv');
-//   //     newDiv.innerHTML = `<div class="bg-secondary rounded h-100 p-4">
-//   //             <h5 class="mb-4">Product Record</h5>
-//   //             <h6 class="mb-4">${product.category}</h6>
-//   //             <div class="table-responsive">
-//   //               <table class="table text-start align-middle table-bordered table-hover mb-0">
-//   //                 <thead>
-//   //                   <tr class="text-white">
-//   //                     <th scope="col"><input class="form-check-input" type="checkbox"></th>
-//   //                     <th scope="col">Product name</th>
-//   //                     <th scope="col">Size</th>
-//   //                     <th scope="col">Quantity</th>
-//   //                     <th scope="col">Current Price</th>
-//   //                     <th scope="col">Wholesale price</th>
-//   //                     <th scope="col">View</th>
-//   //                     <th scope="col">Action</th>
-//   //                   </tr>
-//   //                 </thead>
-//   //                 <tbody id="tbody">
-//   //                   <tr>
-//   //                     <td><input class="form-check-input" type="checkbox"></td>
-//   //                     <td>${product.product_name}</td>
-//   //                     <td>${product.category}</td>
-//   //                     <td>${product.stock_quantity_wholesale}</td>
-//   //                     <td>${product.wholesale_price}</td>
-//   //                     <td>${product.retail_price}</td>
-//   //                     <td><a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal"
-//   //                         data-bs-target="#myModal">Detail</a></td>
-//   //                     <td><a href="#" class="btn btn-sm btn-light" data-bs-toggle="modal"
-//   //                         data-bs-target="#allsales">All sales</a></td>
-//   //                   </tr>
-//   //                 </tbody>
-//   //               </table>
-//   //             </div>
-//   //           </div>`
-
-//   //     productsHolder.appendChild(newDiv);
-//   //   }
-
-//   // });
-// }
-
-function loadProducts() {
-  productsHolder.innerHTML = `<h5 class="mb-4">Product Record</h5>`;
+  document.querySelector(".product-record-div").classList.remove("d-none");
+  
+  if (productList.length < 1) {
+    console.log('testing');
+    
+    productsHolder.innerHTML = `<h5 class="mb-4 text-white">No product available</h5>`;
+    return;
+  }
+  productsHolder.innerHTML = `<h5 class="mb-4">Products Record</h5>`;
 
   const grouped = productList.reduce((acc, product) => {
     const { name } = product;
@@ -159,7 +58,7 @@ function loadProducts() {
     const products = grouped[name];
 
     const newDiv = document.createElement("div");
-    newDiv.classList.add('supplier-group');
+    newDiv.classList.add("supplier-group");
     newDiv.innerHTML = `
       <div class="bg-secondary rounded h-100 p-4">
         <h6 class="mb-4">${name}</h6>
@@ -180,8 +79,8 @@ function loadProducts() {
             </thead>
             <tbody>
               ${products
-                .map(
-                  (product, index) => `
+        .map(
+          (product, index) => `
                 <tr class="product-row" data-name="${product.product_name.toLowerCase()}">
                   <td><input class="form-check-input" type="checkbox"></td>
                   <td>${index + 1}</td>
@@ -191,14 +90,13 @@ function loadProducts() {
                   <td>${product.stock_quantity_wholesale}</td>
                   <td>₦${product.retail_price}</td>
                   <td>${product.stock_quantity_retail}</td>
-                  <td><a id="${
-                    product.product_id
-                  }" class="btn btn-sm btn-light view-sales-btn" data-bs-toggle="modal"
+                  <td><a id="${product.product_id
+            }" class="btn btn-sm btn-light view-sales-btn" data-bs-toggle="modal"
                       data-bs-target="#allsales">All sales</a></td>
                 </tr>
               `
-                )
-                .join("")}
+        )
+        .join("")}
             </tbody>
           </table>
         </div>
@@ -207,7 +105,6 @@ function loadProducts() {
     productsHolder.appendChild(newDiv);
   }
 }
-
 
 async function loadProductSales(productId) {
   const productSales = await window.sqlite.storeManager(
@@ -236,8 +133,8 @@ async function loadProductSales(productId) {
                     </thead>
                     <tbody>
                     ${productSales
-                      .map(
-                        (product, index) => `
+        .map(
+          (product, index) => `
                       <tr>
                         <td>${index + 1}</td>
                         <td>${new Date(product.sales_date).toDateString()}</td>
@@ -245,14 +142,13 @@ async function loadProductSales(productId) {
                         <td>${product.sale_type}</td>
                         <td>₦${product.unit_price}</td>
                         <td>₦${product.unit_price * product.quantity}</td>
-                        <td><a id="${product.product_id}:${
-                          product.sale_id
-                        }" class="btn btn-sm btn-light view-invoice-btn" data-bs-toggle="modal"
+                        <td><a id="${product.product_id}:${product.sale_id
+            }" class="btn btn-sm btn-light view-invoice-btn" data-bs-toggle="modal"
                       data-bs-target="#invoiceModal">View invoice</a></td>
                       </tr>
                   `
-                      )
-                      .join("")}
+        )
+        .join("")}
                     </tbody>
                   </table>
                 </div>
@@ -276,6 +172,14 @@ detailsHolder.addEventListener("click", (event) => {
     viewSaleInvoice(split[1]);
   }
 });
+document.querySelector(".select-supplier-div").addEventListener("click", (event) => {
+    if ((event.target.id = "viewProductsBtn")) {
+      document.querySelector(".select-supplier-div").style.display = "none";
+
+      // Then, call the loadProducts function
+      loadProducts(event.target.dataset.name);
+    }
+  });
 
 // Function to show invoice
 async function viewSaleInvoice(saleId) {
@@ -303,8 +207,8 @@ async function viewSaleInvoice(saleId) {
                       </thead>
                       <tbody>
                         ${saleDetails
-                          .map(
-                            (sale) => `
+      .map(
+        (sale) => `
                           <tr>
                           <td>${sale.product_name}</td>
                           <td>${sale.sale_type}</td>
@@ -314,8 +218,8 @@ async function viewSaleInvoice(saleId) {
                           </tr>
         
                           `
-                          )
-                          .join("")}
+      )
+      .join("")}
                       </tbody>
           </table>
           <p class="fs-6 text-end">Total: ${saleDetails[0].total_amount}</p>`;
@@ -344,7 +248,6 @@ function filterProducts(searchTerm) {
     group.style.display = hasVisibleRow ? "" : "none";
   });
 }
-
 
 const searchInput = document.getElementById("searchInput");
 
