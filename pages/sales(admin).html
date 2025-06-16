@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self';"> -->
+  <!-- <meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  img-src 'self' data:;
+  style-src 'self' 'unsafe-inline';
+  script-src 'self' 'unsafe-inline' 'unsafe-eval';"> -->
+
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; connect-src 'self' https://web.marybillconglomerate.com.ng;">
+  <!-- <meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  script-src 'self' https://cdn.jsdelivr.net https://code.jquery.com 'unsafe-inline' 'unsafe-eval';
+  style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline';
+  img-src 'self' data:;"> -->
+
+
+  <title>Mary Bill Conglomerate Ltd</title>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <meta content="" name="keywords">
+  <meta content="" name="description">
+
+
+  <!-- Icon Font Stylesheet -->
+  <link rel="stylesheet" href="../assets/font-awesome/css/all.min.css">
+  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet"> -->
+
+
+  <!-- Customized Bootstrap Stylesheet -->
+  <link href="../assets/css/bootstrap.css" rel="stylesheet">
+
+  <!-- Template Stylesheet -->
+  <link href="../assets/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container-fluid position-relative d-flex p-0">
+    <!-- Spinner Start -->
+    <!-- <div id="spinner"
+      class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+      <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+      </div>
+    </div> -->
+    <!-- Spinner End -->
+
+
+    <!-- Sidebar Start -->
+    <div class="sidebar pe-4 pb-3">
+      <nav class="navbar bg-secondary navbar-dark">
+        <span class="navbar-brand mx-4 mb-3">
+          <h4 class="text-primary">Mary Bill <br> Conglomerate Ltd</h4>
+        </span>
+        <div class="d-flex align-items-center ms-4 mb-4">
+          <div class="position-relative">
+            <img class="rounded-circle chUser1" src="../assets/img/user-icon.png">
+            <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
+            </div>
+          </div>
+          <div class="ms-3">
+            <h6 class="mb-0">Store Manager</h6>
+            <span>Store Manager</span>
+          </div>
+        </div>
+        <div class="sidebar pe-4 pb-3">
+          <nav class="navbar bg-secondary navbar-dark">
+            <span class="navbar-brand mx-4 mb-3">
+              <h4 id="branchName" class="text-primary">Mary Bill <br> Conglomerate Ltd</h4>
+            </span>
+            <div class="d-flex align-items-center ms-4 mb-4">
+              <div class="position-relative">
+                <img class="rounded-circle chUser1" src="../assets/img/user-icon.png" alt="">
+                <div
+                  class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
+                </div>
+              </div>
+              <div class="ms-3">
+                <h6 class="mb-0">Store Manager</h6>
+                <span>Store Manager</span>
+              </div>
+            </div>
+
+            <div class="navbar-nav w-100">
+              <span class="nav-link nav-item navs"><i class="fa fa-table me-2"></i>Products(admin)</span>
+              <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Stocking(admin)</span>
+              <span class="nav-item nav-link active navs"><i class="fa fa-table me-2"></i>Sales(admin)</span>
+              <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Customers(admin)</span>
+              <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Suppliers(admin)</span>
+              <span class="nav-item nav-link sign-out-nav"><i class="fa fa-chart-bar me-2"></i>Sign Out</span>
+            </div>
+          </nav>
+      </nav>
+    </div>
+    </nav>
+  </div>
+  <!-- Sidebar End -->
+
+
+  <!-- Content Start -->
+  <div class="content">
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+      <span class="navbar-brand d-flex d-lg-none me-4">
+        <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
+      </span>
+      <a href="#" class="sidebar-toggler flex-shrink-0">
+        <i class="fa fa-bars"></i>
+      </a>
+      <form class="d-none d-md-flex ms-4">
+        <input class="form-control bg-dark border-0" type="search" placeholder="Search">
+      </form>
+      <div class="navbar-nav align-items-center ms-auto">
+        <div class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+            <i class="fa fa-envelope me-lg-2"></i>
+            <span class="d-none d-lg-inline-flex">Message</span>
+          </a>
+          <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+            <a href="#" class="dropdown-item">
+              <div class="d-flex align-items-center">
+                <img class="rounded-circle" src="../assets/img/user-icon.png" alt="">
+                <div class="ms-2">
+                  <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                  <small>15 minutes ago</small>
+                </div>
+              </div>
+            </a>
+            <hr class="dropdown-divider">
+            <a href="#" class="dropdown-item">
+              <div class="d-flex align-items-center">
+                <img class="rounded-circle" src="../assets/img/user-icon.png" alt="">
+                <div class="ms-2">
+                  <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                  <small>15 minutes ago</small>
+                </div>
+              </div>
+            </a>
+            <hr class="dropdown-divider">
+            <a href="#" class="dropdown-item">
+              <div class="d-flex align-items-center">
+                <img class="rounded-circle" src="../assets/img/user-icon.png" alt="">
+                <div class="ms-2">
+                  <h6 class="fw-normal mb-0">Jhon send you a message</h6>
+                  <small>15 minutes ago</small>
+                </div>
+              </div>
+            </a>
+            <hr class="dropdown-divider">
+            <a href="#" class="dropdown-item text-center">See all message</a>
+          </div>
+        </div>
+        <div class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+            <i class="fa fa-bell me-lg-2"></i>
+            <span class="d-none d-lg-inline-flex">Notification</span>
+          </a>
+          <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+            <a href="#" class="dropdown-item">
+              <h6 class="fw-normal mb-0">Profile updated</h6>
+              <small>15 minutes ago</small>
+            </a>
+            <hr class="dropdown-divider">
+            <a href="#" class="dropdown-item">
+              <h6 class="fw-normal mb-0">New user added</h6>
+              <small>15 minutes ago</small>
+            </a>
+            <hr class="dropdown-divider">
+            <a href="#" class="dropdown-item">
+              <h6 class="fw-normal mb-0">Password changed</h6>
+              <small>15 minutes ago</small>
+            </a>
+            <hr class="dropdown-divider">
+            <a href="#" class="dropdown-item text-center">See all notifications</a>
+          </div>
+        </div>
+        <div class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+            <img class="rounded-circle me-lg-2" src="../assets/img/user-icon.png" width="35px" alt="">
+            <span class="d-none d-lg-inline-flex">Store Manager</span>
+          </a>
+          <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+            <a href="#" class="dropdown-item">My Profile</a>
+            <a href="#" class="dropdown-item">Settings</a>
+            <a href="#" class="dropdown-item">Log Out</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <!-- Navbar End -->
+
+
+    <!-- Sales Start -->
+    <div class="container-fluid pt-4 px-4">
+      <div id="salesHolder" class="row g-4">
+        <h5 class="mb-4">Sales Made</h5>
+        <!-- <div class="col-sm-12 col-md-12 col-xl-12">
+          <div class="h-100 bg-secondary rounded p-4">
+            <div class="mb-2">
+              <h6 class="mb-4">Monday</h6>
+            </div>
+            <div class="d-flex align-items-center border-bottom py-3">
+              <img class="rounded-circle flex-shrink-0 chUser1" src="../assets/img/NIVEA.webp" alt="">
+              <div class="w-100 ms-3">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-0">John Ayobami</h6>
+                  <div>
+                    <small>27th August</small>
+                    <span class="badge" data-bs-toggle="modal" data-bs-target="#invoiceModal">View invoice</span>
+                  </div>
+                </div>
+                <span>Peak Evm Reg Can 24x150g - ₦5,000</span>
+              </div>
+            </div>
+            
+            
+           
+            </div>
+          </div> -->
+
+      </div>
+      <!-- <div class="col-sm-12 col-md-12 col-xl-12">
+          <div class="h-100 bg-secondary rounded p-4">
+            <div class="mb-2">
+              <h6 class="mb-4">Tuesday</h6>
+            </div>
+            <div class="d-flex align-items-center border-bottom py-3">
+              <img class="rounded-circle flex-shrink-0 chUser1" src="../assets/img/MORE PEAK.jpeg" alt="">
+              <div class="w-100 ms-3">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-0">John Ayobami</h6>
+                  <div>
+                    <small>27th August</small>
+                    <span class="badge" data-bs-toggle="modal" data-bs-target="#invoiceModal">View invoice</span>
+                  </div>
+                </div>
+                <span>Peak Evm Reg Can 24x150g - ₦5,000</span>
+              </div>
+            </div>
+            <div class="d-flex align-items-center border-bottom py-3">
+              <img class="rounded-circle flex-shrink-0 chUser1" src="../assets/img/MORE PEAK.jpeg" alt="">
+              <div class="w-100 ms-3">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-0">Emmanuel Ayuk</h6>
+                  <div>
+                    <small>27th August</small>
+                    <span class="badge" data-bs-toggle="modal" data-bs-target="#invoiceModal">View invoice</span>
+                  </div>
+                </div>
+                <span>Peak Evm Reg Can 24x150g - ₦5,000</span>
+              </div>
+            </div>
+            <div class="d-flex align-items-center border-bottom py-3">
+              <img class="rounded-circle flex-shrink-0 chUser1" src="../assets/img/MORE PEAK.jpeg" alt=""
+                style="width: 40px; height: 40px;">
+              <div class="w-100 ms-3">
+                <div class="d-flex w-100 justify-content-between">
+                  <h6 class="mb-0">John Ayobami</h6>
+                  <div>
+                    <small>27th August</small>
+                    <span class="badge" data-bs-toggle="modal" data-bs-target="#invoiceModal">View invoice</span>
+                  </div>
+                </div>
+                <span>Peak Evm Reg Can 24x150g - ₦5,000</span>
+              </div>
+            </div>
+            
+          </div>
+        </div> -->
+
+      <!-- start modal invoice -->
+      <!-- Modal -->
+      <div class="modal fade bg-secondary" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content modal-dialog-scrollable">
+            <div class="modal-header">
+              <h5 class="modal-title" id="invoiceModalLabel">Invoice</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div id="printableInvoice" class="invoice-box">
+                <!-- Header -->
+                <div class="row invoice-header align-items-center">
+                  <div class="col-6">
+                    <div class="d-block">
+                      <img src="../resources/app-icon.jpg" alt="Invoice Icon" />
+                      <br>
+                      <span class="invoice-title ms-2">Invoice</span>
+                    </div>
+                  </div>
+                  <div class="col-6 text-end">
+                    <strong>Mary Bill Conglomerate Ltd supermarket</strong><br>
+                    Calabar Branch<br>
+                    Nigeria
+                  </div>
+                </div>
+
+                <!-- Bill To -->
+                <div class="row mb-3">
+                  <div class="col-6">
+                    <strong>BILL TO:</strong><br>
+                    Mary Bill Conglomerate Ltd supermarket<br>
+                    Calabar Branch<br>
+                    Nigeria
+                  </div>
+                  <div class="col-6 text-end">
+                    <strong>INVOICE NO:</strong> 000001<br>
+                    <strong>DATE:</strong> 12/31/20<br>
+                    <strong>DUE DATE:</strong> 12/31/20
+                  </div>
+                </div>
+
+                <!-- Items Table -->
+                <div id="invoiceHolder" class="table-responsive mb-4">
+                  <!-- <table id="saleDetailTable" class="table table-bordered invoice-details">
+                      <thead>
+                        <tr>
+                          <th>ITEMS</th>
+                          <th>PURCHASE TYPE</th>
+                          <th>QUANTITY</th>
+                          <th>PRICE</th>
+                          <th>SUB TOTAL</th>
+                        </tr>
+                      </thead>
+                      
+                    </table> -->
+                </div>
+
+                <!-- Notes and Total -->
+                <!-- <div class="row mb-4">
+                    <div class="col-6">
+                      <strong>NOTES:</strong><br>
+                      Add your notes here
+                    </div>
+                    <div class="col-6 text-end">
+                      <h5 class="text-danger"><strong>TOTAL: ₦0000.00</strong></h5>
+                    </div>
+                  </div> -->
+
+                <!-- Footer -->
+                <!-- <div class="invoice-footer">
+                    Powered by Invoice Gen | www.invoicegen.com<br>
+                    To learn more, visit our website or email support@invoicegen.com
+                  </div> -->
+
+                <button id="printBtn" class="btn invoice-print-btn form-control">Print invoice</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- end modal invoice -->
+
+      <!-- Footer Start -->
+      <div class="container-fluid p-0 mt-5">
+        <div class="bg-secondary rounded-top p-4 container-fluid">
+          <div class="row container-fluid">
+            <div class="col-12 col-sm-6 text-center text-sm-start">
+              &copy; <a href="#">Mary Bill Conglomerate Ltd
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Footer End -->
+    </div>
+    <!-- Content End -->
+
+
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <!-- JavaScript Libraries -->
+  <script src="../assets/jquery/dist/jquery-3.7.1.min.js"></script>
+  <script src="../assets/bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
+
+  <!-- Renderer -->
+  <script src="../renderer/sales(admin).js"></script>
+
+  <!-- Template Javascript -->
+  <script src="../assets/js/main.js"></script>
+
+  <!-- Script for requests -->
+  <script src="../assets/js/requests.js"></script>
+</body>
+
+</html>
