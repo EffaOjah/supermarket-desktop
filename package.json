@@ -1,6 +1,8 @@
 {
   "name": "marybill-conglomerate-software",
+  "productName": "Effa Desktop App",
   "version": "1.0.0",
+  "appid": "com.example.myapp",
   "description": "Supermarket-software",
   "type": "module",
   "main": "main.mjs",
