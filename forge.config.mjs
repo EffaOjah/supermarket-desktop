@@ -13,10 +13,10 @@ export default {
       name: "@electron-forge/maker-squirrel",
       config: {
         setupIcon: "resources/app_icon.ico",
-        shortcutName: "Effa Desktop App",
-        name: "effa-desktop-app",
-        shortcutFolderName: "Effa Software",
-        executableName: "myapp",
+        shortcutName: "Marybill Conglomerate Ltd",
+        name: "marybill-conglomerate-software",
+        shortcutFolderName: "Marybill Conglomerate Ltd",
+        executableName: "marybill-conglomerate-software",
         desktop: {
           icon: "resources/app_icon",
         },
