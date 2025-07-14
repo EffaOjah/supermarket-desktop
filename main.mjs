@@ -1,6 +1,8 @@
 // main.js
 
-import { app, BrowserWindow, Menu, dialog, ipcMain } from "electron";
+import ws from 'windows-shortcuts';
+import { app, BrowserWindow, Menu, Notification, dialog, ipcMain } from "electron";
+// import { autoUpdater } from 'electron-updater';
 import path from "path";
 import Store from "electron-store";
 import storeManager from "./DB/storeManager.js";
@@ -8,7 +10,24 @@ import myJwt from "./jwt/jwt.js";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import Database from "better-sqlite3";
-// import { v4 as uuidv4 } from "uuid";
+
+// Detect packaged/installed environment
+const isPackaged = app.isPackaged;
+
+// Squirrel installer hook
+const checkSquirrel = async () => {
+  try {
+    const squirrel = await import('electron-squirrel-startup');
+    if (squirrel.default) app.quit();
+  } catch (err) {
+    // If import fails (e.g. on macOS/Linux), just ignore
+  }
+};
+
+await checkSquirrel();
+
+const server = 'http://localhost:3000'; // hosted folder
+const feed = `${server}/updates/`;
 
 // Helper to get __dirname in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -46,7 +65,11 @@ const store = new Store({
   cwd: storePath, // <- where the config.json will be saved
 });
 
-// Menu.setApplicationMenu(null);
+// Don't show menu when app is packaged
+if (app.isPackaged) {
+  Menu.setApplicationMenu(null);
+}
+
 
 const createWindow = () => {
   console.log("Path:", store.path);
@@ -105,7 +128,7 @@ const createWindow = () => {
   });
 };
 
-app.whenReady().then(() => {
+app.whenReady().then(async () => {
   createWindow();
 
   app.on("activate", () => {
@@ -113,6 +136,86 @@ app.whenReady().then(() => {
       createWindow();
     }
   });
+
+
+  if (process.platform === 'win32' && isPackaged) {
+
+    // Handle software update
+    const { autoUpdater } = await import('electron');
+
+    autoUpdater.setFeedURL({ url: feed });
+
+    autoUpdater.on('update-available', async () => {
+      console.log('Update available...');
+
+      const NOTIFICATION_TITLE = 'Update available'
+      const NOTIFICATION_BODY = `App version ${app.getVersion()} is outdated`;
+
+      new Notification({
+        title: NOTIFICATION_TITLE,
+        body: NOTIFICATION_BODY
+      }).show();
+    });
+
+    autoUpdater.on('error', (error) => {
+      console.error('Update check failed:', error);
+    });
+
+
+    autoUpdater.on('update-downloaded', () => {
+      dialog.showMessageBox({
+        type: 'info',
+        title: 'Update Ready',
+        message: 'A new version has been downloaded. Quit and install now?',
+        buttons: ['Yes', 'Later'],
+      }).then(result => {
+        if (result.response === 0) {
+          autoUpdater.quitAndInstall();
+        }
+      });
+    });
+
+    autoUpdater.checkForUpdates();
+
+    // Desktop Shortcut
+    const exePath = process.execPath;
+    const desktopPath = app.getPath('desktop');
+    const shortcutPath = path.join(desktopPath, 'Marybill Conglomerate.lnk');
+
+    // Avoid creating duplicate shortcut
+    if (!fs.existsSync(shortcutPath)) {
+      ws.create(shortcutPath, {
+        target: exePath,
+        args: '',
+        desc: 'Launch Marybill Conglomerate Software',
+        icon: exePath, // or path.join(process.resourcesPath, 'app_icon.ico')
+      }, function (err) {
+        if (err) {
+          console.error('Failed to create shortcut:', err);
+        } else {
+          console.log('Shortcut created on desktop!');
+        }
+      });
+    }
+
+
+    // Start Menu Shortcut
+    const startMenuFolder = path.join(app.getPath('startMenu'), 'Marybill Conglomerate Ltd');
+    const startMenuShortcut = path.join(startMenuFolder, 'Marybill Conglomerate.lnk');
+
+    // Create folder if it doesn't exist
+    if (!fs.existsSync(startMenuFolder)) {
+      fs.mkdirSync(startMenuFolder, { recursive: true });
+    }
+
+    if (!fs.existsSync(startMenuShortcut)) {
+      ws.create(startMenuShortcut, {
+        target: exePath,
+        desc: 'Launch Marybill Conglomerate Software',
+        icon: exePath,
+      }, err => err && console.error('Start Menu Shortcut Error:', err));
+    }
+  }
 });
 
 ipcMain.handle("activate-software", (event, activationKey, branchName) => {

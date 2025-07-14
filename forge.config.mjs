@@ -4,24 +4,25 @@ import { FuseV1Options, FuseVersion } from "@electron/fuses";
 export default {
   packagerConfig: {
     asar: true,
+    appBundleId: "com.marybill.conglomerate",     // macOS-specific
+    appCategoryType: "public.app-category.business", // macOS App Store (optional)
     extraResource: ["resources/store.db", "resources/file.json"],
-    icon: "resources/app_icon", // 👈 Added this line
+    icon: "resources/app_icon",
   },
   rebuildConfig: {},
   makers: [
     {
       name: "@electron-forge/maker-squirrel",
       config: {
+        name: "Marybill_Conglomerate", // Should match executable
         setupIcon: "resources/app_icon.ico",
-        shortcutName: "Marybill Conglomerate Ltd",
-        name: "marybill-conglomerate-software",
-        shortcutFolderName: "Marybill Conglomerate Ltd",
-        executableName: "marybill-conglomerate-software",
-        desktop: {
-          icon: "resources/app_icon",
-        },
-      },
-    },
+        shortcutName: "Marybill Conglomerate",
+        shortcutFolderName: "Marybill Conglomerate Ltds",
+        executableName: "Marybill_Conglomerate",
+        noMsi: true, // Optional: prevent .msi creation
+      }
+    }
+    ,
     {
       name: "@electron-forge/maker-zip",
       platforms: ["darwin"],

@@ -4,7 +4,7 @@ var suppliersList;
 document.addEventListener('DOMContentLoaded', async () => {
     suppliersList = await window.sqlite.storeManager('getSuppliers');
     console.log(suppliersList);
-    
+
     loadSuppliers();
 });
 
@@ -24,7 +24,7 @@ function loadSuppliers() {
         `).join('')}
     `
 
-        document.getElementById('suppliersTable').append(newTbody);
+    document.getElementById('suppliersTable').append(newTbody);
 
 
 
@@ -50,41 +50,41 @@ function loadSuppliers() {
 
 const addSupplierForm = document.getElementById('addSupplierForm');
 
-addSupplierForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+// addSupplierForm.addEventListener('submit', async (e) => {
+//     e.preventDefault();
 
-    let data = {
-        name: e.target.name.value,
-        address: e.target.address.value,
-        contact: e.target.contact.value,
-        email: e.target.email.value,
-    }
+//     let data = {
+//         name: e.target.name.value,
+//         address: e.target.address.value,
+//         contact: e.target.contact.value,
+//         email: e.target.email.value,
+//     }
 
-    console.log(data);
+//     console.log(data);
 
-    // Insert the details 
-    const addNewSupplier = window.sqlite.storeManager('addSupplier', data.name, data.address, data.contact, data.email);
-    console.log(addNewSupplier);
-    
-    if (window.functions.handleDBError(addNewSupplier.code)) {
-        console.log('Error while executing db query: ', addNewSupplier.code, addNewSupplier.message);
+//     // Insert the details 
+//     const addNewSupplier = window.sqlite.storeManager('addSupplier', data.name, data.address, data.contact, data.email);
+//     console.log(addNewSupplier);
 
-        window.electronAPI.errorDialog('Server Error', 'An Error occured!');
-        return;
-    }
+//     if (window.functions.handleDBError(addNewSupplier.code)) {
+//         console.log('Error while executing db query: ', addNewSupplier.code, addNewSupplier.message);
 
-    alert('Successfully added supplier!');
+//         window.electronAPI.errorDialog('Server Error', 'An Error occured!');
+//         return;
+//     }
 
-    suppliersList = await window.sqlite.storeManager('getSuppliers');
-    loadSuppliers();
-});
+//     alert('Successfully added supplier!');
+
+//     suppliersList = await window.sqlite.storeManager('getSuppliers');
+//     loadSuppliers();
+// });
 
 // Get products by a supplier
 async function loadSupplierProducts(supplierId) {
     const products = await window.sqlite.storeManager('supplierProducts', supplierId);
 
     const holder2 = document.getElementById('holder2');
-    
+
     // Check if there are products supplied
     if (products.length < 1) {
         holder2.innerHTML = '<p class="text-secondary">No Products Supplied</p>';

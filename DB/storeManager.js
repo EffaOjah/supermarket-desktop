@@ -307,8 +307,10 @@ const storeManager = {
   stockBranch: (
     productId,
     productName,
-    wholesalePrice,
-    retailPrice,
+    wholesaleCostPrice,
+    wholesaleSellingPrice,
+    retailCostPrice,
+    retailSellingPrice,
     stockQuantityWholesale,
     stockQuantityRetail,
     supplierId,
@@ -316,14 +318,16 @@ const storeManager = {
   ) => {
     try {
       const insertProductQuery = db.prepare(
-        "INSERT INTO products (product_id, product_name, wholesale_price, retail_price, stock_quantity_wholesale, stock_quantity_retail, supplier_id, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO products (product_id, product_name, wholesale_cost_price, wholesale_selling_price retail_cost_price, retail_selling_price, stock_quantity_wholesale, stock_quantity_retail, supplier_id, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
       );
 
       const insertProduct = insertProductQuery.run(
         productId,
         productName,
-        wholesalePrice,
-        retailPrice,
+        wholesaleCostPrice,
+        wholesaleSellingPrice,
+        retailCostPrice,
+        retailSellingPrice,
         stockQuantityWholesale,
         stockQuantityRetail,
         supplierId,
@@ -339,21 +343,25 @@ const storeManager = {
   addProduct: (
     productId,
     productName,
-    wholesalePrice,
-    retailPrice,
+    wholesaleCostPrice,
+    wholesaleSellingPrice,
+    retailCostPrice,
+    retailSellingPrice,
     supplierId,
     category
   ) => {
     try {
       const insertProductQuery = db.prepare(
-        "INSERT INTO products (product_id, product_name, wholesale_price, retail_price, stock_quantity_wholesale, stock_quantity_retail, supplier_id, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO products (product_id, product_name, wholesale_cost_price, wholesale_selling_price, retail_cost_price, retail_selling_price, stock_quantity_wholesale, stock_quantity_retail, supplier_id, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
       );
 
       const insertProduct = insertProductQuery.run(
         productId,
         productName,
-        wholesalePrice,
-        retailPrice,
+        wholesaleCostPrice,
+        wholesaleSellingPrice,
+        retailCostPrice,
+        retailSellingPrice,
         0,
         0,
         supplierId,
@@ -403,19 +411,23 @@ const storeManager = {
   updateProduct: (
     productId,
     productName,
-    wholesalePrice,
-    retailPrice,
+    wholesaleCostPrice,
+    wholesaleSellingPrice,
+    retailCostPrice,
+    retailSellingPrice,
     category
   ) => {
     try {
       const updateProductQuery = db.prepare(
-        "UPDATE products SET product_name = ?, wholesale_price = ?, retail_price = ?, category =?  WHERE product_id = ?"
+        "UPDATE products SET product_name = ?, wholesale_cost_price = ?, wholesale_selling_price = ?, retail_cost_price = ?, retail_selling_price = ?, category = ?  WHERE product_id = ?"
       );
 
       const updateProduct = updateProductQuery.run(
         productName,
-        wholesalePrice,
-        retailPrice,
+        wholesaleCostPrice,
+        wholesaleSellingPrice,
+        retailCostPrice,
+        retailSellingPrice,
         category,
         productId
       );

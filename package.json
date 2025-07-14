@@ -1,8 +1,8 @@
 {
   "name": "marybill-conglomerate-software",
-  "productName": "Marybill Conglomerate Ltd",
+  "productName": "Marybill Conglomerate",
   "version": "1.0.0",
-  "appid": "com.example.myapp",
+  "appid": "com.marybill.conglomerate",
   "description": "Supermarket-software",
   "type": "module",
   "main": "main.mjs",
@@ -12,7 +12,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make"
   },
-  "author": "Arvys",
+  "author": "Marybill Conglomerate",
   "license": "ISC",
   "devDependencies": {
     "@electron-forge/cli": "^7.8.1",
@@ -29,13 +29,16 @@
   "dependencies": {
     "better-sqlite3": "^11.9.1",
     "dotenv": "^16.4.7",
+    "electron-is-dev": "^3.0.1",
     "electron-squirrel-startup": "^1.0.1",
     "electron-store": "^10.0.1",
+    "electron-updater": "^6.6.2",
     "html2canvas": "^1.4.1",
     "jsonwebtoken": "^9.0.2",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "windows-shortcuts": "^0.1.6"
   },
   "config": {
-  "forge": "./forge.config.mjs"
-}
+    "forge": "./forge.config.mjs"
+  }
 }

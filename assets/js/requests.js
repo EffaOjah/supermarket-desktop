@@ -115,8 +115,10 @@ async function tryFetchPendingStocking() {
         "stockBranch",
         stock.product_id,
         stock.product_name,
-        stock.wholesale_price,
-        stock.retail_price,
+        stock.wholesale_cost_price,
+        stock.wholesale_selling_price,
+        stock.retail_cost_price,
+        stock.retail_selling_price,
         stock.stock_quantity_wholesale,
         stock.stock_quantity_retail,
         stock.supplier_id,
@@ -182,8 +184,10 @@ async function getProducts() {
         "updateProduct",
         checkStock[0].product_id,
         product.product_name,
-        product.wholesale_price,
-        product.retail_price,
+        product.wholesale_cost_price,
+        product.wholesale_selling_price,
+        product.retail_cost_price,
+        product.retail_selling_price,
         product.category
       );
       console.log(updateProduct);
@@ -194,8 +198,10 @@ async function getProducts() {
         "addProduct",
         product.product_id,
         product.product_name,
-        product.wholesale_price,
-        product.retail_price,
+        product.wholesale_cost_price,
+        product.wholesale_selling_price,
+        product.retail_cost_price,
+        product.retail_selling_price,
         product.supplier_id,
         product.category
       );

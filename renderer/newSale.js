@@ -133,7 +133,7 @@ function updateCart() {
     cart.forEach((item, index) => {
         // Populate the table based on the purchaseType
         if (item.purchaseType == "Wholesale") {
-            let total = item.wholesale_price * item.quantity;
+            let total = item.wholesale_selling_price * item.quantity;
             totalPrice += total;
 
             let row = `
@@ -142,7 +142,7 @@ function updateCart() {
                 <td>Test Date</td>
                 <td>${item.product_name}</td>
                 <td>${item.purchaseType}</td>
-                <td>₦${item.wholesale_price}</td>
+                <td>₦${item.wholesale_selling_price}</td>
                 <td>${item.quantity}</td>
                 <td>₦${total}</td>
                 <td><a class="btn btn-sm btn-primary remove-button" id="${index}:${item.product_id
@@ -150,7 +150,7 @@ function updateCart() {
             </tr>`;
             cartBody.innerHTML += row;
         } else {
-            let total = item.retail_price * item.quantity;
+            let total = item.retail_selling_price * item.quantity;
             totalPrice += total;
 
             let row = `
@@ -159,7 +159,7 @@ function updateCart() {
                 <td>Test Date</td>
                 <td>${item.product_name}</td>
                 <td>${item.purchaseType}</td>
-                <td>₦${item.retail_price}</td>
+                <td>₦${item.retail_selling_price}</td>
                 <td>${item.quantity}</td>
                 <td>₦${total}</td>
                 <td><a class="btn btn-sm btn-primary remove-button" id="${index}:${item.product_id
@@ -232,16 +232,16 @@ async function processSale() {
         cart.forEach(async (item) => {
             // Add new sale item based on the purchaseType
             if (item.purchaseType == "Wholesale") {
-                // const newSaleItem = await window.sqlite.storeManager?.insertNewSaleItem(newSale.lastInsertRowid, item.product_id, item.quantity, item.wholesale_price, item.purchaseType, item.wholesale_price * item.quantity);
+                // const newSaleItem = await window.sqlite.storeManager?.insertNewSaleItem(newSale.lastInsertRowid, item.product_id, item.quantity, item.wholesale_selling_price, item.purchaseType, item.wholesale_selling_price * item.quantity);
 
                 const newSaleItem = await window.sqlite.storeManager(
                     "insertNewSaleItem",
                     newSale.lastInsertRowid,
                     item.product_id,
                     item.quantity,
-                    item.wholesale_price,
+                    item.wholesale_selling_price,
                     item.purchaseType,
-                    item.wholesale_price * item.quantity
+                    item.wholesale_selling_price * item.quantity
                 );
 
                 if (window.functions.handleDBError(newSaleItem.code)) {
@@ -263,16 +263,16 @@ async function processSale() {
                     item.product_id
                 );
             } else {
-                // const newSaleItem = await window.sqlite.storeManager?.insertNewSaleItem(newSale.lastInsertRowid, item.product_id, item.quantity, item.retail_price, item.purchaseType, item.retail_price * item.quantity);
+                // const newSaleItem = await window.sqlite.storeManager?.insertNewSaleItem(newSale.lastInsertRowid, item.product_id, item.quantity, item.retail_selling_price, item.purchaseType, item.retail_selling_price * item.quantity);
 
                 const newSaleItem = await window.sqlite.storeManager(
                     "insertNewSaleItem",
                     newSale.lastInsertRowid,
                     item.product_id,
                     item.quantity,
-                    item.retail_price,
+                    item.retail_selling_price,
                     item.purchaseType,
-                    item.retail_price * item.quantity
+                    item.retail_selling_price * item.quantity
                 );
 
                 if (window.functions.handleDBError(newSaleItem.code)) {

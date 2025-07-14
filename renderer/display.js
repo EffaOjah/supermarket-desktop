@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('myUl').innerHTML = sales.map(el => `${el.name}`);
 
     for (let i = 0; i < sales.length; i++) {
-        console.log(sales[i]);   
+        console.log(sales[i]);
     }
 });
 
@@ -50,7 +50,7 @@ function tryFetchPendingStocking() {
                     console.log('Product already exist');
 
                     console.log('stock details: ', checkStock[0].product_id, stock.stock_quantity_wholesale, stock.stock_quantity_retail, typeof stock.stock_quantity_wholesale);
-                    
+
                     // Update the product database
                     const updateProduct = await window.sqlite.storeManager('updatestockQuantity', checkStock[0].product_id, stock.stock_quantity_wholesale, stock.stock_quantity_retail);
 
@@ -58,7 +58,7 @@ function tryFetchPendingStocking() {
 
                 } else {
                     // Insert the product into the database
-                    const insertProducts = await window.sqlite.storeManager('stockBranch', stock.product_name, stock.wholesale_price, stock.retail_price, stock.stock_quantity_wholesale, stock.stock_quantity_retail, stock.supplier_id, stock.category);
+                    const insertProducts = await window.sqlite.storeManager('stockBranch', stock.product_name, stock.wholesale_cost_price, stock.wholesale_selling_price, stock.retail_cost_price, retail_selling_price, stock.stock_quantity_wholesale, stock.stock_quantity_retail, stock.supplier_id, stock.category);
 
                     console.log(insertProducts);
                 }

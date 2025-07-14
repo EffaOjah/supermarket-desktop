@@ -27,7 +27,7 @@ signinForm.addEventListener('submit', (e) => {
                 window.pageRedirect.redirect('./pages/new sale.html');
             } else {
                 // Redirect the user
-                window.pageRedirect.redirect('./pages/admin dashboard.html');
+                window.pageRedirect.redirect('./pages/products(admin).html');
             }
         });
     });

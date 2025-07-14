@@ -36,10 +36,10 @@ function loadProducts(supplierName) {
   console.log(productList);
 
   document.querySelector(".product-record-div").classList.remove("d-none");
-  
+
   if (productList.length < 1) {
     console.log('testing');
-    
+
     productsHolder.innerHTML = `<h5 class="mb-4 text-white">No product available</h5>`;
     return;
   }
@@ -86,9 +86,9 @@ function loadProducts(supplierName) {
                   <td>${index + 1}</td>
                   <td>${product.product_name}</td>
                   <td>${product.category}</td>
-                  <td>₦${product.wholesale_price}</td>
+                  <td>₦${product.wholesale_selling_price}</td>
                   <td>${product.stock_quantity_wholesale}</td>
-                  <td>₦${product.retail_price}</td>
+                  <td>₦${product.retail_selling_price}</td>
                   <td>${product.stock_quantity_retail}</td>
                   <td><a id="${product.product_id
             }" class="btn btn-sm btn-light view-sales-btn" data-bs-toggle="modal"
@@ -173,13 +173,13 @@ detailsHolder.addEventListener("click", (event) => {
   }
 });
 document.querySelector(".select-supplier-div").addEventListener("click", (event) => {
-    if ((event.target.id = "viewProductsBtn")) {
-      document.querySelector(".select-supplier-div").style.display = "none";
+  if ((event.target.id = "viewProductsBtn")) {
+    document.querySelector(".select-supplier-div").style.display = "none";
 
-      // Then, call the loadProducts function
-      loadProducts(event.target.dataset.name);
-    }
-  });
+    // Then, call the loadProducts function
+    loadProducts(event.target.dataset.name);
+  }
+});
 
 // Function to show invoice
 async function viewSaleInvoice(saleId) {

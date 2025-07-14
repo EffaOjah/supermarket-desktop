@@ -1,0 +1,40 @@
+.title-bar {
+    height: 30px;
+    background-color: #333;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    -webkit-app-region: drag;
+}
+
+.title-bar-left {
+    display: flex;
+    align-items: center;
+}
+
+.app-title {
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+.title-bar-right {
+    display: flex;
+    align-items: center;
+}
+
+.window-control {
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+    -webkit-app-region: no-drag;
+}
+
+.window-control:hover {
+    background-color: #444;
+}
