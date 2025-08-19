@@ -127,6 +127,21 @@ async function tryFetchPendingStocking() {
       console.log(insertProducts);
     }
   }
+
+  if (data.pendingStock.length > 1) {
+    // Send a notification
+    new Notification("Marybill Conglomerate!", {
+      body: `${data.pendingStock.length} products has been stocked.`,
+      icon: "../resources/app-icon.jpg"
+    });
+  } else {
+    // Send a notification
+    new Notification("Marybill Conglomerate!", {
+      body: `1 product has been stocked.`,
+      icon: "../resources/app-icon.jpg"
+    });
+  }
+
 }
 
 // Try every 10 seconds

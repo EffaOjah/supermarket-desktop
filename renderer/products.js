@@ -38,7 +38,7 @@ function loadProducts(supplierName) {
   document.querySelector(".product-record-div").classList.remove("d-none");
 
   if (productList.length < 1) {
-    console.log('testing');
+    console.log('no product available');
 
     productsHolder.innerHTML = `<h5 class="mb-4 text-white">No product available</h5>`;
     return;
@@ -193,6 +193,11 @@ async function viewSaleInvoice(saleId) {
   );
   console.log(saleDetails);
 
+  document.getElementById('branch').innerHTML = branchName;
+  document.getElementById('customer').innerHTML = saleDetails[0].name;
+  document.getElementById('paymentMethod').innerHTML = saleDetails[0].payment_method;
+  document.getElementById('saleDate').innerHTML = saleDetails[0].sales_date;
+
   const newDiv = document.createElement("div");
   newDiv.innerHTML = `
         <table id="saleDetailTable" class="table table-bordered invoice-details">
@@ -202,6 +207,7 @@ async function viewSaleInvoice(saleId) {
                           <th>PURCHASE TYPE</th>
                           <th>QUANTITY</th>
                           <th>PRICE</th>
+                          <th>DISCOUNT</th>
                           <th>SUB TOTAL</th>
                         </tr>
                       </thead>
@@ -214,7 +220,8 @@ async function viewSaleInvoice(saleId) {
                           <td>${sale.sale_type}</td>
                           <td>${sale.quantity}</td>
                           <td>₦${sale.unit_price}</td>
-                          <td>${sale.quantity * sale.unit_price}</td>
+                          <td>${sale.discount}%</td>
+                          <td>₦${sale.quantity * sale.unit_price}</td>
                           </tr>
         
                           `
@@ -222,7 +229,7 @@ async function viewSaleInvoice(saleId) {
       .join("")}
                       </tbody>
           </table>
-          <p class="fs-6 text-end">Total: ${saleDetails[0].total_amount}</p>`;
+          <p class="fs-6 text-end">Total: ₦${saleDetails[0].total_amount}</p>`;
 
   invoiceHolder.appendChild(newDiv);
 }

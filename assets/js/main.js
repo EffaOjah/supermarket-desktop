@@ -10,8 +10,8 @@
 //         }, 1);
 //     };
 //     spinner();
-    
-    
+
+
 //     // Back to top button
 //     $(window).scroll(function () {
 //         if ($(this).scrollTop() > 300) {
@@ -40,24 +40,26 @@
 //         });
 //     }, {offset: '80%'});
 
-   
+
 // })(jQuery);
 
+var branchName;
 document.addEventListener('DOMContentLoaded', async () => {
     const branchDetails = await window.electronAPI.getSoftwareDetails();
     console.log('branchDetails :', branchDetails);
 
-    document.getElementById('branchName').innerHTML = branchDetails.branchName;
+    branchName = branchDetails.branchName;
+    document.getElementById('branchName').innerHTML = branchName;
 })
 
 var navs = document.getElementsByClassName('navs');
 
 for (let i = 0; i < navs.length; i++) {
     navs[i].addEventListener('click', (e) => {
-        let pageName = e.target.textContent.toLowerCase();
+        let pageName = e.currentTarget.innerText.toLowerCase().trim();
 
         window.pageRedirect.redirect(`./pages/${pageName}.html`);
-    });   
+    });
 }
 
 var signOutBtn = document.querySelector('.sign-out-nav');

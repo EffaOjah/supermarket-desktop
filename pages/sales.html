@@ -195,81 +195,24 @@
 
     <!-- Sales Start -->
     <div class="container-fluid pt-4 px-4">
+      <h5 class="mb-4">Sales Made</h5>
+
+      <h6>Search by date:</h6>
+      <div class="date-input-container">
+        <input type="text" id="year" class="date-input" maxlength="4" placeholder="YYYY">
+        <span class="slash">/</span>
+        <input type="text" id="month" class="date-input" maxlength="2" placeholder="MM" disabled>
+        <span class="slash">/</span>
+        <!-- <input type="text" id="day" class="date-input" maxlength="2" placeholder="DD" disabled> -->
+        <button class="btn" title="close filter" id="closeFilter">&times;</button>
+      </div>
+      <div id="error" class="error"></div>
+      <br>
       <div id="salesHolder" class="row g-4">
-        <h5 class="mb-4">Sales Made</h5>
-        <!-- <div class="col-sm-12 col-md-12 col-xl-12">
-          <div class="h-100 bg-secondary rounded p-4">
-            <div class="mb-2">
-              <h6 class="mb-4">Monday</h6>
-            </div>
-            <div class="d-flex align-items-center border-bottom py-3">
-              <img class="rounded-circle flex-shrink-0 chUser1" src="../assets/img/NIVEA.webp" alt="">
-              <div class="w-100 ms-3">
-                <div class="d-flex w-100 justify-content-between">
-                  <h6 class="mb-0">John Ayobami</h6>
-                  <div>
-                    <small>27th August</small>
-                    <span class="badge" data-bs-toggle="modal" data-bs-target="#invoiceModal">View invoice</span>
-                  </div>
-                </div>
-                <span>Peak Evm Reg Can 24x150g - ₦5,000</span>
-              </div>
-            </div>
-            
-            
-           
-            </div>
-          </div> -->
+
 
       </div>
-      <!-- <div class="col-sm-12 col-md-12 col-xl-12">
-          <div class="h-100 bg-secondary rounded p-4">
-            <div class="mb-2">
-              <h6 class="mb-4">Tuesday</h6>
-            </div>
-            <div class="d-flex align-items-center border-bottom py-3">
-              <img class="rounded-circle flex-shrink-0 chUser1" src="../assets/img/MORE PEAK.jpeg" alt="">
-              <div class="w-100 ms-3">
-                <div class="d-flex w-100 justify-content-between">
-                  <h6 class="mb-0">John Ayobami</h6>
-                  <div>
-                    <small>27th August</small>
-                    <span class="badge" data-bs-toggle="modal" data-bs-target="#invoiceModal">View invoice</span>
-                  </div>
-                </div>
-                <span>Peak Evm Reg Can 24x150g - ₦5,000</span>
-              </div>
-            </div>
-            <div class="d-flex align-items-center border-bottom py-3">
-              <img class="rounded-circle flex-shrink-0 chUser1" src="../assets/img/MORE PEAK.jpeg" alt="">
-              <div class="w-100 ms-3">
-                <div class="d-flex w-100 justify-content-between">
-                  <h6 class="mb-0">Emmanuel Ayuk</h6>
-                  <div>
-                    <small>27th August</small>
-                    <span class="badge" data-bs-toggle="modal" data-bs-target="#invoiceModal">View invoice</span>
-                  </div>
-                </div>
-                <span>Peak Evm Reg Can 24x150g - ₦5,000</span>
-              </div>
-            </div>
-            <div class="d-flex align-items-center border-bottom py-3">
-              <img class="rounded-circle flex-shrink-0 chUser1" src="../assets/img/MORE PEAK.jpeg" alt=""
-                style="width: 40px; height: 40px;">
-              <div class="w-100 ms-3">
-                <div class="d-flex w-100 justify-content-between">
-                  <h6 class="mb-0">John Ayobami</h6>
-                  <div>
-                    <small>27th August</small>
-                    <span class="badge" data-bs-toggle="modal" data-bs-target="#invoiceModal">View invoice</span>
-                  </div>
-                </div>
-                <span>Peak Evm Reg Can 24x150g - ₦5,000</span>
-              </div>
-            </div>
-            
-          </div>
-        </div> -->
+
 
       <!-- start modal invoice -->
       <!-- Modal -->
@@ -293,8 +236,7 @@
                     </div>
                   </div>
                   <div class="col-6 text-end">
-                    <strong>Mary Bill Conglomerate Ltd supermarket</strong><br>
-                    Calabar Branch<br>
+                    <strong id="branch">Mary Bill Conglomerate</strong><br>
                     Nigeria
                   </div>
                 </div>
@@ -303,14 +245,12 @@
                 <div class="row mb-3">
                   <div class="col-6">
                     <strong>BILL TO:</strong><br>
-                    Mary Bill Conglomerate Ltd supermarket<br>
-                    Calabar Branch<br>
-                    Nigeria
+                    <p><strong>Customer: </strong><span id="customer">Walk in customer</span> <br> <strong>Payment
+                        method:
+                      </strong><span id="paymentMethod">Cash</span></p>
                   </div>
                   <div class="col-6 text-end">
-                    <strong>INVOICE NO:</strong> 000001<br>
-                    <strong>DATE:</strong> 12/31/20<br>
-                    <strong>DUE DATE:</strong> 12/31/20
+                    <strong>DATE:</strong> <span id="saleDate"></span><br>
                   </div>
                 </div>
 
@@ -381,11 +321,11 @@
   <script src="../assets/jquery/dist/jquery-3.7.1.min.js"></script>
   <script src="../assets/bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
 
-  <!-- Renderer -->
-  <script src="../renderer/sales.js"></script>
-
   <!-- Template Javascript -->
   <script src="../assets/js/main.js"></script>
+
+  <!-- Renderer -->
+  <script src="../renderer/sales.js"></script>
 
   <!-- Script for requests -->
   <script src="../assets/js/requests.js"></script>

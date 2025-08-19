@@ -3,49 +3,28 @@
 
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://web.marybillconglomerate.com.ng;">
-  <!-- <meta http-equiv="Content-Security-Policy" content="
-  default-src 'self';
-  script-src 'self' https://cdn.jsdelivr.net https://code.jquery.com 'unsafe-inline' 'unsafe-eval';
-  style-src 'self' https://cdn.jsdelivr.net 'unsafe-inline';
-  img-src 'self' data:;"> -->
-
-
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; connect-src 'self' https://web.marybillconglomerate.com.ng;">
   <title>Mary Bill Conglomerate Ltd</title>
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-  
+
   <!-- Icon Font Stylesheet -->
   <link rel="stylesheet" href="../assets/font-awesome/css/all.min.css">
-  <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet"> -->
-
-
-  <!-- Customized Bootstrap Stylesheet -->
   <link href="../assets/css/bootstrap.css" rel="stylesheet">
-
-  <!-- Template Stylesheet -->
   <link href="../assets/css/style.css" rel="stylesheet">
 </head>
 
 <body>
   <div class="container-fluid position-relative d-flex p-0">
-    <!-- Spinner Start -->
-    <!-- <div id="spinner"
-      class="show bg-dark position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-      <div id="ch1" class="spinner-border text-primary" role="status">
-      </div>
-    </div> -->
-    <!-- Spinner End -->
-
-
-    <!-- Sidebar Start -->
+    <!-- Sidebar -->
     <div class="sidebar pe-4 pb-3">
       <nav class="navbar bg-secondary navbar-dark">
         <span class="navbar-brand mx-4 mb-3">
-          <h4 id="branchName" class="text-primary">Mary Bill <br> Conglomerate Ltd</h4>
+          <h6 id="branchName" class="text-primary">Mary Bill <br> Conglomerate Ltd</h6>
         </span>
         <div class="d-flex align-items-center ms-4 mb-4">
           <div class="position-relative">
-            <img class="rounded-circle chUser1" src="../assets/img/user-icon.png" alt="" >
+            <img class="rounded-circle chUser1" src="../assets/img/user-icon.png" alt="">
             <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
             </div>
           </div>
@@ -63,87 +42,35 @@
           <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Customers</span>
           <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Suppliers</span>
           <span class="nav-item nav-link sign-out-nav"><i class="fa fa-chart-bar me-2"></i>Sign Out</span>
-          </div>
+        </div>
       </nav>
     </div>
     <!-- Sidebar End -->
 
-
     <!-- Content Start -->
     <div class="content">
-      <!-- Navbar Start -->
+      <!-- Navbar -->
       <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
         <span class="navbar-brand d-flex d-lg-none me-4">
           <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
         </span>
-        <span class="sidebar-toggler flex-shrink-0">
-          <i class="fa fa-bars"></i>
-        </span>
+        <span class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></span>
         <form class="d-none d-md-flex ms-4">
           <input class="form-control bg-dark border-0" type="search" placeholder="Search">
         </form>
         <div class="navbar-nav align-items-center ms-auto">
           <div class="nav-item dropdown">
-            <span class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-              <i class="fa fa-envelope me-lg-2"></i>
-              <span class="d-none d-lg-inline-flex">Message</span>
-            </span>
+            <span class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-envelope me-lg-2"></i><span
+                class="d-none d-lg-inline-flex">Message</span></span>
             <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-              <span class="dropdown-item">
-                <div class="d-flex align-items-center">
-                  <img class="rounded-circle chUser1" src="../assets/img/user-icon.png" alt="">
-                  <div class="ms-2">
-                    <h6 class="fw-normal mb-0">John send you a message</h6>
-                    <small>15 minutes ago</small>
-                  </div>
-                </div>
-              </span>
-              <hr class="dropdown-divider">
-              <span class="dropdown-item">
-                <div class="d-flex align-items-center">
-                  <img class="rounded-circle chUser1" src="../assets/img/user-icon.png" alt="">
-                  <div class="ms-2">
-                    <h6 class="fw-normal mb-0">John send you a message</h6>
-                    <small>15 minutes ago</small>
-                  </div>
-                </div>
-              </span>
-              <hr class="dropdown-divider">
-              <span class="dropdown-item">
-                <div class="d-flex align-items-center">
-                  <img class="rounded-circle chUser1" src="../assets/img/user-icon.png" alt="">
-                  <div class="ms-2">
-                    <h6 class="fw-normal mb-0">John send you a message</h6>
-                    <small>15 minutes ago</small>
-                  </div>
-                </div>
-              </span>
-              <hr class="dropdown-divider">
-              <span class="dropdown-item text-center">See all message</span>
+              <span class="dropdown-item">No new message</span>
             </div>
           </div>
           <div class="nav-item dropdown">
-            <span class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-              <i class="fa fa-bell me-lg-2"></i>
-              <span class="d-none d-lg-inline-flex">Notification</span>
-            </span>
+            <span class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i class="fa fa-bell me-lg-2"></i><span
+                class="d-none d-lg-inline-flex">Notification</span></span>
             <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
-              <span class="dropdown-item">
-                <h6 class="fw-normal mb-0">Profile updated</h6>
-                <small>15 minutes ago</small>
-              </span>
-              <hr class="dropdown-divider">
-              <span class="dropdown-item">
-                <h6 class="fw-normal mb-0">New user added</h6>
-                <small>15 minutes ago</small>
-              </span>
-              <hr class="dropdown-divider">
-              <span class="dropdown-item">
-                <h6 class="fw-normal mb-0">Password changed</h6>
-                <small>15 minutes ago</small>
-              </span>
-              <hr class="dropdown-divider">
-              <span class="dropdown-item text-center">See all notifications</span>
+              <span class="dropdown-item">No notifications</span>
             </div>
           </div>
           <div class="nav-item dropdown">
@@ -159,54 +86,8 @@
           </div>
         </div>
       </nav>
-      <!-- Navbar End -->
 
-
-      <!-- Sale & Revenue Start -->
-      <!-- <div class="container-fluid pt-4 px-4">
-        <div class="row g-4">
-          <div class="col-sm-6 col-xl-3">
-            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-              <i class="fa fa-chart-line fa-3x text-primary"></i>
-              <div class="ms-3">
-                <p class="mb-2">Today Sale</p>
-                <h6 class="mb-0">$1234</h6>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 col-xl-3">
-            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-              <i class="fa fa-chart-bar fa-3x text-primary"></i>
-              <div class="ms-3">
-                <p class="mb-2">Total Sale</p>
-                <h6 class="mb-0">$1234</h6>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 col-xl-3">
-            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-              <i class="fa fa-chart-area fa-3x text-primary"></i>
-              <div class="ms-3">
-                <p class="mb-2">Today Revenue</p>
-                <h6 class="mb-0">$1234</h6>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-6 col-xl-3">
-            <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
-              <i class="fa fa-chart-pie fa-3x text-primary"></i>
-              <div class="ms-3">
-                <p class="mb-2">Total Revenue</p>
-                <h6 class="mb-0">$1234</h6>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div> -->
-      <!-- Sale & Revenue End -->
-
-
-      <!-- Sales Chart Start -->
+      <!-- Select Customer -->
       <div class="container-fluid pt-4 px-4">
         <div class="row g-4">
           <div class="col-sm-12 col-xl-12">
@@ -215,231 +96,164 @@
                 <h6 class="mb-0">Select Customer</h6>
                 <button id="closeSaleBtn" class="btn btn-primary">Close Sale</button>
               </div>
-
-              <form action="">
-                <div class="form-floating mb-3">
-                  <select class="form-select" id="role" title="please select a customer">
-                    <option value="">Select Customer</option>
-                    <!-- Other Customers will go here -->
-                  </select>
-                  <label for="floatingRole">Select customer</label>
-                </div>
-              </form>
+              <div class="form-floating mb-3">
+                <select class="form-select" id="role">
+                  <option value="">Select Customer</option>
+                </select>
+                <label>Select customer</label>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      <!-- Sales Chart End -->
 
-
-      <!-- Add to sale start -->
+      <!-- Product selection -->
       <div class="container-fluid pt-4 px-4">
         <div class="row g-4 bg-secondary mt-1" id="myChange">
-
-          <!-- Select Product -->
+          <!-- Product -->
           <div class="col-sm-12 col-xl-4">
             <div class="bg-secondary text-center rounded p-4">
               <div class="d-flex align-items-center justify-content-between mb-4">
                 <h6 class="mb-0">Select Product</h6>
               </div>
-              <div class=" mb-4">
-                <form>
-                  <div class="form-floating mb-3">
-                    <select class="form-select" id="productSelect">
-                      <option value="">Select Product</option>
-                      <!-- Other Products will go here -->
-                    </select>
-                    <label for="floatingRole" class="ms-">Product name</label>
-                  </div>
-                </form>
+              <div class="form-floating mb-3">
+                <select class="form-select" id="productSelect">
+                  <option value="">Select Product</option>
+                </select>
+                <label>Product name</label>
               </div>
             </div>
           </div>
-
-          <!-- Select Quantity -->
+          <!-- Quantity -->
           <div class="col-sm-12 col-xl-4">
             <div class="bg-secondary rounded p-4">
-              <div class="mb-4">
-                <h6 class="mb-0">Product Quantity</h6>
-              </div>
+              <h6 class="mb-4">Product Quantity</h6>
               <div class="form-floating mb-4">
                 <input type="number" class="form-control" id="quantity" placeholder="Quantity">
-                <label for="floatingPassword">Quantity</label>
+                <label>Quantity</label>
               </div>
             </div>
           </div>
-
-          <!-- Select purchase type -->
+          <!-- Purchase type -->
           <div class="col-sm-12 col-xl-4">
             <div class="bg-secondary rounded p-4">
-              <div class="mb-4">
-                <h6 class="mb-0">Purchase Type</h6>
-              </div>
+              <h6 class="mb-4">Purchase Type</h6>
               <div class="form-floating mb-4">
                 <select class="form-select" id="purchaseType">
                   <option value="">Select Type</option>
                   <option value="Retail">Retail</option>
                   <option value="Wholesale">Wholesale</option>
                 </select>
-                <label for="floatingPassword">Type</label>
+                <label>Type</label>
               </div>
               <div class="d-flex justify-content-end">
                 <button id="addCartBtn" class="btn btn-primary">Add to sale</button>
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
-      <!-- Add to cart start -->
-
+      <!-- Cart -->
       <div class="container-fluid pt-4 px-4">
         <div class="bg-secondary text-center rounded p-4">
           <div class="d-flex align-items-center justify-content-between mb-4">
             <h6 class="mb-0">Cart</h6>
-            <!-- <a href="sales.html">Show All</a> -->
           </div>
           <div class="table-responsive">
             <table class="table text-start align-middle table-bordered table-hover mb-0">
               <thead>
-                <tr class="text-white">
+                <tr class="text-white cart-th">
                   <th scope="col">S/N</th>
-                  <th scope="col">Date</th>
-                  <th scope="col">Product name</th>
-                  <th scope="col">purchase Type</th>
-                  <th scope="col">Price</th>
+                  <th scope="col">Product Name</th>
+                  <th scope="col">Purchase Type</th>
                   <th scope="col">Quantity</th>
-                  <th scope="col">SubTotal</th>
+                  <th scope="col">Price Per Quantity</th>
+                  <th scope="col">Price</th>
+                  <th scope="col" style="width:180px;">Discount %</th>
+                  <th scope="col">Discount Price</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody id="cartBody">
-                <!-- Sale items will go here -->
+                <!-- Cart rows dynamically generated by JS -->
               </tbody>
             </table>
-            <div id="ch2" class="d-flex justify-content-end mt-4 gap-5"> 
-              <h6 class="d-flex">Total: <span class="total" id="totalPrice">0.00</span></h6>
-              <button class="btn btn-primary" id="processSaleBtn">Complete sale</button>
+
+            <div class="container align-items-center">
+              <!-- Payment method -->
+              <div class="row mt-4">
+                <div class="col-md-12">
+                  <div class="form-floating">
+                    <select class="form-select" id="paymentMethodSelect">
+                      <option value="">Select Payment Method</option>
+                      <option value="cash">Cash</option>
+                      <option value="bank transfer">Bank Transfer</option>
+                    </select>
+                    <label for="paymentMethodSelect">Payment Method</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Total & Complete sale button -->
+              <div class="d-flex justify-content-end mt-4 gap-5">
+                <h6>Net pay: ₦<span class="total" id="totalPrice">0.00</span></h6>
+                <button class="btn btn-primary" id="processSaleBtn">Complete sale</button>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Invoice Modal -->
+      <div class="modal fade bg-secondary" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content modal-dialog-scrollable">
+            <div class="modal-header">
+              <h5 class="modal-title" id="invoiceModalLabel">Invoice</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <div id="printableInvoice" class="invoice-box">
+                <div class="row invoice-header align-items-center">
+                  <div class="col-6"><img src="../resources/app-icon.jpg" alt="Invoice Icon" /><span
+                      class="invoice-title ms-2">Invoice</span></div>
+                  <div class="col-6 text-end"><strong id="branch">Mary Bill Conglomerate</strong><br>Nigeria</div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-6"><strong>BILL TO:</strong><br>
+                    <p><strong>Customer: </strong><span id="customer">Walk in customer</span><br><strong>Payment method:
+                      </strong><span id="paymentMethod">Cash</span></p>
+                  </div>
+                  <div class="col-6 text-end"><strong>DATE:</strong> <span id="saleDate"></span></div>
+                </div>
+                <div id="invoiceHolder" class="table-responsive mb-4"></div>
+                <button id="printBtn" class="btn invoice-print-btn form-control">Print invoice</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- start modal invoice -->
-        <!-- Modal -->
-        <div class="modal fade bg-secondary" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content modal-dialog-scrollable">
-              <div class="modal-header">
-                <h5 class="modal-title" id="invoiceModalLabel">Invoice</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <div id="printableInvoice" class="invoice-box">
-                  <!-- Header -->
-                  <div class="row invoice-header align-items-center">
-                    <div class="col-6">
-                      <div class="d-block">
-                      <img src="../resources/app-icon.jpg" alt="Invoice Icon" />
-                      <br>
-                      <span class="invoice-title ms-2">Invoice</span>
-                    </div>
-                    </div>
-                    <div class="col-6 text-end">
-                      <strong>Mary Bill Conglomerate Ltd supermarket</strong><br>
-                      Calabar Branch<br>
-                      Nigeria
-                    </div>
-                  </div>
-
-                  <!-- Bill To -->
-                  <div class="row mb-3">
-                    <div class="col-6">
-                      <strong>BILL TO:</strong><br>
-                      Mary Bill Conglomerate Ltd supermarket<br>
-                      Calabar Branch<br>
-                      Nigeria
-                    </div>
-                    <div class="col-6 text-end">
-                      <strong>INVOICE NO:</strong> 000001<br>
-                      <strong>DATE:</strong> 12/31/20<br>
-                      <strong>DUE DATE:</strong> 12/31/20
-                    </div>
-                  </div>
-
-                  <!-- Items Table -->
-                  <div id="invoiceHolder" class="table-responsive mb-4">
-                    <!-- <table id="saleDetailTable" class="table table-bordered invoice-details">
-                      <thead>
-                        <tr>
-                          <th>ITEMS</th>
-                          <th>PURCHASE TYPE</th>
-                          <th>QUANTITY</th>
-                          <th>PRICE</th>
-                          <th>SUB TOTAL</th>
-                        </tr>
-                      </thead>
-                      
-                    </table> -->
-                  </div>
-
-                  <!-- Notes and Total -->
-                  <!-- <div class="row mb-4">
-                    <div class="col-6">
-                      <strong>NOTES:</strong><br>
-                      Add your notes here
-                    </div>
-                    <div class="col-6 text-end">
-                      <h5 class="text-danger"><strong>TOTAL: ₦0000.00</strong></h5>
-                    </div>
-                  </div> -->
-
-                  <!-- Footer -->
-                  <!-- <div class="invoice-footer">
-                    Powered by Invoice Gen | www.invoicegen.com<br>
-                    To learn more, visit our website or email support@invoicegen.com
-                  </div> -->
-
-                  <button id="printBtn" class="btn invoice-print-btn form-control">Print invoice</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- end modal invoice -->
-
-      <!-- Footer Start -->
+      <!-- Footer -->
       <div class="container-fluid p-0 mt-5">
         <div class="bg-secondary rounded-top p-4 container-fluid">
           <div class="row container-fluid">
-            <div class="col-12 col-sm-6 text-center text-sm-start">
-              &copy; Mary Bill Conglomerate Ltd.
-            </div>
+            <div class="col-12 col-sm-6 text-center text-sm-start">&copy; Mary Bill Conglomerate Ltd.</div>
           </div>
         </div>
       </div>
-      <!-- Footer End -->
     </div>
-    <!-- Content End -->
-
-
-    <!-- Back to Top -->
-    <!-- <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a> -->
   </div>
 
-  <!-- JavaScript Libraries -->
+  <!-- JS -->
   <script src="../assets/jquery/dist/jquery-3.7.1.min.js"></script>
   <script src="../assets/bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
-
-  <!-- Renderer -->
-   <script src="../renderer/newSale.js"></script>
-   
-  <!-- Template Javascript -->
+  <script src="../renderer/newSale.js"></script>
   <script src="../assets/js/main.js"></script>
-
-  <!-- Script for requests -->
   <script src="../assets/js/requests.js"></script>
 </body>
 

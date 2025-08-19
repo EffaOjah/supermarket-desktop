@@ -6,7 +6,7 @@ export default {
     asar: true,
     appBundleId: "com.marybill.conglomerate",     // macOS-specific
     appCategoryType: "public.app-category.business", // macOS App Store (optional)
-    extraResource: ["resources/store.db", "resources/file.json"],
+    extraResource: ["resources/file.json", "resources/store.db"],
     icon: "resources/app_icon",
   },
   rebuildConfig: {},
@@ -15,14 +15,13 @@ export default {
       name: "@electron-forge/maker-squirrel",
       config: {
         name: "Marybill_Conglomerate", // Should match executable
-        setupIcon: "resources/app_icon.ico",
+        setupIcon: "resources/installer-icon.ico",
         shortcutName: "Marybill Conglomerate",
-        shortcutFolderName: "Marybill Conglomerate Ltds",
+        shortcutFolderName: "Marybill Conglomerate Ltd",
         executableName: "Marybill_Conglomerate",
         noMsi: true, // Optional: prevent .msi creation
       }
-    }
-    ,
+    },
     {
       name: "@electron-forge/maker-zip",
       platforms: ["darwin"],

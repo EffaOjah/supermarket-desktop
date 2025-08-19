@@ -26,14 +26,7 @@ const storeManager = {
       return error.message;
     }
   },
-  insertNewSale: (customerId, totalAmount, paymentMethod) => {
-    const padZero = (num) => num.toString().padStart(2, "0");
-    const date = new Date();
-
-    let customTimestamp = `${date.getFullYear()}-${padZero(
-      date.getMonth()
-    )}-${padZero(date.getDay())}`;
-
+  insertNewSale: (customerId, totalAmount, paymentMethod, salesDate) => {
     const id = uuidv4();
     try {
       const insertSaleQuery = db.prepare(
@@ -42,7 +35,7 @@ const storeManager = {
       const result = insertSaleQuery.run(
         id,
         customerId,
-        customTimestamp,
+        salesDate,
         totalAmount,
         paymentMethod
       );
@@ -56,19 +49,21 @@ const storeManager = {
     saleId,
     productId,
     quantity,
+    discount,
     unitPrice,
     saleType,
     subTotal
   ) => {
     try {
       const insertSaleItemQuery = db.prepare(
-        "INSERT INTO Sales_items (sale_item_id, sale_id, product_id, quantity, unit_price, sale_type, subtotal) VALUES (?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO Sales_items (sale_item_id, sale_id, product_id, quantity, discount, unit_price, sale_type, subtotal) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
       );
       const result = insertSaleItemQuery.run(
         uuidv4(),
         saleId,
         productId,
         quantity,
+        discount,
         unitPrice,
         saleType,
         subTotal
@@ -229,7 +224,7 @@ const storeManager = {
   getSaleItems: (saleId) => {
     try {
       const getSalesQuery = db.prepare(
-        "SELECT * FROM Sales_items INNER JOIN Sales ON Sales_items.sale_id = Sales.sale_id INNER JOIN Products ON Sales_items.product_id = Products.product_id WHERE Sales_items.sale_id = ?"
+        "SELECT * FROM Sales INNER JOIN Sales_items ON Sales.sale_id = Sales_items.sale_id INNER JOIN Products ON Sales_items.product_id = Products.product_id INNER JOIN Customers ON Customers.customer_id = Sales.customer_id WHERE Sales.sale_id = ?"
       );
       const sales = getSalesQuery.all(saleId);
 
@@ -281,7 +276,7 @@ const storeManager = {
   getSaleItemsByProductId: (saleId) => {
     try {
       const getSalesQuery = db.prepare(
-        "SELECT * FROM Sales_items INNER JOIN Sales ON Sales_items.sale_id = Sales.sale_id INNER JOIN Products ON Sales_items.product_id = Products.product_id WHERE Sales_items.sale_id = ?"
+        "SELECT * FROM Sales INNER JOIN Sales_items ON Sales.sale_id = Sales_items.sale_id INNER JOIN Products ON Sales_items.product_id = Products.product_id INNER JOIN Customers ON Customers.customer_id = Sales.customer_id WHERE Sales_items.sale_id = ?"
       );
       const sales = getSalesQuery.all(saleId);
 
@@ -444,9 +439,9 @@ const storeManager = {
         "UPDATE Sales SET synced = ? WHERE synced = ?"
       );
 
-      const updateSyncedColumn = updateColumnQuery.run(1, 0);
+      const updateSyncColumn = updateColumnQuery.run(1, 0);
 
-      return updateSyncedColumn;
+      return updateSyncColumn;
     } catch (error) {
       console.error(error);
       return error;

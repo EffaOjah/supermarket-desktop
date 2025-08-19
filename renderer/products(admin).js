@@ -202,6 +202,7 @@ async function viewSaleInvoice(saleId) {
                           <th>PURCHASE TYPE</th>
                           <th>QUANTITY</th>
                           <th>PRICE</th>
+                          <th>DISCOUNT</th>
                           <th>SUB TOTAL</th>
                         </tr>
                       </thead>
@@ -214,6 +215,7 @@ async function viewSaleInvoice(saleId) {
                           <td>${sale.sale_type}</td>
                           <td>${sale.quantity}</td>
                           <td>₦${sale.unit_price}</td>
+                          <td>${sale.discount}%</td>
                           <td>${sale.quantity * sale.unit_price}</td>
                           </tr>
         

@@ -14,19 +14,12 @@ import Database from "better-sqlite3";
 // Detect packaged/installed environment
 const isPackaged = app.isPackaged;
 
-// Squirrel installer hook
-const checkSquirrel = async () => {
-  try {
-    const squirrel = await import('electron-squirrel-startup');
-    if (squirrel.default) app.quit();
-  } catch (err) {
-    // If import fails (e.g. on macOS/Linux), just ignore
-  }
-};
+// Set appId
+app.setAppUserModelId('com.marybill.conglomerate');
 
-await checkSquirrel();
 
-const server = 'http://localhost:3000'; // hosted folder
+
+const server = 'https://web.marybillconglomerate.com.ng'; // hosted folder
 const feed = `${server}/updates/`;
 
 // Helper to get __dirname in ESM
@@ -36,7 +29,9 @@ const __dirname = path.dirname(__filename);
 // Writable path
 const userDataPath = app.getPath("userData");
 const dbPath = path.join(userDataPath, "store.db");
+
 const defaultDbPath = path.join(process.resourcesPath, "store.db"); // Comes from `extraResource`
+console.log(process.resourcesPath);
 
 // Only copy on first run
 if (!fs.existsSync(dbPath)) {
@@ -48,6 +43,13 @@ const defaultBranchFilePath = path.join(process.resourcesPath, "file.json");
 
 if (!fs.existsSync(branchFilePath)) {
   fs.copyFileSync(defaultBranchFilePath, branchFilePath);
+}
+
+const testFilePath = path.join(userDataPath, "test.xml");
+const defaultTestFilePath = path.join(process.resourcesPath, "test.xml");
+
+if (!fs.existsSync(testFilePath)) {
+  fs.copyFileSync(defaultTestFilePath, testFilePath);
 }
 
 // Open the DB from the user data directory
@@ -70,6 +72,17 @@ if (app.isPackaged) {
   Menu.setApplicationMenu(null);
 }
 
+// Squirrel installer hook
+const checkSquirrel = async () => {
+  try {
+    const squirrel = await import('electron-squirrel-startup');
+    if (squirrel.default) app.quit();
+  } catch (err) {
+    // If import fails (e.g. on macOS/Linux), just ignore
+  }
+};
+
+await checkSquirrel();
 
 const createWindow = () => {
   console.log("Path:", store.path);
@@ -163,10 +176,11 @@ app.whenReady().then(async () => {
 
 
     autoUpdater.on('update-downloaded', () => {
+      // autoUpdater.quitAndInstall();
       dialog.showMessageBox({
         type: 'info',
         title: 'Update Ready',
-        message: 'A new version has been downloaded. Quit and install now?',
+        message: 'A new version has been downloaded. Restart now?',
         buttons: ['Yes', 'Later'],
       }).then(result => {
         if (result.response === 0) {

@@ -308,3 +308,48 @@ input:disabled, select:disabled {
 .card-btn:hover {
     background-color: #6C7293 !important;   
 }
+.date-input-container {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-family: Arial, sans-serif;
+        }
+
+        .date-input {
+            width: 60px;
+            padding: 5px;
+            font-size: 12px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .date-input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .slash {
+            font-size: 18px;
+            color: #a4a2a2;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+        .date-input-container > .btn {
+            font-size: 12px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;font-size: 12px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-left: 5px;
+        }
+        .cart-th {
+            font-size: 15px;
+        }

@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://web.marybillconglomerate.com.ng;">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; connect-src 'self' https://web.marybillconglomerate.com.ng;">
   <!-- <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
   script-src 'self' https://cdn.jsdelivr.net https://code.jquery.com 'unsafe-inline' 'unsafe-eval';
@@ -27,7 +28,7 @@
 
   <!-- Template Stylesheet -->
   <link href="../assets/css/style.css" rel="stylesheet">
-</head>>
+</head>
 
 <body>
   <div class="container-fluid position-relative d-flex p-0">
@@ -60,7 +61,7 @@
         <div class="sidebar pe-4 pb-3">
           <nav class="navbar bg-secondary navbar-dark">
             <span class="navbar-brand mx-4 mb-3">
-              <h5 class="text-primary">Mary Bill <br> Conglomerate Ltd</h5>
+              <h5 id="branchName" class="text-primary">Mary Bill <br> Conglomerate Ltd</h5>
             </span>
             <div class="d-flex align-items-center ms-4 mb-4">
               <div class="position-relative">
@@ -83,7 +84,7 @@
               <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Customers</span>
               <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Suppliers</span>
               <span class="nav-item nav-link sign-out-nav"><i class="fa fa-chart-bar me-2"></i>Sign Out</span>
-              </div>
+            </div>
           </nav>
       </nav>
     </div>
@@ -193,8 +194,9 @@
             <!-- Heading -->
             <h6 class="mb-4 text-white">Stocks Available</h6>
 
+            <h2>No Stock Available</h2>
             <!-- Retail Section -->
-            <div class="mb-4">
+            <!-- <div class="mb-4">
               <h6 class="text-primary">Retail Stocks</h6>
 
               <div class="d-flex align-items-center border-bottom py-3">
@@ -228,10 +230,10 @@
                   <span>10 packs available - ₦40,000</span>
                 </div>
               </div>
-            </div>
+            </div> -->
 
             <!-- Wholesale Section -->
-            <div>
+            <!-- <div>
               <h6>Wholesale Stocks</h6>
 
               <div class="d-flex align-items-center border-bottom py-3">
@@ -265,7 +267,7 @@
                   <span>80 bags available - ₦250,000</span>
                 </div>
               </div>
-            </div>
+            </div> -->
 
           </div>
         </div>
@@ -287,7 +289,7 @@
           <!-- Modal body -->
           <div class="modal-body row d-flex align-items-center">
             <div class="col-lg-6">
-              <img src="../assets/img/PEAK CREAM.jpeg" alt="" style="width: 100%;">
+              <img src="../assets/img/PEAK CREAM.jpeg" alt="">
             </div>
             <div class="col-lg-6">
               <P00h5 class="text-dark">Peak Evm Reg Can - 48x410g</P00h5>
@@ -325,16 +327,11 @@
   <script src="../assets/jquery/dist/jquery-3.7.1.min.js"></script>
   <script src="../assets/bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
 
-  <script src="lib/chart/chart.min.js"></script>
-  <script src="lib/easing/easing.min.js"></script>
-  <script src="lib/waypoints/waypoints.min.js"></script>
-  <script src="lib/owlcarousel/owl.carousel.min.js"></script>
-  <script src="lib/tempusdominus/js/moment.min.js"></script>
-  <script src="lib/tempusdominus/js/moment-timezone.min.js"></script>
-  <script src="lib/tempusdominus/js/tempusdominus-bootstrap-4.min.js"></script>
-
   <!-- Template Javascript -->
   <script src="../assets/js/main.js"></script>
+
+  <!-- Script for requests -->
+  <script src="../assets/js/requests.js"></script>
 </body>
 
 </html>

@@ -8,7 +8,8 @@
   <meta content="" name="keywords">
   <meta content="" name="description">
 
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://web.marybillconglomerate.com.ng;">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; connect-src 'self' https://web.marybillconglomerate.com.ng;">
 
   <!-- Icon Font Stylesheet -->
   <link rel="stylesheet" href="../assets/font-awesome/css/all.min.css">
@@ -58,7 +59,7 @@
           <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Customers</span>
           <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Suppliers</span>
           <span class="nav-item nav-link sign-out-nav"><i class="fa fa-chart-bar me-2"></i>Sign Out</span>
-          </div>
+        </div>
       </nav>
       </nav>
     </div>
@@ -158,23 +159,24 @@
       <!-- Navbar End -->
 
       <!-- Select Supplier Section -->
-       <div class="row bg-secondary justify-content-center rounded p-4 m-3 gap-3 select-supplier-div">
+      <div class="row bg-secondary justify-content-center rounded p-4 m-3 gap-3 select-supplier-div">
         <h5>Select Product Supplier</h5>
         <div class="col-md-3 card">
           <div class="card-body">
             <h3 class="text-secondary text-center">Onni</h3>
           </div>
           <div class="card-footer">
-            <button class="btn btn-secondary card-btn form-control" id="viewProductsBtn" data-name="RECKITT">View products</button>
+            <button class="btn btn-secondary card-btn form-control" id="viewProductsBtn" data-name="RECKITT">View
+              products</button>
           </div>
         </div>
-       </div>
+      </div>
 
       <!-- Product record start -->
       <div class="product-record-div container-fluid pt-4 px-4 d-none">
         <div id="productsHolder" class="row g-4">
           <h5 class="mb-4">Product Record</h5>
-          
+
         </div>
         <!-- Table End -->
 
@@ -228,20 +230,20 @@
         <div class="modal fade bg-secondary" id="allsales">
           <div class="modal-dialog modal-xl">
             <div class="modal-content p-3 modal-dialog-scrollable">
-        
+
               <!-- Modal Header -->
               <div class="modal-header">
                 <h5 class="modal-title text-dark">Sales Details – <span>Peak Evm Reg Can</span></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
               </div>
-        
+
               <!-- Modal Body -->
               <div id="detailsHolder" class="modal-body">
                 <div class="mb-4">
                   <strong>Product Size:</strong> 24x150g<br>
                   <strong>Total Quantity in Stock:</strong> 150
                 </div>
-        
+
                 <!-- Retail Sales Section -->
                 <h6 class="text-secondary">Retail Sales</h6>
                 <div class="table-responsive mb-4">
@@ -275,7 +277,7 @@
                     </tbody>
                   </table>
                 </div>
-        
+
                 <!-- Wholesale Sales Section -->
                 <h6 class="text-dark">Wholesale Sales</h6>
                 <div class="table-responsive">
@@ -309,14 +311,15 @@
                   </table>
                 </div>
               </div>
-        
+
             </div>
           </div>
         </div>
-        
+
         <!-- start modal invoice -->
         <!-- Modal -->
-        <div class="modal fade bg-secondary" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel" aria-hidden="true">
+        <div class="modal fade bg-secondary" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel"
+          aria-hidden="true">
           <div class="modal-dialog modal-lg">
             <div class="modal-content modal-dialog-scrollable">
               <div class="modal-header">
@@ -329,14 +332,13 @@
                   <div class="row invoice-header align-items-center">
                     <div class="col-6">
                       <div class="d-block">
-                      <img src="../resources/app-icon.jpg" alt="Invoice Icon" />
-                      <br>
-                      <span class="invoice-title ms-2">Invoice</span>
-                    </div>
+                        <img src="../resources/app-icon.jpg" alt="Invoice Icon" />
+                        <br>
+                        <span class="invoice-title ms-2">Invoice</span>
+                      </div>
                     </div>
                     <div class="col-6 text-end">
-                      <strong>Mary Bill Conglomerate Ltd supermarket</strong><br>
-                      Calabar Branch<br>
+                      <strong id="branch">Mary Bill Conglomerate</strong><br>
                       Nigeria
                     </div>
                   </div>
@@ -345,14 +347,12 @@
                   <div class="row mb-3">
                     <div class="col-6">
                       <strong>BILL TO:</strong><br>
-                      Mary Bill Conglomerate Ltd supermarket<br>
-                      Calabar Branch<br>
-                      Nigeria
+                      <p><strong>Customer: </strong><span id="customer">Walk in customer</span> <br> <strong>Payment
+                          method:
+                        </strong><span id="paymentMethod">Cash</span></p>
                     </div>
                     <div class="col-6 text-end">
-                      <strong>INVOICE NO:</strong> 000001<br>
-                      <strong>DATE:</strong> 12/31/20<br>
-                      <strong>DUE DATE:</strong> 12/31/20
+                      <strong>DATE:</strong> <span id="saleDate"></span><br>
                     </div>
                   </div>
 
@@ -390,17 +390,17 @@
     </div>
 
     <!-- JavaScript Libraries -->
-  <script src="../assets/jquery/dist/jquery-3.7.1.min.js"></script>
-  <script src="../assets/bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
+    <script src="../assets/jquery/dist/jquery-3.7.1.min.js"></script>
+    <script src="../assets/bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
 
     <!-- Renderer -->
-   <script src="../renderer/products.js"></script>
+    <script src="../renderer/products.js"></script>
 
     <!-- Template Javascript -->
-  <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/main.js"></script>
 
-  <!-- Script for requests -->
-  <script src="../assets/js/requests.js"></script>
+    <!-- Script for requests -->
+    <script src="../assets/js/requests.js"></script>
 </body>
 
 </html>

@@ -32,8 +32,16 @@ activationForm.addEventListener('submit', (e) => {
 
             console.log('Software successfully activated', data);
 
+            var branchName = data.checkForBranch[0].branch_name;
+            if (branchName == 'CALABAR SOUTH') {
+                branchName = 'MARYBILL MABILCO VENTURES';
+            }
+            if (branchName == 'TINAPA') {
+                branchName = 'MABILCO ENTERPRISE';
+            }
+
             // Update the software
-            const updateSoftware = await window.electronAPI.activateSoftware(data.checkForBranch[0].branch_id, data.checkForBranch[0].branch_name);
+            const updateSoftware = await window.electronAPI.activateSoftware(data.checkForBranch[0].branch_id, branchName);
 
             // Show get products page
             activateDiv1.style.display = 'none';
