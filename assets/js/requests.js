@@ -70,6 +70,10 @@
 let retryInterval = null;
 
 async function tryFetchPendingStocking() {
+  const date = new Date();
+  let timeStamp = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+  console.log('Date: ', timeStamp);
+
   if (!navigator.onLine) {
     console.log("Offline — will retry...");
     return;
@@ -91,6 +95,10 @@ async function tryFetchPendingStocking() {
   }
 
   console.log(data);
+
+  // Insert into the Stocking table
+  const newStocking = await window.sqlite.storeManager("insertNewStocking", timeStamp, data.pendingStock.length);
+  console.log('New stocking: ', newStocking);
 
   for (const stock of data.pendingStock) {
     console.log(stock.product_name, stock.product_id);
@@ -126,6 +134,16 @@ async function tryFetchPendingStocking() {
       );
       console.log(insertProducts);
     }
+
+    // Insert the stock item
+    await window.sqlite.
+      storeManager(
+        "insertNewStockItem",
+        newStocking.lastInsertRowid,
+        stock.product_id,
+        stock.stock_quantity_wholesale,
+        stock.stock_quantity_retail
+      );
   }
 
   if (data.pendingStock.length > 1) {

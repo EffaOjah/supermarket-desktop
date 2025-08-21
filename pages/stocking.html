@@ -3,8 +3,15 @@
 
 <head>
   <meta charset="utf-8">
+  <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self';"> -->
+  <!-- <meta http-equiv="Content-Security-Policy" content="
+  default-src 'self';
+  img-src 'self' data:;
+  style-src 'self' 'unsafe-inline';
+  script-src 'self' 'unsafe-inline' 'unsafe-eval';"> -->
+
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; connect-src 'self' https://web.marybillconglomerate.com.ng;">
+    content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; connect-src 'self' https://web.marybillconglomerate.com.ng;">
   <!-- <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
   script-src 'self' https://cdn.jsdelivr.net https://code.jquery.com 'unsafe-inline' 'unsafe-eval';
@@ -45,11 +52,11 @@
     <div class="sidebar pe-4 pb-3">
       <nav class="navbar bg-secondary navbar-dark">
         <span class="navbar-brand mx-4 mb-3">
-          <h5 class="text-primary">Mary Bill <br> Conglomerate Ltd</h5>
+          <h4 class="text-primary">Mary Bill <br> Conglomerate Ltd</h4>
         </span>
         <div class="d-flex align-items-center ms-4 mb-4">
           <div class="position-relative">
-            <img class="rounded-circle chUser1" src="../assets/img/user-icon.png" alt="">
+            <img class="rounded-circle chUser1" src="../assets/img/user-icon.png">
             <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
             </div>
           </div>
@@ -61,7 +68,7 @@
         <div class="sidebar pe-4 pb-3">
           <nav class="navbar bg-secondary navbar-dark">
             <span class="navbar-brand mx-4 mb-3">
-              <h5 id="branchName" class="text-primary">Mary Bill <br> Conglomerate Ltd</h5>
+              <h4 id="branchName" class="text-primary">Mary Bill <br> Conglomerate Ltd</h4>
             </span>
             <div class="d-flex align-items-center ms-4 mb-4">
               <div class="position-relative">
@@ -115,7 +122,7 @@
           <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
             <a href="#" class="dropdown-item">
               <div class="d-flex align-items-center">
-                <img class="rounded-circle chUser1" src="../assets/img/user-icon.png" alt="">
+                <img class="rounded-circle" src="../assets/img/user-icon.png" alt="">
                 <div class="ms-2">
                   <h6 class="fw-normal mb-0">Jhon send you a message</h6>
                   <small>15 minutes ago</small>
@@ -125,7 +132,7 @@
             <hr class="dropdown-divider">
             <a href="#" class="dropdown-item">
               <div class="d-flex align-items-center">
-                <img class="rounded-circle chUser1" src="../assets/img/user-icon.png" alt="">
+                <img class="rounded-circle" src="../assets/img/user-icon.png" alt="">
                 <div class="ms-2">
                   <h6 class="fw-normal mb-0">Jhon send you a message</h6>
                   <small>15 minutes ago</small>
@@ -135,7 +142,7 @@
             <hr class="dropdown-divider">
             <a href="#" class="dropdown-item">
               <div class="d-flex align-items-center">
-                <img class="rounded-circle chUser1" src="../assets/img/user-icon.png" alt="">
+                <img class="rounded-circle" src="../assets/img/user-icon.png" alt="">
                 <div class="ms-2">
                   <h6 class="fw-normal mb-0">Jhon send you a message</h6>
                   <small>15 minutes ago</small>
@@ -172,7 +179,7 @@
         </div>
         <div class="nav-item dropdown">
           <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-            <img class="rounded-circle me-lg-2" src="../assets/img/user-icon.png" alt="" width="35px">
+            <img class="rounded-circle me-lg-2" src="../assets/img/user-icon.png" width="35px" alt="">
             <span class="d-none d-lg-inline-flex">Sales Rep</span>
           </a>
           <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
@@ -186,142 +193,76 @@
     <!-- Navbar End -->
 
 
-    <!-- Stockings Start -->
+    <!-- Stocking Start -->
     <div class="container-fluid pt-4 px-4">
-      <div class="row g-4">
-        <div class="col-sm-12 col-md-12 col-xl-12">
-          <div class="h-100 bg-secondary rounded p-4">
-            <!-- Heading -->
-            <h6 class="mb-4 text-white">Stocks Available</h6>
+      <h5 class="mb-4">Stocking History</h5>
 
-            <h2>No Stock Available</h2>
-            <!-- Retail Section -->
-            <!-- <div class="mb-4">
-              <h6 class="text-primary">Retail Stocks</h6>
-
-              <div class="d-flex align-items-center border-bottom py-3">
-                <img class="rounded-circle flex-shrink-0 chUser1" src="../assets/img/MORE PEAK.jpeg" alt="">
-                <div class="w-100 ms-3">
-                  <div class="d-flex w-100 justify-content-between">
-                    <h6 class="mb-0">Peak Evm Reg Can</h6>
-                    <small>27th August
-                      <span class="ms-3">30 packs</span>
-                      <span class="ms-3"><i>Supplied by</i> AAVA NON NIVEA</span>
-                      <button class="btn btn-primary btn-sm ms-3" data-bs-toggle="modal"
-                        data-bs-target="#viewStockingModal">View details</button>
-                    </small>
-                  </div>
-                  <span>10 packs available - ₦40,000</span>
-                </div>
-              </div>
-
-              <div class="d-flex align-items-center border-bottom py-3">
-                <img class="rounded-circle flex-shrink-0 chUser1" src="../assets/img/NIVEA.webp" alt="">
-                <div class="w-100 ms-3">
-                  <div class="d-flex w-100 justify-content-between">
-                    <h6 class="mb-0">Peak Gold Evm 9.5 Box</h6>
-                    <small>27th August
-                      <span class="ms-3">30 packs</span>
-                      <span class="ms-3"><i>Supplied by</i> RECKITT</span>
-                      <button class="btn btn-primary btn-sm ms-3" data-bs-toggle="modal"
-                        data-bs-target="#viewStockingModal">View details</button>
-                    </small>
-                  </div>
-                  <span>10 packs available - ₦40,000</span>
-                </div>
-              </div>
-            </div> -->
-
-            <!-- Wholesale Section -->
-            <!-- <div>
-              <h6>Wholesale Stocks</h6>
-
-              <div class="d-flex align-items-center border-bottom py-3">
-                <img class="rounded-circle flex-shrink-0 chUser1" src="../assets/img/NIVEA.webp" alt="">
-                <div class="w-100 ms-3">
-                  <div class="d-flex w-100 justify-content-between">
-                    <h6 class="mb-0">Three Crowns Evm Reg Can</h6>
-                    <small>27th August
-                      <span class="ms-3">300 bags</span>
-                      <span class="ms-3"><i>Supplied by</i> WAMCO</span>
-                      <button class="btn btn-primary btn-sm ms-3" data-bs-toggle="modal"
-                        data-bs-target="#viewStockingModal">View details</button>
-                    </small>
-                  </div>
-                  <span>100 bags available - ₦300,000</span>
-                </div>
-              </div>
-
-              <div class="d-flex align-items-center border-bottom py-3">
-                <img class="rounded-circle flex-shrink-0 chUser1" src="../assets/img/PEAK.jpeg" alt="">
-                <div class="w-100 ms-3">
-                  <div class="d-flex w-100 justify-content-between">
-                    <h6 class="mb-0">Three Crowns Evm Reg Sac</h6>
-                    <small>27th August
-                      <span class="ms-3">250 bags</span>
-                      <span class="ms-3"><i>Supplied by</i> AAVA NIVEA</span>
-                      <button class="btn btn-primary btn-sm ms-3" data-bs-toggle="modal"
-                        data-bs-target="#viewStockingModal">View details</button>
-                    </small>
-                  </div>
-                  <span>80 bags available - ₦250,000</span>
-                </div>
-              </div>
-            </div> -->
-
-          </div>
-        </div>
+      <h6>Filter by date:</h6>
+      <div class="date-input-container">
+        <input type="text" id="year" class="date-input" maxlength="4" placeholder="YYYY">
+        <span class="slash">/</span>
+        <input type="text" id="month" class="date-input" maxlength="2" placeholder="MM" disabled>
+        <span class="slash">/</span>
+        <!-- <input type="text" id="day" class="date-input" maxlength="2" placeholder="DD" disabled> -->
+        <button class="btn" title="close filter" id="closeFilter">&times;</button>
       </div>
-    </div>
+      <div id="error" class="error"></div>
+      <br>
+      <div id="stockHolder" class="row g-4">
 
 
-    <!-- Stocking Modal start -->
-    <div class="modal fade bg-secondary" id="viewStockingModal">
-      <div class="modal-dialog">
-        <div class="modal-content  p-3">
+      </div>
 
-          <!-- Modal Header -->
-          <div class="modal-header">
-            <h6 class="modal-title text-dark">About this stock</h6>
-            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-          </div>
 
-          <!-- Modal body -->
-          <div class="modal-body row d-flex align-items-center">
-            <div class="col-lg-6">
-              <img src="../assets/img/PEAK CREAM.jpeg" alt="">
+      <!-- start modal invoice -->
+      <!-- Modal -->
+      <div class="modal fade bg-secondary" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content modal-dialog-scrollable">
+            <div class="modal-header">
+              <h5 class="modal-title" id="invoiceModalLabel">Invoice</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="col-lg-6">
-              <P00h5 class="text-dark">Peak Evm Reg Can - 48x410g</P00h5>
-              <p class="text-dark">Quantity of products delivered: 100 packs</h6>
-              <h6 class="text-dark">Price: ₦40,000</h6>
-              <i class="text-dark">Supplied by AAVA NON NIVEA</i>
+            <div class="modal-body">
+              <div id="printableInvoice" class="invoice-box">
+                <!-- Header -->
+                <div class="row invoice-header align-items-center">
+                  <h4 class="invoice-title ms-2">Stocking Details</h4>
+                </div>
+
+                <!-- Items Table -->
+                <div id="details-Holder" class="table-responsive mb-4">
+
+                </div>
+              </div>
             </div>
           </div>
-
         </div>
       </div>
-    </div>
-    <!-- Stocking Modal end -->
 
-    <!-- Footer Start -->
-    <div class="container-fluid pt-4 px-4">
-      <div class="bg-secondary rounded-top p-4">
-        <div class="row">
-          <div class="col-12 col-sm-6 text-center text-sm-start">
-            &copy; <a href="#">Mary Bill Conglomerate Ltd
+      <!-- end modal invoice -->
+
+      <!-- Footer Start -->
+      <div class="container-fluid p-0 mt-5">
+        <div class="bg-secondary rounded-top p-4 container-fluid">
+          <div class="row container-fluid">
+            <div class="col-12 col-sm-6 text-center text-sm-start">
+              &copy; <a href="#">Mary Bill Conglomerate Ltd
+            </div>
           </div>
         </div>
       </div>
+      <!-- Footer End -->
     </div>
-    <!-- Footer End -->
-  </div>
-  <!-- Content End -->
+    <!-- Content End -->
 
 
-  <!-- Back to Top -->
-  <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
   </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
   <!-- JavaScript Libraries -->
   <script src="../assets/jquery/dist/jquery-3.7.1.min.js"></script>
@@ -329,6 +270,9 @@
 
   <!-- Template Javascript -->
   <script src="../assets/js/main.js"></script>
+
+  <!-- Renderer -->
+  <script src="../renderer/stocking.js"></script>
 
   <!-- Script for requests -->
   <script src="../assets/js/requests.js"></script>

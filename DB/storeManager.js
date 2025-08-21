@@ -74,6 +74,46 @@ const storeManager = {
       return error;
     }
   },
+  insertNewStocking: (stockingDate, productsLength) => {
+    const id = uuidv4();
+    try {
+      const insertStockQuery = db.prepare(
+        "INSERT INTO Stocking (stocking_id, stocking_date, products_length) VALUES (?, ?, ?)"
+      );
+      const result = insertStockQuery.run(
+        id,
+        stockingDate,
+        productsLength
+      );
+
+      return { lastInsertRowid: id };
+    } catch (error) {
+      return error;
+    }
+  },
+  insertNewStockItem: (
+    stockingId,
+    productId,
+    wholesaleQuantity,
+    retailQuantity
+  ) => {
+    try {
+      const insertStockItemQuery = db.prepare(
+        "INSERT INTO Stocking_items (stock_item_id, stocking_id, product_id, wholesale_quantity, retail_quantity) VALUES (?, ?, ?, ?, ?)"
+      );
+      const result = insertStockItemQuery.run(
+        uuidv4(),
+        stockingId,
+        productId,
+        wholesaleQuantity,
+        retailQuantity
+      );
+
+      return result;
+    } catch (error) {
+      return error;
+    }
+  },
   updateWholesaleStockQuantity: (purchasedQuantity, productId) => {
     try {
       const updateQuery = db.prepare(
@@ -195,6 +235,18 @@ const storeManager = {
       return error;
     }
   },
+  getStocking: () => {
+    try {
+      const getStockingQuery = db.prepare(
+        "SELECT * FROM Stocking ORDER BY Stocking.stocking_id ASC"
+      );
+      const stocking = getStockingQuery.all();
+
+      return stocking;
+    } catch (error) {
+      return error;
+    }
+  },
   getSalesForSyncing: () => {
     try {
       const getSalesQuery = db.prepare(
@@ -229,6 +281,19 @@ const storeManager = {
       const sales = getSalesQuery.all(saleId);
 
       return sales;
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  },
+  getStockingItems: (stockingId) => {
+    try {
+      const getStockingsQuery = db.prepare(
+        "SELECT * FROM Stocking s INNER JOIN Stocking_items si ON s.stocking_id = si.stocking_id INNER JOIN Products p ON si.product_id = p.product_id INNER JOIN Suppliers sp ON p.supplier_id = sp.supplier_id WHERE s.stocking_id = ?"
+      );
+      const stocking = getStockingsQuery.all(stockingId);
+
+      return stocking;
     } catch (error) {
       console.error(error);
       return error;

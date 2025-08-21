@@ -292,6 +292,10 @@ input:disabled, select:disabled {
     cursor: pointer;
     background-color: #6C7293 !important;
 }
+.view-stocking-span {
+    cursor: pointer;
+    background-color: #6C7293 !important;
+}
 .bg-btn {
     background-color: #DFDEDE !important;
 }

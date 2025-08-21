@@ -45,13 +45,6 @@ if (!fs.existsSync(branchFilePath)) {
   fs.copyFileSync(defaultBranchFilePath, branchFilePath);
 }
 
-const testFilePath = path.join(userDataPath, "test.xml");
-const defaultTestFilePath = path.join(process.resourcesPath, "test.xml");
-
-if (!fs.existsSync(testFilePath)) {
-  fs.copyFileSync(defaultTestFilePath, testFilePath);
-}
-
 // Open the DB from the user data directory
 const db = new Database(dbPath);
 db.pragma("journal_mode = WAL");

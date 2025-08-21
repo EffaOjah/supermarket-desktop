@@ -1,7 +1,7 @@
 {
   "name": "marybill-conglomerate-software",
   "productName": "Marybill Conglomerate",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "appid": "com.marybill.conglomerate",
   "description": "Supermarket-software",
   "type": "module",

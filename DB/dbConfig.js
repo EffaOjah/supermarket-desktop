@@ -66,6 +66,24 @@ CREATE TABLE IF NOT EXISTS Sales_items (
     FOREIGN KEY(sale_id) REFERENCES Sales(sale_id)
 );
 
+CREATE TABLE IF NOT EXISTS Stocking (
+    stocking_id TEXT NOT NULL UNIQUE,
+    stocking_date TEXT NOT NULL,
+    products_length INTEGER NOT NULL,
+    PRIMARY KEY(stocking_id)
+);
+
+CREATE TABLE IF NOT EXISTS Stocking_items (
+    stock_item_id TEXT NOT NULL UNIQUE,
+    stocking_id TEXT NOT NULL,
+    product_id TEXT NOT NULL,
+    wholesale_quantity INTEGER NOT NULL DEFAULT 0,
+    retail_quantity INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY(stock_item_id),
+    FOREIGN KEY(stocking_id) REFERENCES Stocking(stocking_id),
+    FOREIGN KEY(product_id) REFERENCES Products(product_id)
+);
+
 CREATE TABLE IF NOT EXISTS Settings (
     lastSyncedDate TEXT
 );
