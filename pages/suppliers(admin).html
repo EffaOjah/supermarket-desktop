@@ -3,7 +3,8 @@
 
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://web.marybillconglomerate.com.ng;">
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; connect-src 'self' https://web.marybillconglomerate.com.ng;">
   <!-- <meta http-equiv="Content-Security-Policy" content="
   default-src 'self';
   script-src 'self' https://cdn.jsdelivr.net https://code.jquery.com 'unsafe-inline' 'unsafe-eval';
@@ -44,7 +45,7 @@
     <div class="sidebar pe-4 pb-3">
       <nav class="navbar bg-secondary navbar-dark">
         <span class="navbar-brand mx-4 mb-3">
-          <h5 id="branchName" class="text-primary">Mary Bill <br> Conglomerate Ltd</h5>
+          <h6 id="branchName" class="text-primary">Mary Bill <br> Conglomerate Ltd</h6>
         </span>
         <div class="d-flex align-items-center ms-4 mb-4">
           <div class="position-relative">
@@ -59,13 +60,14 @@
         </div>
 
         <div class="navbar-nav w-100">
-              <span class="nav-link nav-item navs"><i class="fa fa-table me-2"></i>Products(admin)</span>
-              <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Stocking(admin)</span>
-              <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Sales(admin)</span>
-              <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Customers(admin)</span>
-              <span class="nav-item nav-link active navs"><i class="fa fa-table me-2"></i>Suppliers(admin)</span>
-              <span class="nav-item nav-link sign-out-nav"><i class="fa fa-chart-bar me-2"></i>Sign Out</span>
-            </div>
+          <span class="nav-item nav-link navs"><i class="fa fa-tachometer-alt me-2"></i>Dashboard(admin)</span>
+          <span class="nav-link nav-item navs"><i class="fa fa-table me-2"></i>Products(admin)</span>
+          <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Stocking(admin)</span>
+          <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Sales(admin)</span>
+          <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Customers(admin)</span>
+          <span class="nav-item nav-link active navs"><i class="fa fa-table me-2"></i>Suppliers(admin)</span>
+          <span class="nav-item nav-link sign-out-nav"><i class="fa fa-chart-bar me-2"></i>Sign Out</span>
+        </div>
     </div>
     <!-- Sidebar End -->
 
@@ -169,11 +171,11 @@
           <div class="col-sm-12 col-xl-12">
             <div class="bg-secondary text-center rounded p-4">
               <div class="d-flex align-items-center justify-content-between mb-4"> -->
-                <!-- <h6 class="mb-0">Add New Supplier</h6> -->
-                <!-- <a href="customers.html">Show All</a> -->
-              <!-- </div> -->
+      <!-- <h6 class="mb-0">Add New Supplier</h6> -->
+      <!-- <a href="customers.html">Show All</a> -->
+      <!-- </div> -->
 
-              <!-- <form id="addSupplierForm">
+      <!-- <form id="addSupplierForm">
                 <div class="row">
                   <div class="col">
                     <input type="text" class="form-control bg-dark border-0" placeholder="Enter name" name="name" required>
@@ -270,7 +272,7 @@
 
               <!-- Modal body -->
               <div id="holder2" class="modal-body row d-flex align-items-center">
-                
+
               </div>
 
             </div>
@@ -278,8 +280,10 @@
         </div>
         <!-- End of Products supplied modal -->
 
+        <br><br><br><br><br>
+
         <!-- Footer Start -->
-        <div class="container-fluid p-0 mt-5">
+        <div class="container-fluid p-0 mt-5 footer">
           <div class="bg-secondary rounded-top p-4 container-fluid">
             <div class="row container-fluid">
               <div class="col-12 col-sm-6 text-center text-sm-start">
@@ -302,13 +306,13 @@
     <script src="../assets/bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
 
     <!-- Renderer -->
-   <script src="../renderer/suppliers(admin).js"></script>
+    <script src="../renderer/suppliers(admin).js"></script>
 
     <!-- Template Javascript -->
     <script src="../assets/js/main.js"></script>
 
     <!-- Script for requests -->
-  <script src="../assets/js/requests.js"></script>
+    <script src="../assets/js/requests.js"></script>
 </body>
 
 </html>

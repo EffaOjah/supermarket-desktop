@@ -524,6 +524,67 @@ const storeManager = {
       return error;
     }
   },
+  getTodaySalesAnalysis: (type, date) => {
+    try {
+      const getAnalysisQuery = db.prepare("SELECT SUM(subtotal) AS total FROM Sales_items SI INNER JOIN Sales S ON SI.sale_id = S.sale_id WHERE SI.sale_type = ? AND S.sales_date = ?");
+      const getAnalysis = getAnalysisQuery.all([type, date]);
+
+      return getAnalysis
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  },
+  getSalesAnalysisFromRange: (type, startDate, endDate) => {
+    try {
+      const getAnalysisQuery = db.prepare(`
+      SELECT SUM(subtotal) AS total 
+      FROM Sales_items SI 
+      INNER JOIN Sales S ON SI.sale_id = S.sale_id 
+      WHERE SI.sale_type = ? 
+      AND S.sales_date BETWEEN ? AND ?
+    `);
+
+      const getAnalysis = getAnalysisQuery.all([type, startDate, endDate]);
+
+      return getAnalysis;
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  },
+  getThisWeekSalesAnalysis: (type, dateStr) => {
+    try {
+      // Parse "yy-MM-dd" (e.g., "25-08-20")
+      const [yy, MM, dd] = dateStr.split("-").map(Number);
+      const date = new Date(2000 + yy, MM - 1, dd);
+
+      // Get start (Monday) and end (Sunday) of the week
+      const day = date.getDay() || 7; // Sunday = 0, change to 7 for ISO week
+      const start = new Date(date);
+      start.setDate(date.getDate() - day + 1);
+      const end = new Date(start);
+      end.setDate(start.getDate() + 6);
+
+      // Format as "yy-MM-dd"
+      const fmt = d => `${String(d.getFullYear()).slice(-2)}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      const startDate = fmt(start);
+      const endDate = fmt(end);
+
+      // Query for week range
+      const query = db.prepare(`
+      SELECT SUM(subtotal) AS total 
+      FROM Sales_items SI 
+      INNER JOIN Sales S ON SI.sale_id = S.sale_id 
+      WHERE SI.sale_type = ? AND S.sales_date BETWEEN ? AND ?
+    `);
+
+      return query.all([type, startDate, endDate]);
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  }
 };
 
 

@@ -145,7 +145,7 @@ if (supplierCount === 0) {
     `);
 
     const suppliers = [
-        [1, "WAMCO", "Wall street", "626228282828"],
+        [1, "WAMCO", "", ""],
         [2, "AAVA NIVEA", "", ""],
         [3, "AAVA NON-NIVEA", "", ""],
         [4, "RECKITT", "", ""],

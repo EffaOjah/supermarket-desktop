@@ -304,7 +304,7 @@ async function viewSaleInvoice(saleId) {
                     <th>PURCHASE TYPE</th>
                     <th>QUANTITY</th>
                     <th>PRICE PER QUANTITY</th>
-                    <th>PRICE</th>
+                    <th>TOTAL PRICE</th>
                     <th>DISCOUNT RATE</th>
                     <th>DISCOUNTED VALUE</th>
                     <th>NET PAY</th>

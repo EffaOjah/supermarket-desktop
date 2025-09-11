@@ -183,53 +183,52 @@ document.querySelector(".select-supplier-div").addEventListener("click", (event)
 
 // Function to show invoice
 async function viewSaleInvoice(saleId) {
-  const invoiceHolder = document.getElementById("invoiceHolder");
+  const invoiceHolder = document.getElementById('invoiceHolder');
 
-  invoiceHolder.innerHTML = "";
+  invoiceHolder.innerHTML = '';
 
-  let saleDetails = await window.sqlite.storeManager(
-    "getSaleItemsByProductId",
-    saleId
-  );
-  console.log(saleDetails);
+  let saleDetails = await window.sqlite.storeManager('getSaleItems', saleId);
+  console.log(saleId, 'saleDetails: ', saleDetails);
 
-  document.getElementById('branch').innerHTML = branchName;
+  let theBranchName = branchName;
+  document.getElementById('branch').innerHTML = theBranchName == 'MARYBILL MABILCO VENTURES' || theBranchName == 'MABILCO ENTERPRISE' ? branchName : `MaryBill Conglomerate | ${branchName}`;
+
   document.getElementById('customer').innerHTML = saleDetails[0].name;
   document.getElementById('paymentMethod').innerHTML = saleDetails[0].payment_method;
   document.getElementById('saleDate').innerHTML = saleDetails[0].sales_date;
 
-  const newDiv = document.createElement("div");
+  const newDiv = document.createElement('div');
   newDiv.innerHTML = `
         <table id="saleDetailTable" class="table table-bordered invoice-details">
                       <thead>
-                        <tr>
-                          <th>ITEMS</th>
-                          <th>PURCHASE TYPE</th>
-                          <th>QUANTITY</th>
-                          <th>PRICE</th>
-                          <th>DISCOUNT</th>
-                          <th>SUB TOTAL</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        ${saleDetails
-      .map(
-        (sale) => `
-                          <tr>
-                          <td>${sale.product_name}</td>
-                          <td>${sale.sale_type}</td>
-                          <td>${sale.quantity}</td>
-                          <td>₦${sale.unit_price}</td>
-                          <td>${sale.discount}%</td>
-                          <td>₦${sale.quantity * sale.unit_price}</td>
-                          </tr>
-        
-                          `
-      )
-      .join("")}
-                      </tbody>
+                <tr>
+                    <th>S/N</th>
+                    <th>ITEMS</th>
+                    <th>PURCHASE TYPE</th>
+                    <th>QUANTITY</th>
+                    <th>PRICE PER QUANTITY</th>
+                    <th>TOTAL PRICE</th>
+                    <th>DISCOUNT RATE</th>
+                    <th>DISCOUNT VALUE</th>
+                    <th>NET PAY</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${saleDetails.map((sale, index) => `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${sale.product_name}</td>
+                        <td>${sale.sale_type}</td>
+                        <td>${sale.quantity}</td>
+                        <td>₦${sale.unit_price}</td>
+                        <td>₦${sale.quantity * sale.unit_price}</td>
+                        <td>${sale.discount}%</td>
+                        <td>₦${((sale.discount / 100) * (sale.quantity * sale.unit_price)).toFixed(2)}</td>
+                        <td>₦${(sale.quantity * sale.unit_price) - (sale.discount / 100 * (sale.quantity * sale.unit_price))}</td>
+                    </tr>`).join("")}
+            </tbody>
           </table>
-          <p class="fs-6 text-end">Total: ₦${saleDetails[0].total_amount}</p>`;
+          <p class="fs-6 text-end">Total: ₦${saleDetails[0].total_amount}</p>`
 
   invoiceHolder.appendChild(newDiv);
 }

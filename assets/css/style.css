@@ -357,3 +357,41 @@ input:disabled, select:disabled {
         .cart-th {
             font-size: 15px;
         }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            margin-top: 10px;
+        }
+        .date-range-input {
+            width: 200px;
+            /* padding: 5px; */
+            font-size: 12px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .date-range-container {
+      display: flex;
+      flex-direction: row;
+      gap: 50px;
+      /* max-width: 550px; */
+    }
+
+    select, input {
+      padding: 8px;
+      font-size: 14px;
+      width: 100%;
+      height: 40px;
+      box-sizing: border-box;
+    }
+
+    label {
+      font-weight: bold;
+    }   
+    .custom-range, .cdr {
+      display: none;
+      gap: 10px;
+    }
+    .custom-range input {
+      flex: 1;
+    }

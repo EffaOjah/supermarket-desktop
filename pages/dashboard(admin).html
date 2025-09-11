@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; connect-src 'self' https://web.marybillconglomerate.com.ng;">
+    <title>Mary Bill Conglomerate Ltd</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <!-- Icon Font Stylesheet -->
+    <link rel="stylesheet" href="../assets/font-awesome/css/all.min.css">
+    <link href="../assets/css/bootstrap.css" rel="stylesheet">
+    <link href="../assets/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-fluid position-relative d-flex p-0">
+        <!-- Sidebar -->
+        <div class="sidebar pe-4 pb-3">
+            <nav class="navbar bg-secondary navbar-dark">
+                <span class="navbar-brand mx-4 mb-3">
+                    <h6 id="branchName" class="text-primary">Mary Bill <br> Conglomerate Ltd</h6>
+                </span>
+                <div class="d-flex align-items-center ms-4 mb-4">
+                    <div class="position-relative">
+                        <img class="rounded-circle chUser1" src="../assets/img/user-icon.png" alt="">
+                        <div
+                            class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1">
+                        </div>
+                    </div>
+                    <div class="ms-3">
+                        <h6 class="mb-0">Sales Rep</h6>
+                        <span>sales rep</span>
+                    </div>
+                </div>
+
+                <div class="navbar-nav w-100">
+                    <span class="nav-item nav-link active navs">
+                        <i class="fa fa-tachometer-alt me-2"></i>Dashboard(admin)
+                    </span>
+                    <span class="nav-link nav-item navs"><i class="fa fa-table me-2"></i>Products(admin)</span>
+                    <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Stocking(admin)</span>
+                    <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Sales(admin)</span>
+                    <span class="nav-item nav-link navs"><i class="fa fa-table mez-2"></i>Customers(admin)</span>
+                    <span class="nav-item nav-link navs"><i class="fa fa-table me-2"></i>Suppliers(admin)</span>
+                    <span class="nav-item nav-link sign-out-nav"><i class="fa fa-chart-bar me-2"></i>Sign Out</span>
+                </div>
+            </nav>
+        </div>
+        <!-- Sidebar End -->
+
+        <!-- Content Start -->
+        <div class="content">
+            <!-- Navbar -->
+            <nav class="navbar navbar-expand bg-secondary navbar-dark sticky-top px-4 py-0">
+                <span class="navbar-brand d-flex d-lg-none me-4">
+                    <h2 class="text-primary mb-0"><i class="fa fa-user-edit"></i></h2>
+                </span>
+                <span class="sidebar-toggler flex-shrink-0"><i class="fa fa-bars"></i></span>
+                <form class="d-none d-md-flex ms-4">
+                    <input class="form-control bg-dark border-0" type="search" placeholder="Search">
+                </form>
+                <div class="navbar-nav align-items-center ms-auto">
+                    <div class="nav-item dropdown">
+                        <span class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
+                                class="fa fa-envelope me-lg-2"></i><span
+                                class="d-none d-lg-inline-flex">Message</span></span>
+                        <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                            <span class="dropdown-item">No new message</span>
+                        </div>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <span class="nav-link dropdown-toggle" data-bs-toggle="dropdown"><i
+                                class="fa fa-bell me-lg-2"></i><span
+                                class="d-none d-lg-inline-flex">Notification</span></span>
+                        <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                            <span class="dropdown-item">No notifications</span>
+                        </div>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <span class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
+                            <img class="rounded-circle me-lg-2 chUser1" src="../assets/img/user-icon.png" alt="">
+                            <span class="d-none d-lg-inline-flex">Sales Rep</span>
+                        </span>
+                        <div class="dropdown-menu dropdown-menu-end bg-secondary border-0 rounded-0 rounded-bottom m-0">
+                            <span class="dropdown-item">My Profile</span>
+                            <span class="dropdown-item">Settings</span>
+                            <span class="dropdown-item">Log Out</span>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Sale & Revenue Start -->
+            <div class="container-fluid pt-4 px-4">
+                <h5 class="mb-4">Sales Analysis</h5>
+
+                <div class="row g-4">
+                    <div class="col-sm-6 col-xl-6">
+                        <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                            <i class="fa fa-chart-line fa-3x text-primary"></i>
+                            <div class="ms-3">
+                                <p class="mb-2">Total <span class="text-white">Retail</span> Sales Today</p>
+                                <h6 class="mb-0">₦ <span id="retailAmountToday">0,00</span></h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-6">
+                        <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                            <i class="fa fa-chart-line fa-3x text-primary"></i>
+                            <div class="ms-3">
+                                <p class="mb-2">Total <span class="text-white">Wholesale</span> Sales Today</p>
+                                <h6 class="mb-0">₦ <span id="wholesaleAmountToday">0,00</span></h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                </div>
+            </div>
+
+            <br><br>
+            <!-- Date Range Revenue -->
+            <h6 class="mb-2 ms-4">Select Date Range for Sales Analysis</h6>
+            <div class="date-range-container pt-2 px-4">
+                <div>
+                    <label for="dateRange">Select Date Range:</label>
+                    <select id="dateRange">
+                        <option value="">-- Select Range --</option>
+                        <option value="yesterday">Yesterday</option>
+                        <option value="last7">Last 7 Days</option>
+                        <option value="last30">Last 30 Days</option>
+                        <option value="thisMonth">This Month</option>
+                        <option value="lastMonth">Last Month</option>
+                        <option value="thisYear">This Year</option>
+                        <option value="lastYear">Last Year</option>
+                        <option value="custom">Custom Range</option>
+                    </select>
+                </div>
+
+                <!-- Custom date pickers -->
+                <div>
+                    <label for="customRange" class="cdr">Custom Date Range:</label>
+                    <div class="custom-range" id="customRange">
+                        <input type="date" id="customStart">
+                        <input type="date" id="customEnd">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="dateInput">Date Range:</label>
+                    <input type="text" id="dateInput" placeholder="YYYY-MM-DD - YYYY-MM-DD" readonly />
+                </div>
+            </div>
+
+            <!-- Analysis gotten from daterange -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4 d-none" id="dateRangeAnalysis">
+                    <div class="col-sm-6 col-xl-6">
+                        <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                            <i class="fa fa-chart-line fa-3x text-primary"></i>
+                            <div class="ms-3">
+                                <p class="mb-2 text-white">Total Retail Sales</p>
+                                <h6 class="mb-0">₦ <span id="retailAmountFromRange">0,00</span></h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-6">
+                        <div class="bg-secondary rounded d-flex align-items-center justify-content-between p-4">
+                            <i class="fa fa-chart-line fa-3x text-primary"></i>
+                            <div class="ms-3">
+                                <p class="mb-2 text-white">Total Wholesale Sales</p>
+                                <h6 class="mb-0">₦ <span id="wholesaleAmountFromRange">0,00</span></h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End of Analysis -->
+
+            <!-- Invoice Modal -->
+            <div class="modal fade bg-secondary" id="invoiceModal" tabindex="-1" aria-labelledby="invoiceModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content modal-dialog-scrollable">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="invoiceModalLabel">Invoice</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="printableInvoice" class="invoice-box">
+                                <div class="row invoice-header align-items-center">
+                                    <div class="col-6"><img src="../resources/app-icon.jpg" alt="Invoice Icon" /><span
+                                            class="invoice-title ms-2">Invoice</span>
+                                    </div>
+                                    <div class="col-6 text-end"><strong id="branch">Mary Bill
+                                            Conglomerate</strong><br>Nigeria</div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-6"><strong>BILL TO:</strong><br>
+                                        <p><strong>Customer: </strong><span id="customer">Walk in
+                                                customer</span><br><strong>Payment method:
+                                            </strong><span id="paymentMethod">Cash</span></p>
+                                    </div>
+                                    <div class="col-6 text-end"><strong>DATE:</strong> <span id="saleDate"></span>
+                                    </div>
+                                </div>
+                                <div id="invoiceHolder" class="table-responsive mb-4"></div>
+                                <button id="printBtn" class="btn invoice-print-btn form-control">Print
+                                    invoice</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br><br><br><br><br>
+
+            <!-- Footer -->
+            <div class="container-fluid p-0 mt-5 footer">
+                <div class="bg-secondary rounded-top p-4 container-fluid">
+                    <div class="row container-fluid">
+                        <div class="col-12 col-sm-6 text-center text-sm-start">&copy; Mary Bill Conglomerate Ltd.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="../assets/jquery/dist/jquery-3.7.1.min.js"></script>
+    <script src="../assets/bootstrap-5.3.3-dist/js/bootstrap.min.js"></script>
+    <script src="../renderer/dashboard(admin).js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/daterange(admin).js"></script>
+    <script src="../assets/js/requests.js"></script>
+</body>
+
+</html>
