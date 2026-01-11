@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'self' https://web.marybillconglomerate.com.ng; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net;"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marybill Conglomerate</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link
+      rel="stylesheet"
+      href="../assets/bootstrap/icons/bootstrap-icons.css"
+    />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+
+  <body>
+    <div class="app-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header m-2 p-3 position-relative">
+          <button class="sidebar-close-btn d-lg-none">
+            <i class="bi bi-x-lg"></i>
+          </button>
+          <a href="#dashboard" class="brand-logo">
+            <img
+              src="../assets/images/app-icon.jpg"
+              alt="app-logo"
+              width="30"
+              height="30"
+              class="d-inline-block align-top rounded"
+            />
+            <h5 class="ms-2" id="branchName">Marybill</h5>
+          </a>
+        </div>
+        <ul class="nav-links m-2">
+          <li class="nav-item">
+            <a href="#dashboard" class="nav-link" data-page="dashboard">
+              <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#new-sale" class="nav-link" data-page="new-sale">
+              <i class="bi bi-cart3"></i> New Sale
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#products" class="nav-link" data-page="products">
+              <i class="bi bi-boxes"></i> Products
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#customers" class="nav-link" data-page="customers">
+              <i class="bi bi-people"></i> Customers
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#sales-history" class="nav-link" data-page="sales-history">
+              <i class="bi bi-receipt"></i> Sales History
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="#stocking" class="nav-link" data-page="stocking">
+              <i class="bi bi-box-seam"></i> Stocking
+            </a>
+          </li>
+        </ul>
+        <div class="sidebar-footer">
+          <div class="px-3 mb-2 small text-muted opacity-50">
+            v<span class="app-version">...</span>
+          </div>
+          <a href="login.html" class="nav-link text-danger sign-out-nav">
+            <i class="bi bi-box-arrow-left"></i> Logout
+          </a>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Navbar -->
+        <nav class="top-navbar">
+          <div class="navbar-left">
+            <button class="menu-toggle">
+              <i class="bi bi-list"></i>
+            </button>
+            <h3>Marybill Conglomerate Ltd</h3>
+          </div>
+
+          <div class="navbar-right">
+            <div class="user-profile dropdown">
+              <div class="avatar">SM</div>
+              <div class="user-info">
+                <span class="user-name">Sales Manager</span>
+              </div>
+              <i class="bi bi-chevron-down ms-1 text-muted small"></i>
+            </div>
+          </div>
+        </nav>
+
+        <!-- Dynamic Content Container -->
+        <div id="app-content">
+          <!-- Content will be loaded here dynamically -->
+        </div>
+      </main>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="../assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Background Sync Service -->
+    <script src="../assets/js/requests.js"></script>
+
+    <!-- Router Script -->
+    <script src="../assets/js/router.js"></script>
+    <script src="../renderer/dashboard.js"></script>
+    <script src="../renderer/newSale.js"></script>
+    <script src="../renderer/customers.js"></script>
+    <script src="../renderer/sales.js"></script>
+    <script src="../renderer/stocking.js"></script>
+    <script src="../renderer/products.js"></script>
+
+    <!-- main.js -->
+    <script src="../assets/js/main.js"></script>
+  </body>
+</html>

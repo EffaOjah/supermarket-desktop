@@ -16,6 +16,7 @@ export default {
       config: {
         name: "Marybill_Conglomerate", // Should match executable
         setupIcon: "resources/installer-icon.ico",
+        iconUrl: "https://web.marybillconglomerate.com.ng/updates/app_icon.ico",
         shortcutName: "Marybill Conglomerate",
         shortcutFolderName: "Marybill Conglomerate Ltd",
         executableName: "Marybill_Conglomerate",

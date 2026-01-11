@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Updating...</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      margin: 0;
+    }
+
+    #bar-container {
+      width: 80%;
+      height: 20px;
+      background: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    #bar {
+      height: 100%;
+      width: 0%;
+      background: #4caf50;
+      transition: width 0.3s;
+    }
+
+    #percent {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <h3>Downloading update...</h3>
+  <div id="bar-container">
+    <div id="bar"></div>
+  </div>
+  <div id="percent">0%</div>
+
+  <script>
+    const { ipcRenderer } = require("electron");
+
+    ipcRenderer.on("progress-update", (event, percent) => {
+      document.getElementById("bar").style.width = percent + "%";
+      document.getElementById("percent").innerText = percent + "%";
+    });
+  </script>
+</body>
+
+</html>

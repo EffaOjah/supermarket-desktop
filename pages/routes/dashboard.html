@@ -1,0 +1,93 @@
+<div class="content-wrapper">
+  <div class="mb-4">
+    <h1 class="page-title mb-1" id="dashboardGreeting">Good Morning, John</h1>
+    <p class="text-muted" id="dashboardDate">
+      Here's what's happening today, Dec 23, 2025
+    </p>
+  </div>
+
+  <!-- Top Stats Row -->
+  <div class="row g-4 mb-4">
+    <!-- Daily Sales -->
+    <div class="col-md-4">
+      <div class="card-custom p-4 h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="text-muted small text-uppercase fw-bold">Daily Sales</div>
+          <div class="p-2 bg-success bg-opacity-10 text-success rounded-circle">
+            <i class="bi bi-cash-stack"></i>
+          </div>
+        </div>
+        <h3 class="fw-bold mb-0" id="statsDailySales">₦0.00</h3>
+        <div class="small text-muted mt-2">Total Revenue Today</div>
+      </div>
+    </div>
+    <!-- Transactions -->
+    <div class="col-md-4">
+      <div class="card-custom p-4 h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="text-muted small text-uppercase fw-bold">
+            Transactions
+          </div>
+          <div class="p-2 bg-primary bg-opacity-10 text-primary rounded-circle">
+            <i class="bi bi-receipt"></i>
+          </div>
+        </div>
+        <h3 class="fw-bold mb-0" id="statsTransactions">0</h3>
+        <div class="small text-muted mt-2">Sales Completed Today</div>
+      </div>
+    </div>
+    <!-- Low Stock -->
+    <div class="col-md-4">
+      <div class="card-custom p-4 h-100 border-start border-4 border-danger">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="text-muted small text-uppercase fw-bold">Low Stock</div>
+          <div class="p-2 bg-danger bg-opacity-10 text-danger rounded-circle">
+            <i class="bi bi-exclamation-triangle"></i>
+          </div>
+        </div>
+        <h3 class="fw-bold mb-0 text-danger" id="statsLowStock">0 Items</h3>
+        <div class="small text-muted mt-2">Need Attention</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <div class="row g-4">
+    <!-- Quick Actions -->
+    <div class="col-lg-12">
+      <div class="card-custom p-4">
+        <h5 class="card-title mb-4">Quick Actions</h5>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <a href="#new-sale" class="btn btn-primary-custom w-100 shadow-sm">
+              <div
+                class="d-flex align-items-center justify-content-center gap-2"
+              >
+                <i class="bi bi-plus-lg"></i>
+                New Sale
+              </div>
+            </a>
+          </div>
+          <div class="col-md-4">
+            <a href="#products" class="btn btn-outline-primary w-100 shadow-sm">
+              <i class="bi bi-boxes me-2"></i> View Products
+            </a>
+          </div>
+          <div class="col-md-4">
+            <a href="#stocking" class="btn btn-outline-primary w-100 shadow-sm">
+              <i class="bi bi-box-seam me-2"></i> Stocking History
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<footer class="app-footer">
+  <div class="footer-content">
+    <p class="mb-0 text-muted small">
+      &copy; 2025 Marybill Conglomerate Ltd. All rights reserved.
+      <span class="app-version opacity-50">v...</span>
+    </p>
+  </div>
+</footer>

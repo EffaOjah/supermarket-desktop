@@ -1,0 +1,237 @@
+<div class="content-wrapper">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="page-title mb-0">Products</h1>
+  </div>
+
+  <!-- Filters & Actions -->
+  <div class="card-custom mb-3 h-auto">
+    <div class="p-3">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0">
+              <i class="bi bi-search text-muted"></i>
+            </span>
+            <input
+              type="text"
+              id="productSearchInput"
+              class="form-control border-start-0 ps-0"
+              placeholder="Search products..."
+            />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" id="productCategorySelect">
+            <option value="" selected>All Categories</option>
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" id="productSupplierSelect">
+            <option value="" selected>All Suppliers</option>
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Products Table -->
+  <div class="card-custom">
+    <div class="table-responsive">
+      <table class="table table-custom table-hover align-middle">
+        <thead>
+          <tr>
+            <th class="col-sn">S/N</th>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Supplier</th>
+            <th class="text-end">Wholesale Price</th>
+            <th class="text-center">Wholesale Qty</th>
+            <th class="text-end">Retail Price</th>
+            <th class="text-center">Retail Qty</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody id="productTableBody">
+          <!-- Dynamically populated -->
+        </tbody>
+      </table>
+    </div>
+    <!-- Pagination -->
+    <div
+      class="d-flex justify-content-between align-items-center p-3 border-top"
+    >
+      <div class="text-muted small" id="productPaginationInfo">
+        Showing 0 to 0 of 0 entries
+      </div>
+      <nav>
+        <ul
+          class="pagination pagination-sm mb-0"
+          id="productPaginationControls"
+        >
+          <!-- Dynamically populated -->
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!-- All Sales Modal -->
+<div
+  class="modal fade"
+  id="allsales"
+  tabindex="-1"
+  aria-labelledby="allsalesLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header bg-light py-3">
+        <h5 class="modal-title fw-bold" id="allsalesLabel">
+          Product Sales History
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body p-4">
+        <div id="detailsHolder">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Invoice Modal -->
+<div class="modal fade" id="invoiceModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-primary text-white border-0 py-3">
+        <h5 class="modal-title fw-bold">
+          <i class="bi bi-receipt-cutoff me-2"></i> Sale Invoice
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body p-4" id="printableInvoice">
+        <!-- Invoice Header -->
+        <div class="d-flex justify-content-between align-items-start mb-4">
+          <div class="d-flex align-items-center">
+            <img
+              src="../assets/images/app-icon.jpg"
+              alt="Logo"
+              class="rounded me-3"
+              width="60"
+              height="60"
+            />
+            <div>
+              <h3 class="fw-bold text-primary mb-1">
+                Marybill Conglomerate Ltd.
+              </h3>
+              <p class="fw-bold text-muted small mb-0" id="invoiceBranchName">
+                Branch Name
+              </p>
+            </div>
+          </div>
+          <div class="text-end">
+            <h4 class="text-uppercase text-muted fw-bold mb-1">Receipt</h4>
+            <p class="mb-0 fw-bold" id="invoiceId">#Sale-0000</p>
+            <p class="text-muted small" id="invoiceDate">Date: 2025-12-23</p>
+          </div>
+        </div>
+
+        <hr class="my-4" />
+
+        <!-- Bill To / Info -->
+        <div class="row mb-4">
+          <div class="col-6">
+            <h6 class="text-uppercase text-muted fw-bold small mb-2">
+              Customer Info
+            </h6>
+            <p class="fw-bold mb-1" id="invoiceCustomerName">
+              Walk-in Customer
+            </p>
+            <p class="text-muted small mb-0" id="invoiceCustomerPhone">N/A</p>
+          </div>
+          <div class="col-6 text-end">
+            <h6 class="text-uppercase text-muted fw-bold small mb-2">
+              Payment Info
+            </h6>
+            <p class="mb-1">
+              Method:
+              <span class="fw-bold" id="invoicePaymentMethod">Cash</span>
+            </p>
+            <p class="text-success fw-bold mb-0">Status: PAID</p>
+          </div>
+        </div>
+
+        <!-- Sales Table -->
+        <div id="invoiceHolder">
+          <!-- Dynamic table will be inserted here -->
+        </div>
+
+        <!-- Summary -->
+        <div class="row justify-content-end mt-4">
+          <div class="col-md-5">
+            <div class="d-flex justify-content-between mb-2">
+              <span class="text-muted">Subtotal:</span>
+              <span class="fw-bold" id="invoiceSubtotal">₦0.00</span>
+            </div>
+            <div class="d-flex justify-content-between mb-2 text-success">
+              <span>Total Discount:</span>
+              <span class="fw-bold" id="invoiceTotalDiscount">-₦0.00</span>
+            </div>
+            <div class="d-flex justify-content-between border-top pt-2">
+              <span class="fw-bold fs-5">Total Amount:</span>
+              <span class="fw-bold fs-5 text-primary" id="invoiceTotal"
+                >₦0.00</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-5 pt-4 border-top text-center text-muted small">
+          <p class="mb-1">Thank you for your patronage!</p>
+          <p>This is a computer-generated receipt.</p>
+        </div>
+      </div>
+      <div class="modal-footer border-0 pb-4">
+        <button
+          type="button"
+          class="btn btn-light px-4"
+          data-bs-dismiss="modal"
+        >
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-primary px-4"
+          id="downloadInvoiceBtn"
+        >
+          <i class="bi bi-download me-1"></i> Download
+        </button>
+        <button type="button" class="btn btn-primary px-4" id="printInvoiceBtn">
+          <i class="bi bi-printer me-1"></i> Print Receipt
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="app-footer">
+  <div class="footer-content">
+    <p class="mb-0 text-muted small">
+      &copy; 2025 Marybill Conglomerate Ltd. All rights reserved.
+      <span class="app-version opacity-50">v...</span>
+    </p>
+  </div>
+</footer>

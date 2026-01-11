@@ -1,0 +1,147 @@
+<div class="content-wrapper">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="page-title mb-0">Customers</h1>
+    <button
+      class="btn btn-primary d-flex align-items-center"
+      id="openCustomerModalBtn"
+    >
+      <i class="bi bi-person-plus me-2"></i> New Customer
+    </button>
+  </div>
+
+  <!-- Filters & Actions -->
+  <div class="card-custom mb-3 h-auto">
+    <div class="p-3">
+      <div class="row g-3">
+        <div class="col-md-4">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0">
+              <i class="bi bi-search text-muted"></i>
+            </span>
+            <input
+              type="text"
+              id="customerSearchInput"
+              class="form-control border-start-0 ps-0"
+              placeholder="Search customers..."
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Customers Table -->
+  <div class="card-custom">
+    <div class="table-responsive">
+      <table class="table table-custom table-hover align-middle">
+        <thead>
+          <tr>
+            <th class="col-sn">S/N</th>
+            <th>Customer Name</th>
+            <th>Phone</th>
+            <th>Address</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody id="customerTableBody">
+          <!-- Dynamically populated -->
+        </tbody>
+      </table>
+    </div>
+    <!-- Pagination -->
+    <div
+      class="d-flex justify-content-between align-items-center p-3 border-top"
+    >
+      <div class="text-muted small" id="customerPaginationInfo">
+        Showing 0 to 0 of 0 entries
+      </div>
+      <nav>
+        <ul
+          class="pagination pagination-sm mb-0"
+          id="customerPaginationControls"
+        >
+          <!-- Dynamically populated -->
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<!-- Customer Modal (Add/Edit) -->
+<div class="modal fade" id="customerModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-primary text-white border-0 py-3">
+        <h5 class="modal-title fw-bold" id="customerModalTitle">
+          <i class="bi bi-person-plus me-2"></i> New Customer
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body p-4">
+        <form id="customerForm">
+          <input type="hidden" id="customerId" />
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Full Name</label>
+            <input
+              type="text"
+              class="form-control"
+              id="customerName"
+              placeholder="e.g. John Doe"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Phone Number</label>
+            <input
+              type="tel"
+              class="form-control"
+              id="customerContact"
+              placeholder="e.g. +234 800 000 0000"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Home/Office Address</label>
+            <textarea
+              class="form-control"
+              id="customerAddress"
+              rows="3"
+              placeholder="Enter full address..."
+            ></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-0 pb-4 pt-0">
+        <button
+          type="button"
+          class="btn btn-light px-4"
+          data-bs-dismiss="modal"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          form="customerForm"
+          class="btn btn-primary px-4 shadow-sm"
+          id="saveCustomerBtn"
+        >
+          Save Customer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="app-footer">
+  <div class="footer-content">
+    <p class="mb-0 text-muted small">
+      &copy; 2025 Marybill Conglomerate Ltd. All rights reserved.
+      <span class="app-version opacity-50">v...</span>
+    </p>
+  </div>
+</footer>

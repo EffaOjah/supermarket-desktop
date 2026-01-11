@@ -1,246 +1,212 @@
-// let retryIntervalOne = null;
+/**
+ * SyncService - Managed background synchronization for Marybill Conglomerate SPA
+ */
+(function () {
+  'use strict';
 
-// async function tryFetchProducts() {
-//   if (!navigator.onLine) {
-//     console.log("Offline — will retry...");
-//     return;
-//   }
+  window.SyncService = {
+    branchId: null,
+    intervals: {
+      stocking: null,
+      sales: null
+    },
+    isRunning: false,
 
-//   // Get last synced
-//   const lastSyncedDate = await window.sqlite.storeManager("getLastSynced");
-//   console.log(lastSyncedDate);
+    /**
+     * Initialize the sync service
+     */
+    async init() {
+      if (this.isRunning) return;
 
-//   // Fetch data from Electron (main process)
-//   const data = await window.electronAPI.syncProducts(
-//     lastSyncedDate[0].lastSyncedDate
-//   );
+      console.log("Initializing SyncService...");
 
-//   if (data?.error) {
-//     console.error("Failed to fetch:", data.message);
-//     return;
-//   }
+      try {
+        // Fetch branch details to get branchId
+        const details = await window.electronAPI.getSoftwareDetails();
+        if (details && details.branchId) {
+          this.branchId = details.branchId;
+          console.log("SyncService: Branch activated. Ready to sync.");
+        } else {
+          console.warn("SyncService: Branch not activated. Syncing will be skipped.");
+        }
 
-//   console.log(data);
+        this.isRunning = true;
 
-//   clearInterval(retryIntervalOne);
+        // Start background intervals
+        this.startBackgroundTasks();
 
-//   if (!data.products) {
-//     console.log("There are no pending stocks");
-//     return;
-//   }
+        // Run initial sync
+        await this.syncAll();
 
-//   for (const product of data.products) {
-//     console.log(product.product_name, product.product_id);
+      } catch (error) {
+        console.error("SyncService Initialization Error:", error);
+      }
+    },
 
-//     const checkStock = await window.sqlite.storeManager(
-//       "checkTheStock",
-//       product.product_id
-//     );
-//     console.log(checkStock);
+    /**
+     * Trigger an immediate sync of all items
+     * Useful for page transitions to ensure fresh data
+     */
+    async syncAll() {
+      if (!this.branchId) {
+        // Refresh branch ID in case the user just activated
+        const details = await window.electronAPI.getSoftwareDetails();
+        if (details && details.branchId) {
+          this.branchId = details.branchId;
+        } else {
+          return; // Still no branch ID, skip
+        }
+      }
 
-//     if (checkStock.length > 0) {
-//       console.log("Product already exists");
-//       const updateProduct = await window.sqlite.storeManager(
-//         "updateProduct",
-//         checkStock[0].product_id,
-//         product.product_name,
-//         product.wholesale_price,
-//         product.retail_price,
-//         product.category
-//       );
-//       console.log(updateProduct);
-//     } else {
-//       const insertProducts = await window.sqlite.storeManager(
-//         "addProduct",
-//         product.product_id,
-//         product.product_name,
-//         product.wholesale_price,
-//         product.retail_price,
-//         product.supplier_id,
-//         product.category
-//       );
-//       console.log(insertProducts);
-//     }
-//   }
-// }
+      console.log("SyncService: Triggering immediate sync...");
+      await Promise.allSettled([
+        this.getProducts(),
+        this.tryFetchPendingStocking(),
+        this.syncSales()
+      ]);
+    },
 
-// // Try every 8 seconds
-// retryIntervalOne = setInterval(tryFetchProducts, 8000);
+    /**
+     * Set up background intervals
+     */
+    startBackgroundTasks() {
+      // Clear existing if any
+      if (this.intervals.stocking) clearInterval(this.intervals.stocking);
+      if (this.intervals.sales) clearInterval(this.intervals.sales);
 
-let retryInterval = null;
+      // Try fetch stocking every 10 seconds
+      this.intervals.stocking = setInterval(() => this.tryFetchPendingStocking(), 10000);
 
-async function tryFetchPendingStocking() {
-  const date = new Date();
-  let timeStamp = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-  console.log('Date: ', timeStamp);
+      // Sync sales every 5 minutes
+      this.intervals.sales = setInterval(() => this.syncSales(), 300000);
+    },
 
-  if (!navigator.onLine) {
-    console.log("Offline — will retry...");
-    return;
-  }
+    /**
+     * Fetch current products from server
+     */
+    async getProducts() {
+      if (!navigator.onLine) return;
 
-  // Fetch data from Electron (main process)
-  const data = await window.electronAPI.stockProducts();
+      console.log("SyncService: Syncing products...");
+      const response = await window.electronAPI.getAllProducts();
 
-  if (data?.error) {
-    console.error("Failed to fetch:", data.message);
-    return;
-  }
+      if (response?.error || !response?.products) {
+        console.error("SyncService: Product sync failed", response?.message);
+        return;
+      }
 
-  clearInterval(retryInterval);
+      for (const product of response.products) {
+        const checkStock = await window.sqlite.storeManager("checkTheStock", product.product_id);
 
-  if (!data.pendingStock) {
-    console.log("There are no pending stocks");
-    return;
-  }
+        if (checkStock.length > 0) {
+          await window.sqlite.storeManager(
+            "updateProduct",
+            checkStock[0].product_id,
+            product.product_name,
+            product.wholesale_cost_price,
+            product.wholesale_selling_price,
+            product.retail_cost_price,
+            product.retail_selling_price,
+            product.category
+          );
+        } else {
+          await window.sqlite.storeManager(
+            "addProduct",
+            product.product_id,
+            product.product_name,
+            product.wholesale_cost_price,
+            product.wholesale_selling_price,
+            product.retail_cost_price,
+            product.retail_selling_price,
+            product.supplier_id,
+            product.category
+          );
+        }
+      }
+    },
 
-  console.log(data);
+    /**
+     * Fetch pending stockings for the branch
+     */
+    async tryFetchPendingStocking() {
+      if (!navigator.onLine || !this.branchId) return;
 
-  // Insert into the Stocking table
-  const newStocking = await window.sqlite.storeManager("insertNewStocking", timeStamp, data.pendingStock.length);
-  console.log('New stocking: ', newStocking);
+      const timeStamp = new Date().toISOString();
+      const data = await window.electronAPI.stockProducts();
 
-  for (const stock of data.pendingStock) {
-    console.log(stock.product_name, stock.product_id);
+      if (data?.error || !data.pendingStock || data.pendingStock.length === 0) {
+        return;
+      }
 
-    const checkStock = await window.sqlite.storeManager(
-      "checkTheStock",
-      stock.product_id
-    );
-    console.log(checkStock);
+      console.log("SyncService: Found pending stockings:", data.pendingStock.length);
 
-    if (checkStock.length > 0) {
-      console.log("Product already exists");
-      const updateProduct = await window.sqlite.storeManager(
-        "updatestockQuantity",
-        checkStock[0].product_id,
-        stock.stock_quantity_wholesale,
-        stock.stock_quantity_retail
-      );
-      console.log(updateProduct);
-    } else {
-      const insertProducts = await window.sqlite.storeManager(
-        "stockBranch",
-        stock.product_id,
-        stock.product_name,
-        stock.wholesale_cost_price,
-        stock.wholesale_selling_price,
-        stock.retail_cost_price,
-        stock.retail_selling_price,
-        stock.stock_quantity_wholesale,
-        stock.stock_quantity_retail,
-        stock.supplier_id,
-        stock.category
-      );
-      console.log(insertProducts);
+      // Insert into the Stocking table
+      const newStocking = await window.sqlite.storeManager("insertNewStocking", timeStamp, data.pendingStock.length);
+
+      for (const stock of data.pendingStock) {
+        const checkStock = await window.sqlite.storeManager("checkTheStock", stock.product_id);
+
+        if (checkStock.length > 0) {
+          await window.sqlite.storeManager(
+            "updatestockQuantity",
+            checkStock[0].product_id,
+            stock.stock_quantity_wholesale,
+            stock.stock_quantity_retail
+          );
+        } else {
+          await window.sqlite.storeManager(
+            "stockBranch",
+            stock.product_id,
+            stock.product_name,
+            stock.wholesale_cost_price,
+            stock.wholesale_selling_price,
+            stock.retail_cost_price,
+            stock.retail_selling_price,
+            stock.stock_quantity_wholesale,
+            stock.stock_quantity_retail,
+            stock.supplier_id,
+            stock.category
+          );
+        }
+
+        // Insert the stock item
+        await window.sqlite.storeManager(
+          "insertNewStockItem",
+          newStocking.lastInsertRowid,
+          stock.product_id,
+          stock.stock_quantity_wholesale,
+          stock.stock_quantity_retail
+        );
+      }
+
+      // Send notification
+      new Notification("Marybill Conglomerate!", {
+        body: `${data.pendingStock.length} products have been stocked.`,
+        icon: "../resources/app-icon.jpg"
+      });
+    },
+
+    /**
+     * Sync local sales to the server
+     */
+    async syncSales() {
+      if (!navigator.onLine || !this.branchId) return;
+
+      console.log("SyncService: Syncing sales to server...");
+      const sales = await window.sqlite.storeManager("getSalesForSyncing");
+      const sales2 = await window.sqlite.storeManager("getSalesForSyncing2");
+
+      if (sales.length === 0) return;
+
+      const data = { sales, saleItems: sales2 };
+      const response = await window.electronAPI.syncSales(data);
+
+      if (!response?.error) {
+        await window.sqlite.storeManager("updateSyncedColumn");
+        console.log("SyncService: Sales synced successfully.");
+      } else {
+        console.error("SyncService: Sales sync failed", response.message);
+      }
     }
-
-    // Insert the stock item
-    await window.sqlite.
-      storeManager(
-        "insertNewStockItem",
-        newStocking.lastInsertRowid,
-        stock.product_id,
-        stock.stock_quantity_wholesale,
-        stock.stock_quantity_retail
-      );
-  }
-
-  if (data.pendingStock.length > 1) {
-    // Send a notification
-    new Notification("Marybill Conglomerate!", {
-      body: `${data.pendingStock.length} products has been stocked.`,
-      icon: "../resources/app-icon.jpg"
-    });
-  } else {
-    // Send a notification
-    new Notification("Marybill Conglomerate!", {
-      body: `1 product has been stocked.`,
-      icon: "../resources/app-icon.jpg"
-    });
-  }
-
-}
-
-// Try every 10 seconds
-retryInterval = setInterval(tryFetchPendingStocking, 10000);
-
-// Operation to sync sales
-setTimeout(async () => {
-  const sales = await window.sqlite.storeManager("getSalesForSyncing");
-  const sales2 = await window.sqlite.storeManager("getSalesForSyncing2");
-
-  const data = {
-    sales,
-    saleItems: sales2,
   };
-
-  console.log("Sales data to sync:", data);
-
-  const response = await window.electronAPI.syncSales(data);
-
-  if (response?.error) {
-    console.error("Sync failed:", response.message);
-    return;
-  }
-
-  console.log("Sync response:", response);
-
-  const updateSyncedColumn = await window.sqlite.storeManager(
-    "updateSyncedColumn"
-  );
-  console.log("Synced column updated:", updateSyncedColumn);
-}, 5000);
-
-// Function to get all products
-async function getProducts() {
-  const response = await window.electronAPI.getAllProducts();
-  console.log("All products: ", response);
-
-  if (response?.error) {
-    console.error("Sync failed:", response.message);
-    return;
-  }
-
-  for (const product of response.products) {
-    console.log(product.product_name, product.product_id);
-
-    const checkStock = await window.sqlite.storeManager(
-      "checkTheStock",
-      product.product_id
-    );
-    console.log(checkStock);
-
-    if (checkStock.length > 0) {
-      console.log("Product already exists");
-      const updateProduct = await window.sqlite.storeManager(
-        "updateProduct",
-        checkStock[0].product_id,
-        product.product_name,
-        product.wholesale_cost_price,
-        product.wholesale_selling_price,
-        product.retail_cost_price,
-        product.retail_selling_price,
-        product.category
-      );
-      console.log(updateProduct);
-    } else {
-      console.log("This product did not exist: ", checkStock);
-
-      const insertProducts = await window.sqlite.storeManager(
-        "addProduct",
-        product.product_id,
-        product.product_name,
-        product.wholesale_cost_price,
-        product.wholesale_selling_price,
-        product.retail_cost_price,
-        product.retail_selling_price,
-        product.supplier_id,
-        product.category
-      );
-      console.log(insertProducts);
-    }
-  }
-}
-
-getProducts();
+})();

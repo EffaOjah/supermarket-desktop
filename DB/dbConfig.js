@@ -42,11 +42,10 @@ CREATE TABLE IF NOT EXISTS Products (
 
 CREATE TABLE IF NOT EXISTS Sales (
     sale_id TEXT NOT NULL UNIQUE,
-    customer_id INTEGER NOT NULL,
+    customer_id TEXT NOT NULL,
     sales_date TEXT NOT NULL,
     total_amount INTEGER NOT NULL,
     payment_method VARCHAR(50) NOT NULL,
-    discount INTEGER NOT NULL DEFAULT 0,
     synced INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY(sale_id),
     FOREIGN KEY(customer_id) REFERENCES Customers(customer_id)
@@ -54,8 +53,8 @@ CREATE TABLE IF NOT EXISTS Sales (
 
 CREATE TABLE IF NOT EXISTS Sales_items (
     sale_item_id TEXT NOT NULL UNIQUE,
-    sale_id INTEGER NOT NULL,
-    product_id INTEGER NOT NULL,
+    sale_id TEXT NOT NULL,
+    product_id TEXT NOT NULL,
     quantity INTEGER NOT NULL,
     unit_price INTEGER NOT NULL,
     discount INTEGER NOT NULL DEFAULT 0,
@@ -103,6 +102,19 @@ CREATE TABLE IF NOT EXISTS Users (
     password TEXT NOT NULL,
     role VARCHAR(50),
     PRIMARY KEY(user_id)
+);
+
+CREATE TABLE IF NOT EXISTS Payments (
+    payment_id TEXT NOT NULL UNIQUE,
+    sale_id TEXT NOT NULL,
+    amount INTEGER NOT NULL,
+    payment_method VARCHAR(50) NOT NULL,
+    reference TEXT,
+    status TEXT DEFAULT 'completed' CHECK(status IN ('completed', 'pending', 'failed')),
+    payment_date TEXT NOT NULL,
+    synced INTEGER NOT NULL DEFAULT 0,
+    PRIMARY KEY(payment_id),
+    FOREIGN KEY(sale_id) REFERENCES Sales(sale_id)
 );
 `);
 

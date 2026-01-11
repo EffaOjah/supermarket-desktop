@@ -1,0 +1,108 @@
+<div class="content-wrapper">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="page-title mb-0">Stocking History</h1>
+  </div>
+
+  <!-- Filters -->
+  <div class="card-custom mb-3 h-auto">
+    <div class="p-3">
+      <div class="row g-3">
+        <div class="col-md-5">
+          <div class="input-group">
+            <span class="input-group-text bg-white border-end-0">
+              <i class="bi bi-search text-muted"></i>
+            </span>
+            <input
+              type="text"
+              id="stockingSearchInput"
+              class="form-control border-start-0 ps-0"
+              placeholder="Search product or supplier..."
+            />
+          </div>
+        </div>
+        <!-- Year Select -->
+        <div class="col-md-2">
+          <select
+            class="form-select"
+            id="stockingYearSelect"
+            aria-label="Select Year"
+          >
+            <option value="">Year</option>
+            <option value="2025">2025</option>
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+          </select>
+        </div>
+        <!-- Month Select -->
+        <div class="col-md-3">
+          <select
+            class="form-select"
+            id="stockingMonthSelect"
+            aria-label="Select Month"
+          >
+            <option value="">Month</option>
+            <option value="01">January</option>
+            <option value="02">February</option>
+            <option value="03">March</option>
+            <option value="04">April</option>
+            <option value="05">May</option>
+            <option value="06">June</option>
+            <option value="07">July</option>
+            <option value="08">August</option>
+            <option value="09">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stocking Table -->
+  <div class="card-custom">
+    <div class="table-responsive">
+      <table class="table table-custom table-hover align-middle">
+        <thead>
+          <tr>
+            <th>S/N</th>
+            <th>Date</th>
+            <th>Product Name</th>
+            <th>Supplier</th>
+            <th class="text-center">Wholesale Qty</th>
+            <th class="text-center">Retail Qty</th>
+            <th class="text-end">Unit Cost (W/R)</th>
+            <th class="text-end">Total Cost</th>
+          </tr>
+        </thead>
+        <tbody id="stockingTableBody">
+          <!-- Dynamically populated -->
+        </tbody>
+      </table>
+    </div>
+    <!-- Pagination -->
+    <div
+      class="d-flex justify-content-between align-items-center p-3 border-top"
+    >
+      <div class="text-muted small" id="stockingPaginationInfo">
+        Showing 0 to 0 of 0 entries
+      </div>
+      <nav>
+        <ul
+          class="pagination pagination-sm mb-0"
+          id="stockingPaginationControls"
+        >
+          <!-- Dynamically populated -->
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+<footer class="app-footer">
+  <div class="footer-content">
+    <p class="mb-0 text-muted small">
+      &copy; 2025 Marybill Conglomerate Ltd. All rights reserved.
+      <span class="app-version opacity-50">v...</span>
+    </p>
+  </div>
+</footer>

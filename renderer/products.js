@@ -1,262 +1,423 @@
-var productList;
-var suppliersList;
+(function () {
+  // Products State
+  let allProducts = [];
+  let filteredProducts = [];
+  let currentPage = 1;
+  const pageSize = 30;
 
-const productsHolder = document.getElementById("productsHolder");
-const detailsHolder = document.getElementById("detailsHolder");
+  window.initProducts = async function () {
+    console.log("Initializing Products Page...");
 
-document.addEventListener("DOMContentLoaded", async () => {
-  productList = await window.sqlite.storeManager("allProducts");
-  suppliersList = await window.sqlite.storeManager("getSuppliers");
+    const searchInput = document.getElementById("productSearchInput");
+    const categorySelect = document.getElementById("productCategorySelect");
+    const supplierSelect = document.getElementById("productSupplierSelect");
 
-  console.log("Products: ", productList);
-
-  loadSuppliers();
-});
-
-function loadSuppliers() {
-  document.querySelector(
-    ".select-supplier-div"
-  ).innerHTML = `${suppliersList.map(
-    (supplier) => `
-    <div class="col-md-3 card">
-          <div class="card-body">
-            <h3 class="text-secondary text-center">${supplier.name}</h3>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-secondary card-btn form-control" id="viewProductsBtn" data-name="${supplier.name}">View products</button>
-          </div>
-        </div>
-    `
-  )}
-  `;
-}
-
-function loadProducts(supplierName) {
-  productList = productList.filter((product) => product.name === supplierName);
-  console.log(productList);
-
-  document.querySelector(".product-record-div").classList.remove("d-none");
-
-  if (productList.length < 1) {
-    console.log('no product available');
-
-    productsHolder.innerHTML = `<h5 class="mb-4 text-white">No product available</h5>`;
-    return;
-  }
-  productsHolder.innerHTML = `<h5 class="mb-4">Products Record</h5>`;
-
-  const grouped = productList.reduce((acc, product) => {
-    const { name } = product;
-    if (!acc[name]) {
-      acc[name] = [];
+    if (searchInput) {
+      searchInput.oninput = () => {
+        currentPage = 1;
+        window.filterProductItems();
+      };
     }
-    acc[name].push(product);
-    return acc;
-  }, {});
 
-  for (const name in grouped) {
-    const products = grouped[name];
+    if (categorySelect) {
+      categorySelect.onchange = () => {
+        currentPage = 1;
+        window.filterProductItems();
+      };
+    }
 
-    const newDiv = document.createElement("div");
-    newDiv.classList.add("supplier-group");
-    newDiv.innerHTML = `
-      <div class="bg-secondary rounded h-100 p-4">
-        <h6 class="mb-4">${name}</h6>
-        <div class="table-responsive">
-          <table class="table text-start align-middle table-bordered table-hover mb-0">
-            <thead>
-              <tr class="text-white">
-                <th scope="col"><input class="form-check-input" type="checkbox"></th>
-                <th scope="col">S/N</th>
-                <th scope="col">Product name</th>
-                <th scope="col">Category</th>
-                <th scope="col">Wholesale price</th>
-                <th scope="col">Wholesale Quantity</th>
-                <th scope="col">Retail price</th>
-                <th scope="col">Retail Quantity</th>
-                <th scope="col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${products
-        .map(
-          (product, index) => `
-                <tr class="product-row" data-name="${product.product_name.toLowerCase()}">
-                  <td><input class="form-check-input" type="checkbox"></td>
-                  <td>${index + 1}</td>
-                  <td>${product.product_name}</td>
-                  <td>${product.category}</td>
-                  <td>₦${product.wholesale_selling_price}</td>
-                  <td>${product.stock_quantity_wholesale}</td>
-                  <td>₦${product.retail_selling_price}</td>
-                  <td>${product.stock_quantity_retail}</td>
-                  <td><a id="${product.product_id
-            }" class="btn btn-sm btn-light view-sales-btn" data-bs-toggle="modal"
-                      data-bs-target="#allsales">All sales</a></td>
-                </tr>
-              `
-        )
-        .join("")}
-            </tbody>
-          </table>
-        </div>
-      </div>`;
+    if (supplierSelect) {
+      supplierSelect.onchange = () => {
+        currentPage = 1;
+        window.filterProductItems();
+      };
+    }
 
-    productsHolder.appendChild(newDiv);
+    const paginationControls = document.getElementById("productPaginationControls");
+    if (paginationControls) {
+      paginationControls.onclick = (e) => {
+        e.preventDefault();
+        const pageLink = e.target.closest(".page-link");
+        if (pageLink && !pageLink.parentElement.classList.contains("disabled")) {
+          const page = pageLink.getAttribute("data-page");
+          if (page === "prev") currentPage--;
+          else if (page === "next") currentPage++;
+          else currentPage = parseInt(page);
+
+          window.renderProductTable(filteredProducts);
+        }
+      };
+    }
+
+    // Table Action Delegation (View Sales)
+    const tableBody = document.getElementById("productTableBody");
+    if (tableBody) {
+      tableBody.onclick = (e) => {
+        if (e.target.classList.contains("view-sales-btn")) {
+          const productId = e.target.getAttribute("data-product-id");
+          window.loadProductSalesHistory(productId);
+        }
+      };
+    }
+
+    const downloadBtn = document.getElementById("downloadInvoiceBtn");
+    if (downloadBtn) {
+      downloadBtn.onclick = window.downloadProductInvoice;
+    }
+
+    const printBtn = document.getElementById("printInvoiceBtn");
+    if (printBtn) {
+      printBtn.onclick = window.printProductInvoice;
+    }
+
+    // Sales Modal Delegation (View Invoice)
+    const detailsHolder = document.getElementById("detailsHolder");
+    if (detailsHolder) {
+      detailsHolder.onclick = (e) => {
+        if (e.target.classList.contains("view-invoice-btn")) {
+          const saleId = e.target.getAttribute("data-sale-id");
+          window.viewProductInvoice(saleId);
+        }
+      };
+    }
+
+    await window.loadProductData();
+  };
+
+  window.loadProductData = async function () {
+    try {
+      allProducts = await window.sqlite.storeManager("allProducts");
+      const suppliers = await window.sqlite.storeManager("getSuppliers");
+
+      // Populate Filters
+      populateFilters(allProducts, suppliers);
+
+      filteredProducts = [...allProducts];
+      window.renderProductTable(filteredProducts);
+    } catch (err) {
+      console.error("Failed to load products data:", err);
+    }
+  };
+
+  function populateFilters(products, suppliers) {
+    const categorySelect = document.getElementById("productCategorySelect");
+    const supplierSelect = document.getElementById("productSupplierSelect");
+
+    if (categorySelect) {
+      const categories = [...new Set(products.map(p => p.category))].sort();
+      categorySelect.innerHTML = '<option value="" selected>All Categories</option>';
+      categories.forEach(cat => {
+        if (cat) {
+          const opt = document.createElement("option");
+          opt.value = cat;
+          opt.innerText = cat;
+          categorySelect.appendChild(opt);
+        }
+      });
+    }
+
+    if (supplierSelect) {
+      supplierSelect.innerHTML = '<option value="" selected>All Suppliers</option>';
+      suppliers.forEach(sup => {
+        const opt = document.createElement("option");
+        opt.value = sup.supplier_id;
+        opt.innerText = sup.name;
+        supplierSelect.appendChild(opt);
+      });
+    }
   }
-}
 
-async function loadProductSales(productId) {
-  const productSales = await window.sqlite.storeManager(
-    "productSales",
-    productId
-  );
-  console.log("Product Sales; ", productSales);
+  window.renderProductTable = function (productList) {
+    const tableBody = document.getElementById("productTableBody");
+    if (!tableBody) return;
 
-  if (productSales.length < 1) {
-    console.log("No sales has been recorded!");
-    detailsHolder.innerHTML = `<p>No Sales has been recorded!</p>`;
-  } else {
-    detailsHolder.innerHTML = `
-      <div class="table-responsive mb-4">
-                  <table id="productsTable" class="table table-bordered">
-                    <thead class="table-dark">
-                      <tr>
-                        <th>S/N</th>
-                        <th>Date</th>
-                        <th>Quantity Sold</th>
-                        <th>Sale Type</th>
-                        <th>Price per Unit</th>
-                        <th>Total</th>
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    ${productSales
-        .map(
-          (product, index) => `
-                      <tr>
-                        <td>${index + 1}</td>
-                        <td>${new Date(product.sales_date).toDateString()}</td>
-                        <td>${product.quantity}</td>
-                        <td>${product.sale_type}</td>
-                        <td>₦${product.unit_price}</td>
-                        <td>₦${product.unit_price * product.quantity}</td>
-                        <td><a id="${product.product_id}:${product.sale_id
-            }" class="btn btn-sm btn-light view-invoice-btn" data-bs-toggle="modal"
-                      data-bs-target="#invoiceModal">View invoice</a></td>
-                      </tr>
-                  `
-        )
-        .join("")}
-                    </tbody>
-                  </table>
-                </div>
-    `;
-  }
-}
+    const totalEntries = productList.length;
+    const totalPages = Math.ceil(totalEntries / pageSize);
+    if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
 
-/* Event Delegation */
-// Attach a single event listener to the parent
-productsHolder.addEventListener("click", (event) => {
-  if (event.target.classList.contains("view-sales-btn")) {
-    loadProductSales(event.target.id);
-  }
-});
+    const start = (currentPage - 1) * pageSize;
+    const end = Math.min(start + pageSize, totalEntries);
+    const currentItems = productList.slice(start, end);
 
-detailsHolder.addEventListener("click", (event) => {
-  if (event.target.classList.contains("view-invoice-btn")) {
-    const id = event.target.id;
-    let split = id.split(":");
+    tableBody.innerHTML = totalEntries ? "" : '<tr><td colspan="9" class="text-center py-4 text-muted">No products found.</td></tr>';
 
-    viewSaleInvoice(split[1]);
-  }
-});
-document.querySelector(".select-supplier-div").addEventListener("click", (event) => {
-  if ((event.target.id = "viewProductsBtn")) {
-    document.querySelector(".select-supplier-div").style.display = "none";
+    currentItems.forEach((product, index) => {
+      const row = document.createElement("tr");
 
-    // Then, call the loadProducts function
-    loadProducts(event.target.dataset.name);
-  }
-});
+      // Stock indicators
+      const wQty = product.stock_quantity_wholesale || 0;
+      const rQty = product.stock_quantity_retail || 0;
+      const reorderLevel = product.reorder_level || 10;
 
-// Function to show invoice
-async function viewSaleInvoice(saleId) {
-  const invoiceHolder = document.getElementById('invoiceHolder');
+      const wBadgeClass = wQty < reorderLevel ? 'bg-danger' : (wQty < reorderLevel * 2 ? 'bg-warning' : 'bg-success');
+      const rBadgeClass = rQty < reorderLevel ? 'bg-danger' : (rQty < reorderLevel * 2 ? 'bg-warning' : 'bg-success');
 
-  invoiceHolder.innerHTML = '';
-
-  let saleDetails = await window.sqlite.storeManager('getSaleItems', saleId);
-  console.log(saleId, 'saleDetails: ', saleDetails);
-
-  let theBranchName = branchName;
-  document.getElementById('branch').innerHTML = theBranchName == 'MARYBILL MABILCO VENTURES' || theBranchName == 'MABILCO ENTERPRISE' ? branchName : `MaryBill Conglomerate | ${branchName}`;
-
-  document.getElementById('customer').innerHTML = saleDetails[0].name;
-  document.getElementById('paymentMethod').innerHTML = saleDetails[0].payment_method;
-  document.getElementById('saleDate').innerHTML = saleDetails[0].sales_date;
-
-  const newDiv = document.createElement('div');
-  newDiv.innerHTML = `
-        <table id="saleDetailTable" class="table table-bordered invoice-details">
-                      <thead>
-                <tr>
-                    <th>S/N</th>
-                    <th>ITEMS</th>
-                    <th>PURCHASE TYPE</th>
-                    <th>QUANTITY</th>
-                    <th>PRICE PER QUANTITY</th>
-                    <th>TOTAL PRICE</th>
-                    <th>DISCOUNT RATE</th>
-                    <th>DISCOUNT VALUE</th>
-                    <th>NET PAY</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${saleDetails.map((sale, index) => `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${sale.product_name}</td>
-                        <td>${sale.sale_type}</td>
-                        <td>${sale.quantity}</td>
-                        <td>₦${sale.unit_price}</td>
-                        <td>₦${sale.quantity * sale.unit_price}</td>
-                        <td>${sale.discount}%</td>
-                        <td>₦${((sale.discount / 100) * (sale.quantity * sale.unit_price)).toFixed(2)}</td>
-                        <td>₦${(sale.quantity * sale.unit_price) - (sale.discount / 100 * (sale.quantity * sale.unit_price))}</td>
-                    </tr>`).join("")}
-            </tbody>
-          </table>
-          <p class="fs-6 text-end">Total: ₦${saleDetails[0].total_amount}</p>`
-
-  invoiceHolder.appendChild(newDiv);
-}
-
-function filterProducts(searchTerm) {
-  const supplierGroups = document.querySelectorAll(".supplier-group");
-
-  supplierGroups.forEach((group) => {
-    const rows = group.querySelectorAll(".product-row");
-    let hasVisibleRow = false;
-
-    rows.forEach((row) => {
-      const productName = row.dataset.name;
-      if (productName.includes(searchTerm.toLowerCase())) {
-        row.style.display = "";
-        hasVisibleRow = true;
-      } else {
-        row.style.display = "none";
-      }
+      row.innerHTML = `
+                <td class="text-muted">${start + index + 1}</td>
+                <td>
+                    <div class="fw-semibold">${product.product_name}</div>
+                </td>
+                <td><span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary rounded-pill">${product.category || 'N/A'}</span></td>
+                <td class="text-muted small">${product.name || 'Unknown'}</td>
+                <td class="text-end fw-medium">₦${Number(product.wholesale_selling_price).toLocaleString()}</td>
+                <td class="text-center">
+                    <span class="badge ${wBadgeClass} bg-opacity-10 text-${wBadgeClass.replace('bg-', '')}">${wQty}</span>
+                </td>
+                <td class="text-end fw-medium">₦${Number(product.retail_selling_price).toLocaleString()}</td>
+                <td class="text-center">
+                    <span class="badge ${rBadgeClass} bg-opacity-10 text-${rBadgeClass.replace('bg-', '')}">${rQty}</span>
+                </td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-outline-primary shadow-sm view-sales-btn" data-product-id="${product.product_id}" data-bs-toggle="modal" data-bs-target="#allsales">
+                        View Sales
+                    </button>
+                </td>
+            `;
+      tableBody.appendChild(row);
     });
 
-    // Hide or show the whole group based on row visibility
-    group.style.display = hasVisibleRow ? "" : "none";
-  });
-}
+    window.renderProductPagination(totalEntries, totalPages);
+  };
 
-const searchInput = document.getElementById("searchInput");
+  window.renderProductPagination = function (totalEntries, totalPages) {
+    const info = document.getElementById("productPaginationInfo");
+    const controls = document.getElementById("productPaginationControls");
+    if (!info || !controls) return;
 
-searchInput.addEventListener("input", () => {
-  filterProducts(searchInput.value.trim());
-});
+    if (totalEntries === 0) {
+      info.innerText = "Showing 0 to 0 of 0 entries";
+      controls.innerHTML = "";
+      return;
+    }
+
+    const start = (currentPage - 1) * pageSize + 1;
+    const end = Math.min(currentPage * pageSize, totalEntries);
+    info.innerText = `Showing ${start} to ${end} of ${totalEntries} entries`;
+
+    let html = `
+            <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+                <a class="page-link border-0 bg-transparent" href="javascript:void(0)" data-page="prev"><i class="bi bi-chevron-left"></i></a>
+            </li>
+        `;
+
+    for (let i = 1; i <= totalPages; i++) {
+      html += `
+                <li class="page-item ${currentPage === i ? 'active' : ''}">
+                    <a class="page-link border-0 rounded-circle ${currentPage === i ? '' : 'text-muted'}" href="javascript:void(0)" data-page="${i}">${i}</a>
+                </li>
+            `;
+    }
+
+    html += `
+            <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+                <a class="page-link border-0 bg-transparent text-muted" href="javascript:void(0)" data-page="next"><i class="bi bi-chevron-right"></i></a>
+            </li>
+        `;
+
+    controls.innerHTML = html;
+  };
+
+  window.filterProductItems = function () {
+    const query = document.getElementById("productSearchInput").value.toLowerCase();
+    const category = document.getElementById("productCategorySelect").value;
+    const supplierId = document.getElementById("productSupplierSelect").value;
+
+    filteredProducts = allProducts.filter(product => {
+      const matchesQuery = product.product_name.toLowerCase().includes(query);
+      const matchesCategory = !category || product.category === category;
+      const matchesSupplier = !supplierId || product.supplier_id == supplierId;
+
+      return matchesQuery && matchesCategory && matchesSupplier;
+    });
+
+    window.renderProductTable(filteredProducts);
+  };
+
+  window.loadProductSalesHistory = async function (productId) {
+    const detailsHolder = document.getElementById("detailsHolder");
+    if (!detailsHolder) return;
+
+    detailsHolder.innerHTML = '<div class="text-center py-5"><div class="spinner-border text-primary" role="status"></div></div>';
+
+    try {
+      const rawProductSales = await window.sqlite.storeManager("productSales", productId);
+      const productSales = rawProductSales.sort((a, b) => new Date(b.sales_date) - new Date(a.sales_date));
+
+      if (!productSales || productSales.length === 0) {
+        detailsHolder.innerHTML = '<div class="text-center py-5 text-muted">No sales recorded for this product.</div>';
+        return;
+      }
+
+      let html = `
+                <div class="table-responsive">
+                    <table class="table table-custom align-middle">
+                        <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Date</th>
+                                <th class="text-center">Quantity Sold</th>
+                                <th class="text-center">Type</th>
+                                <th class="text-end">Unit Price</th>
+                                <th class="text-end">Total</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${productSales.map((sale, index) => {
+        const subtotal = sale.unit_price * sale.quantity;
+        const discountValue = (sale.discount / 100) * subtotal;
+        const total = subtotal - discountValue;
+        return `
+                                    <tr>
+                                        <td class="text-muted">${index + 1}</td>
+                                        <td class="text-muted">${new Date(sale.sales_date).toLocaleDateString()}</td>
+                                        <td class="text-center fw-medium">${sale.quantity}</td>
+                                        <td class="text-center">
+                                            <span class="badge ${sale.sale_type === 'Wholesale' ? 'bg-info' : 'bg-primary'} bg-opacity-10 text-${sale.sale_type === 'Wholesale' ? 'info' : 'primary'}">${sale.sale_type}</span>
+                                        </td>
+                                        <td class="text-end">₦${Number(sale.unit_price).toLocaleString()}</td>
+                                        <td class="text-end fw-bold">₦${total.toLocaleString()}</td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-light view-invoice-btn" data-sale-id="${sale.sale_id}" data-bs-toggle="modal" data-bs-target="#invoiceModal">
+                                                View Invoice
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `;
+      }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+      detailsHolder.innerHTML = html;
+    } catch (err) {
+      console.error("Error loading product sales:", err);
+      detailsHolder.innerHTML = '<div class="alert alert-danger">Error loading sales history.</div>';
+    }
+  };
+
+  window.viewProductInvoice = async function (saleId) {
+    try {
+      const saleItems = await window.sqlite.storeManager("getSaleItems", saleId);
+      if (!saleItems || saleItems.length === 0) return;
+
+      const mainSale = saleItems[0];
+
+      document.getElementById("invoiceId").innerText = `#${saleId}`;
+      document.getElementById("invoiceDate").innerText = `Date: ${new Date(mainSale.sales_date).toLocaleDateString()}`;
+      document.getElementById("invoiceCustomerName").innerText = mainSale.name || "Walk-in Customer";
+      document.getElementById("invoiceCustomerPhone").innerText = mainSale.contact || "N/A";
+      document.getElementById("invoicePaymentMethod").innerText = mainSale.payment_method || "N/A";
+
+      const softwareDetails = await window.electronAPI.getSoftwareDetails();
+      document.getElementById("invoiceBranchName").innerText = softwareDetails.branchName || "Marybill Conglomerate";
+
+      const invoiceHolder = document.getElementById("invoiceHolder");
+      let subtotal = 0;
+      let totalDiscount = 0;
+
+      let tableHtml = `
+            <table class="table table-bordered table-sm align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-3">Item Description</th>
+                        <th class="text-center">Qty</th>
+                        <th class="text-end">Unit Price</th>
+                        <th class="text-end pe-3">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+      saleItems.forEach(item => {
+        const itemSubtotal = item.quantity * item.unit_price;
+        const itemDiscount = (item.discount / 100) * itemSubtotal;
+        subtotal += itemSubtotal;
+        totalDiscount += itemDiscount;
+
+        tableHtml += `
+                <tr>
+                    <td class="ps-3">
+                        <div class="fw-semibold">${item.product_name}</div>
+                        <div class="small text-muted">${item.sale_type || 'Retail'}</div>
+                    </td>
+                    <td class="text-center">${item.quantity}</td>
+                    <td class="text-end">₦${Number(item.unit_price).toLocaleString()}</td>
+                    <td class="text-end pe-3">₦${itemSubtotal.toLocaleString()}</td>
+                </tr>
+            `;
+      });
+
+      tableHtml += `</tbody></table>`;
+      invoiceHolder.innerHTML = tableHtml;
+
+      const total = subtotal - totalDiscount;
+      document.getElementById("invoiceSubtotal").innerText = `₦${subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      document.getElementById("invoiceTotalDiscount").innerText = `-₦${totalDiscount.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      document.getElementById("invoiceTotal").innerText = `₦${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+
+    } catch (err) {
+      console.error("Failed to load invoice details:", err);
+    }
+  };
+
+  window.downloadProductInvoice = async function () {
+    const element = document.getElementById("printableInvoice");
+    if (!element) return;
+
+    try {
+      const generator = window.electronAPI && window.electronAPI.html2canvas ? window.electronAPI.html2canvas : (typeof html2canvas !== 'undefined' ? html2canvas : null);
+      if (!generator) return console.error("html2canvas not found");
+
+      const canvas = await generator(element, { scale: 2 });
+      const imgData = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.download = `Invoice-${document.getElementById("invoiceId").innerText}.png`;
+      link.href = imgData;
+      link.click();
+    } catch (err) {
+      console.error("Download failed:", err);
+    }
+  };
+
+  window.printProductInvoice = function () {
+    const element = document.getElementById("printableInvoice");
+    if (!element) return;
+
+    const printContents = element.innerHTML;
+    const printWindow = window.open('', '_blank');
+
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>Print Invoice</title>
+                <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+                    body { font-family: 'Inter', sans-serif; padding: 40px; color: #333; }
+                    .border-bottom-dashed { border-bottom: 1px dashed #dee2e6; }
+                    .text-primary { color: #0d6efd !important; }
+                    .text-success { color: #198754 !important; }
+                    .text-muted { color: #6c757d !important; }
+                    .fw-bold { font-weight: 700 !important; }
+                    img { border-radius: 8px; margin-bottom: 10px; }
+                    .table { width: 100%; margin-bottom: 1rem; color: #212529; vertical-align: top; border-color: #dee2e6; }
+                    @media print { 
+                        body { padding: 0; }
+                        .no-print { display: none; } 
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">${printContents}</div>
+                <script>
+                    window.onload = () => { 
+                        setTimeout(() => { window.print(); window.close(); }, 500);
+                    };
+                </script>
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+  };
+})();

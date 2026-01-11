@@ -24,10 +24,15 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getAppDataPath: () => ipcRenderer.invoke('get-app-data-path'),
     activateSoftware: (activationKey, branchName) => ipcRenderer.invoke('activate-software', activationKey, branchName),
     getSoftwareDetails: () => ipcRenderer.invoke('get-software-details'),
+    getAppVersion: () => ipcRenderer.invoke('get-app-version'),
     syncProducts: (lastSyncedDate) => ipcRenderer.invoke('sync-products', lastSyncedDate),
     getAllProducts: () => ipcRenderer.invoke('get-all-products'),
     stockProducts: () => ipcRenderer.invoke('stock-products'),
-    syncSales: (data) => ipcRenderer.invoke('sync-sales', data)
+    syncSales: (data) => ipcRenderer.invoke('sync-sales', data),
+    updateProgress: (percent) => ipcRenderer.send('update-progress', percent),
+    onUpdateProgress: (callback) => ipcRenderer.on('update-progress', (event, value) => callback(value)),
+    onUpdateDownloaded: (callback) => ipcRenderer.on('update-downloaded', (event, value) => callback(value)),
+    checkForUpdates: () => ipcRenderer.send('check-for-updates')
 });
 
 contextBridge.exposeInMainWorld('functions', {
@@ -36,7 +41,7 @@ contextBridge.exposeInMainWorld('functions', {
 });
 
 contextBridge.exposeInMainWorld('electronStore', {
-    login: async (username, password, role) => await ipcRenderer.invoke('login', username, password, role),
+    login: async (username, password) => await ipcRenderer.invoke('login', username, password),
     getProtectedData: async () => await ipcRenderer.invoke('verify-user'),
     logout: async () => await ipcRenderer.invoke('logout'),
     manualSet: async () => await ipcRenderer.invoke('manual-set'),

@@ -15,6 +15,16 @@ const storeManager = {
       return error;
     }
   },
+  getUserById: (userId) => {
+    try {
+      const getUserQuery = db.prepare(`SELECT * FROM Users WHERE user_id = ?`);
+      const user = getUserQuery.get(userId);
+      return user;
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  },
   getCustomers: () => {
     try {
       const getCustomersQuery = db.prepare(`SELECT * FROM Customers`);
@@ -140,12 +150,12 @@ const storeManager = {
       return error;
     }
   },
-  checkUser: (username, password, role) => {
+  checkUser: (username, password) => {
     try {
       const checkQuery = db.prepare(
-        `SELECT * FROM Users WHERE username = ? AND password = ? AND role = ?`
+        `SELECT * FROM Users WHERE username = ? AND password = ?`
       );
-      const result = checkQuery.all(username, password, role);
+      const result = checkQuery.all(username, password);
 
       return result;
     } catch (error) {
@@ -212,9 +222,49 @@ const storeManager = {
   addCustomer: (name, address, contact) => {
     try {
       const addCustomerQuery = db.prepare(
-        `INSERT INTO Customers (customer_id, name, address, contact) VALUES (?, ?, ?, ?)`
+        `INSERT INTO Customers (customer_id, name, address, contact, date_added) VALUES (?, ?, ?, ?, ?)`
       );
-      const result = addCustomerQuery.run(uuidv4(), name, address, contact);
+      const result = addCustomerQuery.run(uuidv4(), name, address, contact, new Date().toISOString());
+
+      return result;
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  },
+  updateCustomer: (id, name, address, contact) => {
+    try {
+      // Protect Walk-in Customer
+      const checkQuery = db.prepare("SELECT name FROM Customers WHERE customer_id = ?");
+      const current = checkQuery.get(id);
+      if (current && current.name.toLowerCase() === "walk-in-customer") {
+        return { error: "The Walk-in Customer record is protected and cannot be updated." };
+      }
+
+      const updateCustomerQuery = db.prepare(
+        `UPDATE Customers SET name = ?, address = ?, contact = ? WHERE customer_id = ?`
+      );
+      const result = updateCustomerQuery.run(name, address, contact, id);
+
+      return result;
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  },
+  deleteCustomer: (id) => {
+    try {
+      // Protect Walk-in Customer
+      const checkQuery = db.prepare("SELECT name FROM Customers WHERE customer_id = ?");
+      const current = checkQuery.get(id);
+      if (current && current.name.toLowerCase() === "walk-in-customer") {
+        return { error: "The Walk-in Customer record is protected and cannot be deleted." };
+      }
+
+      const deleteCustomerQuery = db.prepare(
+        `DELETE FROM Customers WHERE customer_id = ?`
+      );
+      const result = deleteCustomerQuery.run(id);
 
       return result;
     } catch (error) {
@@ -244,6 +294,30 @@ const storeManager = {
 
       return stocking;
     } catch (error) {
+      return error;
+    }
+  },
+  getAllStockingItems: () => {
+    try {
+      const query = db.prepare(`
+        SELECT 
+          s.stocking_id, 
+          s.stocking_date, 
+          p.product_name, 
+          sp.name as supplier_name,
+          si.wholesale_quantity,
+          si.retail_quantity,
+          p.wholesale_cost_price,
+          p.retail_cost_price
+        FROM Stocking s
+        INNER JOIN Stocking_items si ON s.stocking_id = si.stocking_id
+        INNER JOIN Products p ON si.product_id = p.product_id
+        INNER JOIN Suppliers sp ON p.supplier_id = sp.supplier_id
+        ORDER BY s.stocking_date DESC
+      `);
+      return query.all();
+    } catch (error) {
+      console.error(error);
       return error;
     }
   },
@@ -378,7 +452,7 @@ const storeManager = {
   ) => {
     try {
       const insertProductQuery = db.prepare(
-        "INSERT INTO products (product_id, product_name, wholesale_cost_price, wholesale_selling_price retail_cost_price, retail_selling_price, stock_quantity_wholesale, stock_quantity_retail, supplier_id, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+        "INSERT INTO products (product_id, product_name, wholesale_cost_price, wholesale_selling_price, retail_cost_price, retail_selling_price, stock_quantity_wholesale, stock_quantity_retail, supplier_id, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
       );
 
       const insertProduct = insertProductQuery.run(
@@ -526,7 +600,7 @@ const storeManager = {
   },
   getTodaySalesAnalysis: (type, date) => {
     try {
-      const getAnalysisQuery = db.prepare("SELECT SUM(subtotal) AS total FROM Sales_items SI INNER JOIN Sales S ON SI.sale_id = S.sale_id WHERE SI.sale_type = ? AND S.sales_date = ?");
+      const getAnalysisQuery = db.prepare("SELECT SUM(subtotal) AS total FROM Sales_items SI INNER JOIN Sales S ON SI.sale_id = S.sale_id WHERE SI.sale_type = ? AND date(S.sales_date) = date(?)");
       const getAnalysis = getAnalysisQuery.all([type, date]);
 
       return getAnalysis
@@ -542,7 +616,7 @@ const storeManager = {
       FROM Sales_items SI 
       INNER JOIN Sales S ON SI.sale_id = S.sale_id 
       WHERE SI.sale_type = ? 
-      AND S.sales_date BETWEEN ? AND ?
+      AND date(S.sales_date) BETWEEN date(?) AND date(?)
     `);
 
       const getAnalysis = getAnalysisQuery.all([type, startDate, endDate]);
@@ -576,10 +650,89 @@ const storeManager = {
       SELECT SUM(subtotal) AS total 
       FROM Sales_items SI 
       INNER JOIN Sales S ON SI.sale_id = S.sale_id 
-      WHERE SI.sale_type = ? AND S.sales_date BETWEEN ? AND ?
+      WHERE SI.sale_type = ? AND date(S.sales_date) BETWEEN date(?) AND date(?)
     `);
 
       return query.all([type, startDate, endDate]);
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  },
+  checkWholesaleStockLevel: () => {
+    try {
+      const checkStockLevelQuery = db.prepare(`
+      SELECT product_name, stock_quantity_wholesale, reorder_level FROM Products WHERE stock_quantity_wholesale < reorder_level`);
+
+      const getLevel = checkStockLevelQuery.all();
+
+      return getLevel;
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  },
+  checkRetailStockLevel: () => {
+    try {
+      const checkStockLevelQuery = db.prepare(`
+      SELECT product_name, stock_quantity_retail, reorder_level FROM Products WHERE stock_quantity_retail < reorder_level`);
+
+      const getLevel = checkStockLevelQuery.all();
+
+      return getLevel;
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  },
+  insertPayment: (
+    saleId,
+    amount,
+    paymentMethod,
+    reference,
+    status,
+    paymentDate
+  ) => {
+    const id = uuidv4();
+    try {
+      const insertPaymentQuery = db.prepare(
+        "INSERT INTO payments (payment_id, sale_id, amount, payment_method, reference, status, payment_date) VALUES (?, ?, ?, ?, ?, ?, ?)"
+      );
+
+      const insertPayment = insertPaymentQuery.run(
+        id,
+        saleId,
+        amount,
+        paymentMethod,
+        reference,
+        status,
+        paymentDate
+      );
+
+      return insertPayment;
+    } catch (error) {
+      console.error(error);
+      return error;
+    }
+  },
+  getDashboardStats: () => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+
+      const salesToday = db.prepare("SELECT SUM(total_amount) as total FROM Sales WHERE date(sales_date) = ?").get(today);
+      const transToday = db.prepare("SELECT COUNT(*) as count FROM Sales WHERE date(sales_date) = ?").get(today);
+
+      // Low stock across both wholesale and retail
+      const lowStock = db.prepare(`
+        SELECT COUNT(*) as count FROM Products 
+        WHERE (stock_quantity_wholesale < 10) OR (stock_quantity_retail < 10)
+      `).get(); // Using 10 as a fallback reorder level since the column might be missing
+
+      return {
+        dailySales: salesToday.total || 0,
+        transactions: transToday.count || 0,
+        lowStock: lowStock.count || 0
+      };
     } catch (error) {
       console.error(error);
       return error;

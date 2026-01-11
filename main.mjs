@@ -1,15 +1,15 @@
 // main.js
 
 import ws from 'windows-shortcuts';
-import { app, BrowserWindow, Menu, Notification, dialog, ipcMain } from "electron";
+import { app, BrowserWindow, Menu, Notification, dialog } from "electron";
 // import { autoUpdater } from 'electron-updater';
 import path from "path";
 import Store from "electron-store";
-import storeManager from "./DB/storeManager.js";
-import myJwt from "./jwt/jwt.js";
 import fs from "fs";
 import { fileURLToPath } from "url";
 import Database from "better-sqlite3";
+import registerIpcHandlers from "./ipc/ipcHandlers.js";
+import { initAutoUpdater } from "./ipc/updateHandlers.js";
 
 // Detect packaged/installed environment
 const isPackaged = app.isPackaged;
@@ -55,10 +55,15 @@ db.pragma("journal_mode = WAL");
 // Get the system's app data path (safe for writes)
 const storePath = path.join(userDataPath, "config");
 
+
 // Create store with custom path
 const store = new Store({
   cwd: storePath, // <- where the config.json will be saved
 });
+
+// Register IPC Handlers
+registerIpcHandlers({ userDataPath, store });
+
 
 // Don't show menu when app is packaged
 if (app.isPackaged) {
@@ -111,31 +116,18 @@ const createWindow = () => {
       if (data.branchId == null) {
         win.loadFile("./pages/activation-page.html");
       } else {
-        win.loadFile("./pages/signin.html");
+        win.loadFile("./pages/login.html");
       }
     }
   });
 
-  ipcMain.on("redirect", (event, page) => {
-    const token = store.get("authToken");
 
-    if (!token) {
-      console.log("No Token provided");
-      return win.loadFile("./pages/signin.html");
-    }
 
-    const verifyToken = myJwt.verifyToken(token);
-    if (!verifyToken) {
-      console.log("Invalid token");
-      return win.loadFile("./pages/signin.html");
-    }
-
-    win.loadFile(page);
-  });
+  return win;
 };
 
 app.whenReady().then(async () => {
-  createWindow();
+  const mainWindow = createWindow();
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) {
@@ -144,45 +136,10 @@ app.whenReady().then(async () => {
   });
 
 
+
   if (process.platform === 'win32' && isPackaged) {
-
-    // Handle software update
-    const { autoUpdater } = await import('electron');
-
-    autoUpdater.setFeedURL({ url: feed });
-
-    autoUpdater.on('update-available', async () => {
-      console.log('Update available...');
-
-      const NOTIFICATION_TITLE = 'Update available'
-      const NOTIFICATION_BODY = `App version ${app.getVersion()} is outdated`;
-
-      new Notification({
-        title: NOTIFICATION_TITLE,
-        body: NOTIFICATION_BODY
-      }).show();
-    });
-
-    autoUpdater.on('error', (error) => {
-      console.error('Update check failed:', error);
-    });
-
-
-    autoUpdater.on('update-downloaded', () => {
-      // autoUpdater.quitAndInstall();
-      dialog.showMessageBox({
-        type: 'info',
-        title: 'Update Ready',
-        message: 'A new version has been downloaded. Restart now?',
-        buttons: ['Yes', 'Later'],
-      }).then(result => {
-        if (result.response === 0) {
-          autoUpdater.quitAndInstall();
-        }
-      });
-    });
-
-    autoUpdater.checkForUpdates();
+    // Initialize Auto Updater with professional UI
+    initAutoUpdater(mainWindow, feed);
 
     // Desktop Shortcut
     const exePath = process.execPath;
@@ -205,7 +162,6 @@ app.whenReady().then(async () => {
       });
     }
 
-
     // Start Menu Shortcut
     const startMenuFolder = path.join(app.getPath('startMenu'), 'Marybill Conglomerate Ltd');
     const startMenuShortcut = path.join(startMenuFolder, 'Marybill Conglomerate.lnk');
@@ -223,223 +179,4 @@ app.whenReady().then(async () => {
       }, err => err && console.error('Start Menu Shortcut Error:', err));
     }
   }
-});
-
-ipcMain.handle("activate-software", (event, activationKey, branchName) => {
-  let data = {
-    branchId: activationKey,
-    branchName: branchName,
-  };
-
-  data = JSON.stringify(data);
-
-  fs.writeFile(path.join(userDataPath, "file.json"), data, (err) => {
-    if (err) {
-      let error = { error: "Error activating software" };
-      return error;
-    }
-    console.log("Successfully activated software");
-    let message = { message: "Successfully activated software" };
-
-    return message;
-  });
-});
-
-ipcMain.handle("get-software-details", async () => {
-  return new Promise((resolve, reject) => {
-    fs.readFile(path.join(userDataPath, "file.json"), "utf-8", (err, data) => {
-      if (err) {
-        console.error("Error reading file:", err);
-        reject(err);
-      } else {
-        try {
-          const parsed = JSON.parse(data);
-          console.log(parsed);
-          resolve(parsed);
-        } catch (parseError) {
-          reject(parseError);
-        }
-      }
-    });
-  });
-});
-
-ipcMain.handle("sync-products", async (lastSynced) => {
-  try {
-    const response = await fetch(
-      `https://web.marybillconglomerate.com.ng/storeApi/get-products?lastSynced=${lastSynced}`
-    );
-    return await response.json();
-  } catch (error) {
-    console.error("Fetch error:", error);
-    return null;
-  }
-});
-
-ipcMain.handle("get-all-products", async () => {
-  try {
-    const response = await fetch(
-      `https://web.marybillconglomerate.com.ng/storeApi/get-all-products`
-    );
-    return await response.json();
-  } catch (error) {
-    console.error("Fetch error:", error);
-    return null;
-  }
-});
-
-ipcMain.handle("stock-products", async () => {
-  try {
-    const result = await new Promise((resolve, reject) => {
-      fs.readFile(
-        path.join(userDataPath, "file.json"),
-        "utf-8",
-        (err, data) => {
-          if (err) reject(err);
-          else resolve(JSON.parse(data));
-        }
-      );
-    });
-
-    const response = await fetch(
-      `https://web.marybillconglomerate.com.ng/storeApi/pendingStocking?branchId=${result.branchId}`
-    );
-    return await response.json();
-  } catch (error) {
-    console.error("Fetch error:", error);
-    return null;
-  }
-});
-
-ipcMain.handle("sync-sales", async (event, data) => {
-  try {
-    const fileContent = await fs.promises.readFile(
-      path.join(userDataPath, "file.json"),
-      "utf-8"
-    );
-    const { branchId } = JSON.parse(fileContent);
-
-    const response = await fetch(
-      `https://web.marybillconglomerate.com.ng/storeApi/sync-sales-from-branches?branchId=${branchId}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    );
-
-    return await response.json();
-  } catch (error) {
-    console.error("Sync sales fetch error:", error);
-    return { error: true, message: error.message };
-  }
-});
-
-ipcMain.handle("show-warning-dialog", (event, title, message) => {
-  dialog.showMessageBox({
-    type: "warning",
-    title: title,
-    message: message,
-    buttons: ["OK"],
-  });
-});
-
-ipcMain.handle("show-error-dialog", (event, title, message) => {
-  dialog.showMessageBox({
-    type: "error",
-    title: title,
-    message: message,
-    buttons: ["OK"],
-  });
-});
-
-ipcMain.handle("login", async (event, username, password, role) => {
-  try {
-    const checkUser = await storeManager.checkUser(username, password, role);
-    console.log("CheckUser: ", checkUser);
-
-    if (checkUser.length < 1) {
-      console.log("Invalid Login Details");
-      return { success: false, message: "Invalid Login Details" };
-    }
-
-    const generateToken = myJwt.generateToken(
-      checkUser[0].user_id,
-      checkUser[0].role
-    );
-    console.log("generateToken: ", generateToken);
-
-    store.set("authToken", generateToken);
-    return { success: true, message: "Login successful" };
-  } catch (error) {
-    return { success: false, message: error.message || "Login failed" };
-  }
-});
-
-ipcMain.handle("verify-user", async () => {
-  const token = store.get("authToken");
-
-  if (!token) {
-    console.log("No Token provided");
-    return { success: false, message: "Not authenticated" };
-  }
-
-  const verifyToken = myJwt.verifyToken(token);
-  console.log("Decoded: ", verifyToken);
-
-  return { success: true, decoded: verifyToken };
-});
-
-ipcMain.handle("logout", () => {
-  store.delete("authToken");
-  return { success: true, message: "Logged out" };
-});
-
-ipcMain.on("print-image", (event, dataUrl) => {
-  const printWindow = new BrowserWindow({ show: false });
-
-  printWindow.loadURL(`data:text/html,
-      <html>
-        <body style="margin:0">
-          <img src="${dataUrl}" style="width:100%;height:auto" />
-          <script>
-            window.onload = () => {
-              window.print();
-            };
-          </script>
-        </body>
-      </html>`);
-
-  printWindow.webContents.on("did-finish-load", () => {
-    setTimeout(() => {
-      printWindow.close();
-    }, 1000);
-  });
-});
-
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
-
-
-
-ipcMain.handle("storeManager", async (event, method, ...args) => {
-  if (typeof storeManager[method] === "function") {
-    try {
-      return await storeManager[method](...args);
-    } catch (error) {
-      console.error(`Error in storeManager.${method}:`, error);
-      throw error;
-    }
-  } else {
-    throw new Error(`Method ${method} not found in storeManager`);
-  }
-});
-
-ipcMain.handle("test", async (event) => {
-  return store.path;
 });

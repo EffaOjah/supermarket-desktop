@@ -1,335 +1,308 @@
-const salesHolder = document.getElementById('salesHolder');
+(function () {
+  // Sales History Logic
+  let allSales = [];
+  let filteredSales = [];
+  let currentPage = 1;
+  const pageSize = 10;
 
-var sales;
+  window.initSales = async function () {
+    console.log("Initializing Sales History Page...");
 
-document.addEventListener('DOMContentLoaded', async () => {
-  sales = await window.sqlite.storeManager('getSales');
-  console.log('Sales: ', sales);
-
-  loadSales();
-});
-
-function loadSales() {
-  salesHolder.innerHTML = '';
-  // Group the sales by the sales_date
-  const grouped = sales.reduce((acc, sale) => {
-    const { sales_date } = sale;
-    if (!acc[sales_date]) {
-      acc[sales_date] = [];
+    // Setup Programmatic Event Listeners (CSP Fix)
+    const searchInput = document.getElementById("salesSearchInput");
+    if (searchInput) {
+      searchInput.oninput = () => {
+        currentPage = 1;
+        window.filterSales();
+      };
     }
-    acc[sales_date].push(sale);
-    return acc;
-  }, {});
 
-  console.log('grouped: ', grouped);
-
-  for (const sales_date in grouped) {
-    const sales = grouped[sales_date];
-    console.log('Sales:', sales);
-
-    const newDiv = document.createElement('div');
-    newDiv.innerHTML = `
-        <div class="h-100 bg-secondary rounded p-4">
-            <div class="mb-2">
-              <h6 class="mb-4">${new Date(sales_date).toDateString()}</h6>
-            </div>
-            
-              ${sales.map((sale, index) => `
-                <div class="d-flex align-items-center border-bottom py-3">
-              <img class="rounded-circle flex-shrink-0 chUser1" src="../assets/img/NIVEA.webp" alt="">
-              <div class="w-100 ms-3">
-                <div class="d-flex w-100 justify-content-between">
-                  <h6 class="mb-0">${sale.name}</h6>
-                  <div>
-                    <small class="d-none">${new Date(sale.sales_date).toDateString()}</small>
-                    <span class="d-none">${sale.sale_id}</span>
-                    <span class="badge view-invoice-span" data-bs-toggle="modal" data-bs-target="#invoiceModal">View invoice</span>
-                  </div>
-                </div>
-                <span>${sale.payment_method}</span>
-              </div>
-              </div>
-              `).join('')}
-                
-            
-            </div>`;
-
-    salesHolder.appendChild(newDiv);
-  }
-}
-
-// Function to filter sales by date
-function filterSales(yearMonth) {
-  console.log('Filtering sales for year-month: ', yearMonth);
-
-  // Filter sales where sales_date matches year and month
-  const filtered = sales.filter(item => {
-    const saleDate = new Date(item.sales_date);
-    const saleYearMonth = `${saleDate.getFullYear()}-${String(saleDate.getMonth() + 1).padStart(2, '0')}`;
-    return saleYearMonth === yearMonth;
-  }) || [];
-
-  // Group the sales by full sales_date (YYYY-MM-DD)
-  const groupedSales = filtered.reduce((acc, sale) => {
-    const dateKey = sale.sales_date.split('T')[0]; // ensures no time part
-    if (!acc[dateKey]) {
-      acc[dateKey] = [];
+    const yearSelect = document.getElementById("salesYearSelect");
+    if (yearSelect) {
+      yearSelect.onchange = () => {
+        currentPage = 1;
+        window.filterSales();
+      };
     }
-    acc[dateKey].push(sale);
-    return acc;
-  }, {});
 
-  console.log('GroupedFiltered: ', groupedSales);
-
-  // Clear old results
-  salesHolder.innerHTML = '';
-
-  if (filtered.length < 1) {
-    console.log('No sale found');
-    salesHolder.innerHTML = `<h2>No sale found!</h2>`;
-  } else {
-    for (const sales_date in groupedSales) {
-      const salesList = groupedSales[sales_date];
-
-      salesHolder.innerHTML += `
-        <div class="h-100 bg-secondary rounded p-4 mb-3">
-          <div class="mb-2">
-            <h6 class="mb-4">${new Date(sales_date).toDateString()}</h6>
-          </div>
-          ${salesList.map(sale => `
-            <div class="d-flex align-items-center border-bottom py-3">
-              <img class="rounded-circle flex-shrink-0 chUser1" src="../assets/img/NIVEA.webp" alt="">
-              <div class="w-100 ms-3">
-                <div class="d-flex w-100 justify-content-between">
-                  <h6 class="mb-0">${sale.name}</h6>
-                  <div>
-                    <small class="d-none">${new Date(sale.sales_date).toDateString()}</small>
-                    <span class="d-none">${sale.sale_id}</span>
-                    <span class="badge view-invoice-span" data-bs-toggle="modal" data-bs-target="#invoiceModal">View invoice</span>
-                  </div>
-                </div>
-                <span>${sale.payment_method}</span>
-              </div>
-            </div>
-          `).join('')}
-        </div>
-      `;
+    const monthSelect = document.getElementById("salesMonthSelect");
+    if (monthSelect) {
+      monthSelect.onchange = () => {
+        currentPage = 1;
+        window.filterSales();
+      };
     }
-  }
-}
 
-async function viewSaleInvoice(saleId) {
-  const invoiceHolder = document.getElementById('invoiceHolder');
+    const downloadBtn = document.getElementById("downloadInvoiceBtn");
+    if (downloadBtn) {
+      downloadBtn.onclick = window.downloadInvoice;
+    }
 
-  invoiceHolder.innerHTML = '';
+    const printBtn = document.getElementById("printInvoiceBtn");
+    if (printBtn) {
+      printBtn.onclick = window.printInvoice;
+    }
 
-  let saleDetails = await window.sqlite.storeManager('getSaleItems', saleId);
-  console.log(saleId, 'saleDetails: ', saleDetails);
+    const tableBody = document.getElementById("salesTableBody");
+    if (tableBody) {
+      tableBody.onclick = (e) => {
+        const viewBtn = e.target.closest(".view-invoice-btn");
+        if (viewBtn) {
+          const id = viewBtn.getAttribute("data-id");
+          window.viewSaleInvoice(id);
+        }
+      };
+    }
 
-  let theBranchName = branchName;
-  document.getElementById('branch').innerHTML = theBranchName == 'MARYBILL MABILCO VENTURES' || theBranchName == 'MABILCO ENTERPRISE' ? branchName : `MaryBill Conglomerate | ${branchName}`;
+    const paginationControls = document.getElementById("paginationControls");
+    if (paginationControls) {
+      paginationControls.onclick = (e) => {
+        e.preventDefault();
+        const pageLink = e.target.closest(".page-link");
+        if (pageLink && !pageLink.parentElement.classList.contains("disabled")) {
+          const page = pageLink.getAttribute("data-page");
+          if (page === "prev") currentPage--;
+          else if (page === "next") currentPage++;
+          else currentPage = parseInt(page);
 
-  document.getElementById('customer').innerHTML = saleDetails[0].name;
-  document.getElementById('paymentMethod').innerHTML = saleDetails[0].payment_method;
-  document.getElementById('saleDate').innerHTML = saleDetails[0].sales_date;
+          window.renderSalesTable(filteredSales);
+        }
+      };
+    }
 
-  const newDiv = document.createElement('div');
-  newDiv.innerHTML = `
-        <table id="saleDetailTable" class="table table-bordered invoice-details">
-                      <thead>
-                <tr>
-                    <th>S/N</th>
-                    <th>ITEMS</th>
-                    <th>PURCHASE TYPE</th>
-                    <th>QUANTITY</th>
-                    <th>PRICE PER QUANTITY</th>
-                    <th>TOTAL PRICE</th>
-                    <th>DISCOUNT RATE</th>
-                    <th>DISCOUNT VALUE</th>
-                    <th>NET PAY</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${saleDetails.map((sale, index) => `
+    await window.loadSales();
+  };
+
+  window.loadSales = async function () {
+    const tableBody = document.getElementById("salesTableBody");
+    if (!tableBody) return;
+
+    try {
+      const sales = await window.sqlite.storeManager("getSales");
+      // Sort sales by date descending (newest first)
+      allSales = sales.sort((a, b) => new Date(b.sales_date) - new Date(a.sales_date));
+      filteredSales = [...allSales];
+
+      window.renderSalesTable(filteredSales);
+    } catch (err) {
+      console.error("Failed to load sales:", err);
+    }
+  };
+
+  window.renderSalesTable = function (salesList) {
+    const tableBody = document.getElementById("salesTableBody");
+    if (!tableBody) return;
+
+    const totalEntries = salesList.length;
+    const totalPages = Math.ceil(totalEntries / pageSize);
+    if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
+
+    const start = (currentPage - 1) * pageSize;
+    const end = Math.min(start + pageSize, totalEntries);
+    const currentItems = salesList.slice(start, end);
+
+    tableBody.innerHTML = totalEntries ? "" : '<tr><td colspan="6" class="text-center py-4 text-muted">No sales found.</td></tr>';
+
+    currentItems.forEach((sale, index) => {
+      const row = document.createElement("tr");
+      const saleDate = new Date(sale.sales_date);
+      const formattedDate = saleDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+
+      row.innerHTML = `
+            <td class="text-muted">${start + index + 1}</td>
+            <td class="text-muted">${formattedDate}</td>
+            <td class="fw-medium">#${sale.sale_id}</td>
+            <td><div class="fw-semibold">${sale.name || 'Walk-in Customer'}</div></td>
+            <td class="text-end fw-bold">₦${Number(sale.total_amount).toLocaleString(undefined, { minimumFractionDigits: 2 })}</td>
+            <td class="text-center">
+                <button class="btn btn-sm btn-outline-primary shadow-sm view-invoice-btn" data-id="${sale.sale_id}" data-bs-toggle="modal" data-bs-target="#invoiceModal">
+                    View Invoice
+                </button>
+            </td>
+        `;
+      tableBody.appendChild(row);
+    });
+
+    window.renderPagination(totalEntries, totalPages);
+  };
+
+  window.renderPagination = function (totalEntries, totalPages) {
+    const info = document.getElementById("paginationInfo");
+    const controls = document.getElementById("paginationControls");
+    if (!info || !controls) return;
+
+    if (totalEntries === 0) {
+      info.innerText = "Showing 0 to 0 of 0 entries";
+      controls.innerHTML = "";
+      return;
+    }
+
+    const start = (currentPage - 1) * pageSize + 1;
+    const end = Math.min(currentPage * pageSize, totalEntries);
+    info.innerText = `Showing ${start} to ${end} of ${totalEntries} entries`;
+
+    let html = `
+        <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+            <a class="page-link border-0 bg-transparent" href="javascript:void(0)" data-page="prev"><i class="bi bi-chevron-left"></i></a>
+        </li>
+    `;
+
+    for (let i = 1; i <= totalPages; i++) {
+      html += `
+            <li class="page-item ${currentPage === i ? 'active' : ''}">
+                <a class="page-link border-0 rounded-circle ${currentPage === i ? '' : 'text-muted'}" href="javascript:void(0)" data-page="${i}">${i}</a>
+            </li>
+        `;
+    }
+
+    html += `
+        <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+            <a class="page-link border-0 bg-transparent text-muted" href="javascript:void(0)" data-page="next"><i class="bi bi-chevron-right"></i></a>
+        </li>
+    `;
+
+    controls.innerHTML = html;
+  };
+
+  window.filterSales = function () {
+    const query = document.getElementById("salesSearchInput").value.toLowerCase();
+    const year = document.getElementById("salesYearSelect").value;
+    const month = document.getElementById("salesMonthSelect").value;
+
+    filteredSales = allSales.filter(sale => {
+      const saleDate = new Date(sale.sales_date);
+      const matchesQuery = (sale.sale_id.toString().includes(query) || (sale.name && sale.name.toLowerCase().includes(query)));
+      const matchesYear = !year || saleDate.getFullYear().toString() === year;
+      const matchesMonth = !month || (saleDate.getMonth() + 1).toString().padStart(2, '0') === month;
+
+      return matchesQuery && matchesYear && matchesMonth;
+    });
+
+    window.renderSalesTable(filteredSales);
+  };
+
+  window.viewSaleInvoice = async function (saleId) {
+    try {
+      const saleItems = await window.sqlite.storeManager("getSaleItems", saleId);
+      if (!saleItems || saleItems.length === 0) return;
+
+      const mainSale = allSales.find(s => s.sale_id == saleId) || saleItems[0];
+
+      document.getElementById("invoiceId").innerText = `#${saleId}`;
+      document.getElementById("invoiceDate").innerText = `Date: ${new Date(mainSale.sales_date).toLocaleDateString()}`;
+      document.getElementById("invoiceCustomerName").innerText = mainSale.name || "Walk-in Customer";
+      document.getElementById("invoiceCustomerPhone").innerText = mainSale.contact || "N/A";
+      document.getElementById("invoicePaymentMethod").innerText = mainSale.payment_method || "N/A";
+
+      const softwareDetails = await window.electronAPI.getSoftwareDetails();
+      document.getElementById("invoiceBranchName").innerText = softwareDetails.branchName || "Marybill Conglomerate";
+
+      const invoiceHolder = document.getElementById("invoiceHolder");
+      let subtotal = 0;
+      let totalDiscount = 0;
+
+      let tableHtml = `
+            <table class="table table-bordered table-sm align-middle mb-0">
+                <thead class="bg-light">
                     <tr>
-                        <td>${index + 1}</td>
-                        <td>${sale.product_name}</td>
-                        <td>${sale.sale_type}</td>
-                        <td>${sale.quantity}</td>
-                        <td>₦${sale.unit_price}</td>
-                        <td>₦${sale.quantity * sale.unit_price}</td>
-                        <td>${sale.discount}%</td>
-                        <td>₦${((sale.discount / 100) * (sale.quantity * sale.unit_price)).toFixed(2)}</td>
-                        <td>₦${(sale.quantity * sale.unit_price) - (sale.discount / 100 * (sale.quantity * sale.unit_price))}</td>
-                    </tr>`).join("")}
-            </tbody>
-          </table>
-          <p class="fs-6 text-end">Total: ₦${saleDetails[0].total_amount}</p>`
+                        <th class="ps-3">Item Description</th>
+                        <th class="text-center">Qty</th>
+                        <th class="text-end">Unit Price</th>
+                        <th class="text-end pe-3">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
 
-  invoiceHolder.appendChild(newDiv);
-}
+      saleItems.forEach(item => {
+        const itemSubtotal = item.quantity * item.unit_price;
+        const itemDiscount = (item.discount / 100) * itemSubtotal;
+        subtotal += itemSubtotal;
+        totalDiscount += itemDiscount;
 
-/* Event Delegation */
-// Attach a single event listener to the parent
-salesHolder.addEventListener('click', (event) => {
-  if (event.target.classList.contains('view-invoice-span')) {
-    viewSaleInvoice(event.target.previousElementSibling.innerHTML)
-  }
-});
+        tableHtml += `
+                <tr>
+                    <td class="ps-3">
+                        <div class="fw-semibold">${item.product_name}</div>
+                        <div class="small text-muted">${item.sale_type || 'Retail'}</div>
+                    </td>
+                    <td class="text-center">${item.quantity}</td>
+                    <td class="text-end">₦${Number(item.unit_price).toLocaleString()}</td>
+                    <td class="text-end pe-3">₦${itemSubtotal.toLocaleString()}</td>
+                </tr>
+            `;
+      });
 
+      tableHtml += `</tbody></table>`;
+      invoiceHolder.innerHTML = tableHtml;
 
-// Function to print invoice
-function printInvoice() {
-  const invoiceContent = document.getElementById('printableInvoice').innerHTML;
-  const printWindow = window.open('', '', 'width=800,height=600');
+      const total = subtotal - totalDiscount;
+      document.getElementById("invoiceSubtotal").innerText = `₦${subtotal.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      document.getElementById("invoiceTotalDiscount").innerText = `-₦${totalDiscount.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
+      document.getElementById("invoiceTotal").innerText = `₦${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}`;
 
-  printWindow.document.write(`
-      <html>
-      <head>
-        <title>Print Invoice</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-          }
-          .invoice-box {
-            max-width: 800px;
-            margin: auto;
-            padding: 30px;
-            border: 1px solid #eee;
-            box-shadow: 0 0 10px rgba(0, 0, 0, .15);
-          }
-          .text-end { text-align: right; }
-          .text-danger { color: red; }
-          .row { display: flex; justify-content: space-between; margin-bottom: 15px; }
-          .col-6 { width: 48%; }
-          table { width: 100%; border-collapse: collapse; }
-          table th, table td { border: 1px solid #000; padding: 8px; }
-        </style>
-      </head>
-      <body>${invoiceContent}</body>
-      </html>
+    } catch (err) {
+      console.error("Failed to load invoice details:", err);
+    }
+  };
+
+  window.downloadInvoice = async function () {
+    const element = document.getElementById("printableInvoice");
+    if (!element) return;
+
+    try {
+      const generator = window.electronAPI && window.electronAPI.html2canvas ? window.electronAPI.html2canvas : (typeof html2canvas !== 'undefined' ? html2canvas : null);
+      if (!generator) return console.error("html2canvas not found");
+
+      const canvas = await generator(element, { scale: 2 });
+      const imgData = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.download = `Invoice-${document.getElementById("invoiceId").innerText}.png`;
+      link.href = imgData;
+      link.click();
+    } catch (err) {
+      console.error("Download failed:", err);
+    }
+  };
+
+  window.printInvoice = function () {
+    const element = document.getElementById("printableInvoice");
+    if (!element) return;
+
+    const printContents = element.innerHTML;
+    const printWindow = window.open('', '_blank');
+
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>Print Invoice</title>
+                <link href="../assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+                <style>
+                    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+                    body { font-family: 'Inter', sans-serif; padding: 40px; color: #333; }
+                    .border-bottom-dashed { border-bottom: 1px dashed #dee2e6; }
+                    .text-primary { color: #0d6efd !important; }
+                    .text-success { color: #198754 !important; }
+                    .text-muted { color: #6c757d !important; }
+                    .fw-bold { font-weight: 700 !important; }
+                    img { border-radius: 8px; margin-bottom: 10px; }
+                    .table { width: 100%; margin-bottom: 1rem; color: #212529; vertical-align: top; border-color: #dee2e6; }
+                    @media print { 
+                        body { padding: 0; }
+                        .no-print { display: none; } 
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="container">${printContents}</div>
+                <script>
+                    window.onload = () => { 
+                        setTimeout(() => { window.print(); window.close(); }, 500);
+                    };
+                </script>
+            </body>
+        </html>
     `);
-
-  printWindow.document.close();
-  printWindow.focus();
-  printWindow.print();
-  printWindow.close();
-}
-
-
-async function downloadInvoiceImage() {
-  const invoice = document.getElementById('printableInvoice');
-
-  window.electronAPI.html2canvas(invoice).then(canvas => {
-    const imageData = canvas.toDataURL("image/png");
-    const link = document.createElement('a');
-    link.href = imageData;
-
-    let randNo = Math.floor(Math.random() * 1000);
-
-    link.download = `invoice.png-${randNo}.png`;
-    link.click();
-  });
-
-}
-
-
-// Date selection operation
-const yearInput = document.getElementById('year');
-const monthInput = document.getElementById('month');
-const errorDisplay = document.getElementById('error');
-
-function showError(message) {
-  errorDisplay.textContent = message;
-  errorDisplay.style.display = 'block';
-}
-
-function clearError() {
-  errorDisplay.textContent = '';
-  errorDisplay.style.display = 'none';
-}
-
-function isValidYear(year) {
-  const yearNum = parseInt(year);
-  return year.length === 4 && !isNaN(yearNum) && yearNum >= 1900 && yearNum <= new Date().getFullYear();
-}
-
-function isValidMonth(month) {
-  const monthNum = parseInt(month);
-  return month.length > 0 && !isNaN(monthNum) && monthNum >= 1 && monthNum <= 12;
-}
-
-function getFormattedDate() {
-  const year = yearInput.value;
-  const month = monthInput.value.padStart(2, '0'); // Ensure 2 digits
-
-  let selectedDate = `${year}-${month}`;
-  console.log('SelectedDate: ', selectedDate);
-
-  if (selectedDate) {
-    filterSales(selectedDate);
-  }
-  return selectedDate;
-}
-
-function updateResult() {
-  if (yearInput.value.length === 4 && monthInput.value.length > 0) {
-    if (isValidYear(yearInput.value) && isValidMonth(monthInput.value)) {
-      const formattedDate = getFormattedDate();
-      return formattedDate;
-    }
-  }
-  return null;
-}
-
-yearInput.addEventListener('input', () => {
-  clearError();
-  const year = yearInput.value;
-
-  if (year.length === 4) {
-    if (isValidYear(year)) {
-      monthInput.disabled = false;
-      monthInput.focus();
-    } else {
-      showError('Please enter a valid year (1900-' + new Date().getFullYear() + ')');
-      monthInput.disabled = true;
-    }
-  } else {
-    monthInput.disabled = true;
-  }
-  updateResult();
-});
-
-monthInput.addEventListener('input', () => {
-  clearError();
-  const month = monthInput.value;
-
-  if (month.length > 0) {
-    if (isValidMonth(month)) {
-      updateResult();
-    } else {
-      showError('Please enter a valid month (1-12)');
-    }
-  }
-  updateResult();
-});
-
-// Ensure only numbers are entered
-[yearInput, monthInput].forEach(input => {
-  input.addEventListener('input', () => {
-    input.value = input.value.replace(/[^0-9]/g, '');
-  });
-});
-
-// Close filter
-document.getElementById('closeFilter').addEventListener('click', () => {
-  [yearInput, monthInput].forEach(el => {
-    el.value = '';
-  });
-
-  loadSales();
-});
-
-
-document.getElementById('printBtn').addEventListener('click', downloadInvoiceImage);
+    printWindow.document.close();
+  };
+})();
